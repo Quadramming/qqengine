@@ -1,7 +1,11 @@
 QQ.Application = class Application {
 
-	constructor() {
-		this._canvas     = new QQ.Canvas('QQApplicationCanvas', 600, 800);
+	constructor(config) {
+		this._canvas     = new QQ.Canvas('QQApplicationCanvas',
+				config.width,
+				config.height,
+				config.maximize
+			);
 		this._fpsCounter = new QQ.FpsCounter();
 		this._time       = new QQ.Time();
 		this._mouse      = new QQ.Mouse();

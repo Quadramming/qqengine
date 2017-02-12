@@ -24,16 +24,16 @@ QQ.World = class World {
 	
 	addSubject(subj) {
 		this._subjects.push(subj);
-		if ( subj.isPhysicsBody() ) {
+		if ( subj.isPhysics ) {
 			Matter.World.add(this._physics.world, [subj.getPhysicsBody()]);
 		}
 	}
 	
 	deleteSubject(subj) {
 		const i = this._subjects.indexOf(subj);
-		if ( this._subjects[i].isPhysicsBody() ) {
+		if ( this._subjects[i].isPhysics ) {
 			Matter.Composite.remove(
-					this._physics.world, 
+					this._physics.world,
 					this._subjects[i].getPhysicsBody()
 				);
 		}

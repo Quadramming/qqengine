@@ -1,33 +1,56 @@
-//REFACTOR
-
-QQ.Text = class Text extends QQ.Subject {
+QQ.Text = class Text extends QQ.SubjectBase {
 	
 	constructor(text, x=0, y=0, fitSize=1, fit=QQ.Text.fit.HEIGHT) {
-		super(null, 0, 0);
+		super(0, 0);
 		this._fitSize    = fitSize;
-		this._textX      = x;
-		this._textY      = y;
-		this._textHeight = 0;
-		this._textWidth  = 0;
-		this._pxInUnit   = 0;
 		this._ratio      = 0;
 		this._fit        = fit;
 		this._align      = 'center';
 		this._font       = 'Ken';
-		this._lineSpace  = 0;
-		this._lineHeight = 20 + this._lineSpace;
-		this._text       = String(text).split('\n');
-		this._lines      = this._text.length;
+		this._strings    = String(text).split('\n');
+		this._lines      = this._strings.length;
+		this._text       = {
+				x:      x,
+				y:      y,
+				height: 0,
+				width:  0
+			};
+		this._line       = {
+				space:  0,
+				height: 20 + 0
+			};
 		this._calcSizes();
+	}
+	
+	type() {
+		return 'text';
+	}
+	
+	draw() {
+		super.draw();
+		this._setupContext();
+		let offsetX = 0; // center
+		let offsetY = -(this._line.height/2)*(this._lines-1);
+		if ( this._align === 'left' ) {
+			offsetX = -(this._text.width/2);
+		} else if ( this._align === 'right' ) {
+			offsetX = (this._text.width/2);
+		}
+		let x       = 0;
+		for ( let str of this._strings ) {
+			this._ctx.fillText(str, offsetX, offsetY + x*this._line.height);
+			++x;
+		}
 	}
 	
 	isClickable() {
 		return false;
 	}
 	
-	setSize(width, height) {
-		this._width  = width;
-		this._height = height;
+	getScale() {
+		let scaleX = (this._width  / this._text.height) / this._ratio;
+		let scaleY = (this._height / this._text.height);
+		return { x : scaleX, y : scaleY };
 	}
 	
 	setFont(font) {
@@ -37,85 +60,65 @@ QQ.Text = class Text extends QQ.Subject {
 	
 	setAlign(align) {
 		this._align = align;
+		this._calcSizes();
 	}
 	
 	setLineHeight(h) {
-		this._lineHeight = h + this._lineSpace;
+		this._line.height = h + this._line.space;
 		this._calcSizes();
 	}
 	
 	setLineSpace(s) {
-		this._lineHeight -= this._lineSpace;
-		this._lineSpace   = s;
-		this._lineHeight += this._lineSpace;
+		this._line.height -= this._line.space;
+		this._line.space   = s;
+		this._line.height += this._line.space;
 		this._calcSizes();
 	}
 	
-	getScale() {
-		let scaleX = (this._width  / this._textHeight) / this._ratio;
-		let scaleY = this._height / this._textHeight;
-		return { x : scaleX, y : scaleY };
-	}
-	
-	draw() {
-		this._setupContext();
-		let offsetX = 0; // center
-		let offsetY = -(this._lineHeight/2)*(this._lines-1);
-		if ( this._align === 'left' ) {
-			offsetX = -(this._textWidth/2);
-		} else if ( this._align === 'right' ) {
-			offsetX = (this._textWidth/2);
-		}
-		let x       = 0;
-		for ( let str of this._text ) {
-			this._ctx.fillText(str, offsetX, offsetY + x*this._lineHeight);
-			++x;
-		}
-		//this.drawBorder();
-	}
-	
 	setText(text) {
-		this._text       = String(text).split('\n');
-		this._lines      = this._text.length;
+		this._strings = String(text).split('\n');
+		this._lines   = this._strings.length;
 		this._calcSizes();
 	}
 	
 	setPosition(x, y) {
-		this._textX = x;
-		this._textY = y;
+		this._text.x = x;
+		this._text.y = y;
+		this._calcSizes();
 	}
 	
 	_setupContext() {
 		this._ctx.textBaseline = 'middle';
 		this._ctx.textAlign    = this._align;
 		this._ctx.fillStyle    = '#878787';
-		const size = this._lineHeight - this._lineSpace;
+		const size = this._line.height - this._line.space;
 		this._ctx.font         = size + 'px ' + this._font;
 	}
 	
 	_calcSizes() {
 		this._setupContext();
-		this._textHeight = this._lineHeight * this._text.length;
-		this._textWidth  = 0;
-		for ( let str of this._text ) {
+		this._text.height = this._line.height * this._strings.length;
+		this._text.width  = 0;
+		for ( let str of this._strings ) {
 			const len = this._ctx.measureText(str).width;
-			if ( len > this._textWidth ) {
-				this._textWidth = len;
+			if ( len > this._text.width ) {
+				this._text.width = len;
 			}
 		}
+		let pxInUnit = 0;
 		if ( this._fit === Text.fit.WIDTH ) {
-			this._pxInUnit = this._textWidth / this._fitSize;
+			pxInUnit = this._text.width / this._fitSize;
 		} else { // HEIGHT
-			this._pxInUnit = this._lineHeight / this._fitSize;
+			pxInUnit = this._line.height / this._fitSize;
 		}
-		this._ratio    = this._textWidth / this._textHeight;
+		this._ratio = this._text.width / this._text.height;
 		this.setSize(
-			this._textWidth  / this._pxInUnit,
-			this._textHeight / this._pxInUnit
+			this._text.width  / pxInUnit,
+			this._text.height / pxInUnit
 		);
 		super.setPosition(
-			this._textX,
-			this._textY - ((this._height/this._lines)/2)*(this._lines-1)
+			this._text.x,
+			this._text.y - ((this._height/this._lines)/2)*(this._lines-1)
 		);
 	}
 	
