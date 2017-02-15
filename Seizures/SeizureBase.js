@@ -1,11 +1,14 @@
 QQ.Seizures.SeizureBase = class SeizureBase {
 	
-	constructor() {
+	constructor(physics = false) {
 		this._app          = QQ.application;
 		this._camera       = new QQ.Camera(this._app.getCanvas());
-		this._world        = new QQ.World();
+		if ( physics ) {
+			this._world    = new QQ.PhysicsWorld();
+		} else {
+			this._world    = new QQ.World();
+		}
 		this._isClicked    = false;
-		this._clickEpsilon = 5;
 		this._hud          = null;
 		this._startClick   = {};
 	}
@@ -23,7 +26,7 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 	}
 	
 	tickWorld(delta) {
-		this._world.tick(delta);
+		this._world.tickBase(delta);
 	}
 	
 	tickScroll() {
@@ -103,11 +106,12 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 	}
 	
 	_isPositionsClose(f, s) {
+		let epsilon = this._camera.getEpsilon();
 		if ( Math.min(f.x, f.y, s.x, s.y) < 0 ) {
 			return false;
 		}
-		return  Math.abs(f.x - s.x) < this._clickEpsilon &&
-				Math.abs(f.y - s.y) < this._clickEpsilon;
+		return  Math.abs(f.x - s.x) < epsilon &&
+				Math.abs(f.y - s.y) < epsilon;
 	}
 	
 };

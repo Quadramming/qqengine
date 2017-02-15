@@ -1,13 +1,11 @@
-//REFACTOR
-
 QQ.Camera = class Camera {
 	
 	constructor(canvas) {
 		this._scroll = {
-			isActive : false,
-			prevM1   : false
+			isActive: false,
+			prevM1:   false
 		};
-		this._posEpsilon = 5;
+		this._epsilon    = 0;
 		this._canvas     = canvas;
 		this._width      = 0;
 		this._height     = 0;
@@ -22,43 +20,9 @@ QQ.Camera = class Camera {
 		this._height     = height;
 		this._x          = x;
 		this._y          = y;
+		this._epsilon    = this.widthPercent(3);
 		this._calcMainMatrix();
 		window.addEventListener('resize', () => this._calcMainMatrix() );
-	}
-	
-	cleanTransform() {
-		this._setTransform( QQ.Matrix.getIdentity() );
-	}
-	
-	draw(subjects, type) {
-		let count = 0;
-		for ( let subj of subjects ) {
-			let pos   = subj.getPosition();
-			let scale = subj.getScale();
-			let angle = subj.getAngle();
-			this._setTransform( this._getSubjMatrix(pos, scale, angle) );
-			subj.draw();
-			//this.drawRect(subj.getBoundsRect());
-			count++;
-		}
-		//c(count);
-		//this._drawAxis();
-	}
-	
-	drawRect(rect) {
-		let M   = this._mainMatrix;
-		let ctx = this._canvas.getContext('2d');
-		this._setTransform(M);
-		ctx.beginPath();
-		ctx.rect(
-			rect.left,
-			rect.top,
-			rect.right - rect.left,
-			rect.bottom - rect.top
-		);
-		ctx.lineWidth   = 1;
-		ctx.strokeStyle = '#000000';
-		ctx.stroke();
 	}
 	
 	isScrolling() {
@@ -118,7 +82,7 @@ QQ.Camera = class Camera {
 			[[x, y, 1]],
 			QQ.Matrix.inverse(this._mainMatrix)
 		);
-		return {x: M[0][0], y: M[0][1]};
+		return { x: M[0][0], y: M[0][1] };
 	}
 	
 	getLocalPoint(x, y, subj) {
@@ -129,11 +93,15 @@ QQ.Camera = class Camera {
 			[[x, y, 1]],
 			QQ.Matrix.inverse( this._getSubjMatrix(pos, scale, angle) )
 		);
-		return {x: M[0][0], y: M[0][1]};
+		return { x: M[0][0], y: M[0][1] };
 	}
 	
 	getPosition() {
 		return { x: this._x, y: this._y };
+	}
+	
+	getEpsilon() {
+		return this._epsilon;
 	}
 	
 	setClip(left, right, top, bottom) {
@@ -143,6 +111,12 @@ QQ.Camera = class Camera {
 	setPos(x, y) {
 		this._x = x;
 		this._y = y;
+		this._calcMainMatrix();
+	}
+	
+	setView(w, h) {
+		this._width  = w;
+		this._height = h;
 		this._calcMainMatrix();
 	}
 	
@@ -158,10 +132,39 @@ QQ.Camera = class Camera {
 		this._calcMainMatrix();
 	}
 	
-	setView(w, h) {
-		this._width  = w;
-		this._height = h;
-		this._calcMainMatrix();
+	cleanTransform() {
+		this._setTransform( QQ.Matrix.getIdentity() );
+	}
+	
+	draw(subjects, type) {
+		let count = 0;
+		for ( let subj of subjects ) {
+			let pos   = subj.getPosition();
+			let scale = subj.getScale();
+			let angle = subj.getAngle();
+			this._setTransform( this._getSubjMatrix(pos, scale, angle) );
+			subj.draw();
+			//this.drawRect(subj.getBoundsRect());
+			count++;
+		}
+		//c(count);
+		//this._drawAxis();
+	}
+	
+	drawRect(rect) {
+		let M   = this._mainMatrix;
+		let ctx = this._canvas.getContext('2d');
+		this._setTransform(M);
+		ctx.beginPath();
+		ctx.rect(
+			rect.left,
+			rect.top,
+			rect.right - rect.left,
+			rect.bottom - rect.top
+		);
+		ctx.lineWidth   = 1;
+		ctx.strokeStyle = '#000000';
+		ctx.stroke();
 	}
 	
 	widthToPercent(x) {
@@ -180,17 +183,52 @@ QQ.Camera = class Camera {
 		return this._canvas.height*y / 100;
 	}
 	
+	_isPositionsClose(first, second) {
+		return  Math.abs(first.x - second.x) < this._epsilon &&
+				Math.abs(first.y - second.y) < this._epsilon;
+	}
+	
+	_getMatrix() {
+		let M = QQ.Matrix.getIdentity();
+			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(1, 1));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(0));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._x, this._y));
+		return M;
+	}
+	
+	_getInverseMatrix() {
+		return QQ.Matrix.inverse( this._getMatrix() );
+	}
+	
+	_getScreenMatrix() {
+		let M = QQ.Matrix.getIdentity();
+			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(0));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(
+					 this._canvas.width  / this._width,
+					-this._canvas.height / this._height
+				));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(
+					this._canvas.width  / 2,
+					this._canvas.height / 2
+				));
+		return M;
+	}
+	
+	_getSubjMatrix(pos, scale, angle) {
+		let M      = QQ.Matrix.getIdentity();
+			M      = QQ.Matrix.mul(M, QQ.Matrix.getScale(scale.x, -scale.y));
+			M      = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-angle));
+			M      = QQ.Matrix.mul(M, QQ.Matrix.getMove(pos.x, pos.y));
+			M      = QQ.Matrix.mul(M, this._mainMatrix);
+		return M;
+	}
+	
 	_setTransform(M) {
 		this._canvas.getContext('2d').setTransform(
 				M[0][0], M[0][1],
 				M[1][0], M[1][1],
 				M[2][0], M[2][1]
 			);
-	}
-	
-	_isPositionsClose(first, second) {
-		return  Math.abs(first.x - second.x) < this._posEpsilon &&
-				Math.abs(first.y - second.y) < this._posEpsilon;
 	}
 	
 	_fixClip() {
@@ -236,46 +274,11 @@ QQ.Camera = class Camera {
 		ctx.fillRect(10, 10, 0.2, 0.2);
 	}
 	
-	_getMatrix() {
-		let M = QQ.Matrix.getIdentity();
-			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(1, 1));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(0));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._x, this._y));
-		return M;
-	}
-	
-	_getInverseMatrix() {
-		return QQ.Matrix.inverse( this._getMatrix() );
-	}
-	
-	_getScreenMatrix() {
-		let M = QQ.Matrix.getIdentity();
-			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(0));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(
-					 this._canvas.width  / this._width,
-					-this._canvas.height / this._height
-				));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(
-					this._canvas.width  / 2,
-					this._canvas.height / 2
-				));
-		return M;
-	}
-	
 	_cleanCanvas() {
 		this.cleanTransform();
 		let ctx       = this._canvas.getContext('2d');
 		ctx.fillStyle = 'gray';
 		ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
-	}
-	
-	_getSubjMatrix(pos, scale, angle) {
-		let M      = QQ.Matrix.getIdentity();
-			M      = QQ.Matrix.mul(M, QQ.Matrix.getScale(scale.x, -scale.y));
-			M      = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-angle));
-			M      = QQ.Matrix.mul(M, QQ.Matrix.getMove(pos.x, pos.y));
-			M      = QQ.Matrix.mul(M, this._mainMatrix);
-		return M;
 	}
 	
 };

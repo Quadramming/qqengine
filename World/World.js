@@ -1,5 +1,3 @@
-//REFACTOR
-
 QQ.World = class World {
 	
 	constructor() {
@@ -8,49 +6,11 @@ QQ.World = class World {
 		this._deltaAccum = 0;
 		this._subjects   = [];
 		this._background = null;
-		this._physics    = null;
 		this._pauseTime  = 0.5;
 		this._pauseable  = false;
-		this._collisions = [];
 	}
 	
-	setPauseable(v) {
-		this._pauseable = v;
-	}
-	
-	addBackground(url) {
-		this._background = new QQ.Subject(url);
-	}
-	
-	addSubject(subj) {
-		this._subjects.push(subj);
-		if ( subj.isPhysics ) {
-			Matter.World.add(this._physics.world, [subj.getPhysicsBody()]);
-		}
-	}
-	
-	deleteSubject(subj) {
-		const i = this._subjects.indexOf(subj);
-		if ( this._subjects[i].isPhysics ) {
-			Matter.Composite.remove(
-					this._physics.world,
-					this._subjects[i].getPhysicsBody()
-				);
-		}
-		if ( i > 0 ) {
-			this._subjects.splice(i, 1);
-		}
-	}
-	
-	getSubjectByPhysics(body) {
-		for ( let subj of this._subjects ) {
-			if ( subj.getPhysicsBody() === body ) {
-				return subj;
-			}
-		}
-	}
-	
-	tick(delta) {
+	tickBase(delta) {
 		this._deltaAccum += delta;
 		let ticksDone = 0;
 		if ( this._deltaAccum < this._pauseTime ) {
@@ -63,13 +23,7 @@ QQ.World = class World {
 				for ( let subj of this._subjects ) {
 					subj.tick(this._timeStep);
 				}
-				if ( this._physics ) {
-					this._collisions = [];
-					Matter.Engine.update(
-							this._physics,
-							QQ.Math.secToMs(this._timeStep)
-						);
-				}
+				this.tick(this._timeStep);
 				ticksDone++;
 			}
 		} else {
@@ -78,35 +32,23 @@ QQ.World = class World {
 				QQ.application.pause();
 			}
 		}
+		//c(ticksDone);
 	}
 	
-	getPhysics() {
-		return this._physics;
+	tick(delta) {
 	}
 	
-	createPhysics() {
-		this._physics = Matter.Engine.create();
-		this._physics.velocityIterations =  4;
-		this._physics.positionIterations =  4;
-		this._physics.world.gravity.y    = -1;
-		this._physics.timing.timeScale   =  1;
-		
-		const fillCollisions = (collisions) => {
-			for ( let pair of collisions.pairs ) {
-				this._collisions.push(pair);
-			}
-		};
-		Matter.Events.on(this._physics, "collisionStart",  fillCollisions);
-		Matter.Events.on(this._physics, "collisionActive", fillCollisions);
+	addBackground(url) {
+		this._background = new QQ.Subject(url);
 	}
 	
-	getCollisions() {
-		return this._collisions;
+	addSubject(subj) {
+		this._subjects.push(subj);
 	}
 	
 	getSubjectsInRect(rect) {
 		const result = [];
-		if ( this._background !== null ) {
+		if ( this._background ) {
 			this._background.fitInRect(rect);
 			result.push(this._background);
 		}
@@ -129,7 +71,7 @@ QQ.World = class World {
 		}
 	}
 	
-	getSubjects(pred = ()=>true) {
+	getSubjects(pred = () => true) {
 		const subjs = [];
 		this._subjects.forEach(function (subj) {
 			if ( pred(subj) ) {
@@ -137,6 +79,17 @@ QQ.World = class World {
 			}
 		});
 		return subjs;
+	}
+	
+	setPauseable(v) {
+		this._pauseable = v;
+	}
+	
+	deleteSubject(subj) {
+		const i = this._subjects.indexOf(subj);
+		if ( i > 0 ) {
+			this._subjects.splice(i, 1);
+		}
 	}
 	
 };
