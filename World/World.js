@@ -11,8 +11,8 @@ QQ.World = class World {
 	}
 	
 	tickBase(delta) {
-		this._deltaAccum += delta;
 		let ticksDone = 0;
+		this._deltaAccum += delta;
 		if ( this._deltaAccum < this._pauseTime ) {
 			if ( this._deltaAccum > (this._maxTicks+1)*this._timeStep ) {
 				this._deltaAccum = this._maxTicks * this._timeStep +
@@ -44,6 +44,10 @@ QQ.World = class World {
 	
 	addSubject(subj) {
 		this._subjects.push(subj);
+	}
+	
+	unshiftSubject(subj) {
+		this._subjects.unshift(subj);
 	}
 	
 	getSubjectsInRect(rect) {

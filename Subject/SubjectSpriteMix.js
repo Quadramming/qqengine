@@ -3,11 +3,16 @@ QQ.SubjectSpriteMix = base => class SubjectSpriteMix extends base {
 	constructor(imgSrc, width, height) {
 		super(width, height);
 		this._sprite = new QQ.Sprite( QQ.imgManager.get(imgSrc) );
+		this._alpha = 1;
 	}
 	
 	draw() {
 		super.draw();
 		this._sprite.draw();
+	}
+	
+	getImgSize() {
+		return this._sprite.getSize();
 	}
 	
 	getScale() {
@@ -22,7 +27,7 @@ QQ.SubjectSpriteMix = base => class SubjectSpriteMix extends base {
 	}
 	
 	setAlpha(a) {
-		super.setAlpha(a);
+		this._alpha = a;
 		this._sprite.setAlpha(a);
 	}
 	

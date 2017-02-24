@@ -53,6 +53,10 @@ QQ.Text = class Text extends QQ.SubjectBase {
 		return { x : scaleX, y : scaleY };
 	}
 	
+	getWidth() {
+		return this._text.width;
+	}
+	
 	setFont(font) {
 		this._font = font;
 		this._calcSizes();

@@ -1,9 +1,9 @@
 QQ.Seizures.SeizureBase = class SeizureBase {
 	
-	constructor(physics = false) {
+	constructor(physicsWorld = false) {
 		this._app          = QQ.application;
 		this._camera       = new QQ.Camera(this._app.getCanvas());
-		if ( physics ) {
+		if ( physicsWorld ) {
 			this._world    = new QQ.PhysicsWorld();
 		} else {
 			this._world    = new QQ.World();
@@ -11,6 +11,11 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 		this._isClicked    = false;
 		this._hud          = null;
 		this._startClick   = {};
+		this._blockInput   = false;
+	}
+	
+	blockInput(value = true) {
+		this._blockInput = value;
 	}
 	
 	//================================================================
@@ -52,9 +57,12 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 	}
 	
 	clickDownBase(x, y) {
+		if ( this._blockInput ) {
+			return;
+		}
 		let isHudClick = false;
 		if ( this._hud ) {
-			isHudClick = this._hud.clickDownHud(x, y);
+			isHudClick = this._hud._clickDownHud(x, y);
 		}
 		if ( ! isHudClick ) {
 			this.clickDown(x, y);
@@ -63,11 +71,10 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 		}
 	}
 	
-	clickDownHud(x, y) {
-		return this.click(x, y);
-	}
-	
 	clickUpBase(x, y) {
+		if ( this._blockInput ) {
+			return;
+		}
 		if ( this._isClicked ) {
 			const isClose   = this._isPositionsClose(this._startClick, {x, y});
 			const isScroll  = this._camera.isScrolling();
@@ -101,8 +108,8 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 	
 	//================================================================
 	
-	_setHud(sz, input) {
-		this._hud = QQ.seizures.create(sz, input);
+	_clickDownHud(x, y) {
+		return this.click(x, y);
 	}
 	
 	_isPositionsClose(f, s) {
@@ -112,6 +119,10 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 		}
 		return  Math.abs(f.x - s.x) < epsilon &&
 				Math.abs(f.y - s.y) < epsilon;
+	}
+	
+	_setHud(sz, input) {
+		this._hud = QQ.seizures.create(sz, input);
 	}
 	
 };

@@ -8,6 +8,10 @@ QQ.Math.rand = function(min, max, round = true) {
 	}
 };
 
+QQ.Math.any = function(a, b) {
+	return Math.random() < 0.5 ? a : b;
+};
+
 QQ.Math.reduceToSize = function(w, h, size) {
 	let scaleW = 1;
 	let scaleH = 1;
@@ -113,7 +117,7 @@ QQ.Math.calcPivotY = function(p, y, h, yAxis = 1) {
 };
 
 QQ.Math.isNumbers = function(...args) {
-	for ( arg of args ) {
+	for ( let arg of args ) {
 		if ( typeof arg !== 'number' ) {
 			return false;
 		}

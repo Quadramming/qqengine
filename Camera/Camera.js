@@ -22,7 +22,7 @@ QQ.Camera = class Camera {
 		this._y          = y;
 		this._epsilon    = this.widthPercent(3);
 		this._calcMainMatrix();
-		window.addEventListener('resize', () => this._calcMainMatrix() );
+		window.addEventListener('resize', () => this._calcMainMatrix());
 	}
 	
 	isScrolling() {
