@@ -1,4 +1,4 @@
-QQ        = {
+let QQ        = {
 	engine: {}
 };
 

@@ -4,7 +4,7 @@ QQ.Debug     = {
 	}
 };
 
-c = function(str) {
+let c = function(str) {
 	QQ.Debug.log(str);
 };
 
