@@ -11,4 +11,15 @@ let c = function(str) {
 c('Using QQ.Debug:');
 c('function c(str) - Quick log');
 
-// for ( let x of Object.getOwnPropertyNames(window) ) { console.log(x) };
+/* Get all created globals
+<script>
+	var start = Object.getOwnPropertyNames(window);
+</script>
+<script>
+	console.log(
+		Object.getOwnPropertyNames(window).filter( function(n) {
+			return start.indexOf(n) === -1;
+		})
+	);
+</script>
+*/

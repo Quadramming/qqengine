@@ -1,10 +1,10 @@
 QQ.Matrix = {};
 
-{
+(function() {
 	
-	function sin(a) { return Math.sin(a); }
-	function cos(a) { return Math.cos(a); }
-	function abs(a) { return Math.abs(a); }
+	const sin = ( a => Math.sin(a) );
+	const cos = ( a => Math.cos(a) );
+	const abs = ( a => Math.abs(a) );
 	
 	QQ.Matrix.getIdentity = function() {
 		return [[1, 0, 0],
@@ -137,4 +137,4 @@ QQ.Matrix = {};
 		return C;
 	};
 	
-}
+})();
