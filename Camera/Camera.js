@@ -20,7 +20,7 @@ QQ.Camera = class Camera {
 		this._height     = height;
 		this._x          = x;
 		this._y          = y;
-		this._epsilon    = this.widthPercent(10);
+		this._epsilon    = this.widthPercent(3);
 		this._calcMainMatrix();
 		window.addEventListener('resize', () => this._calcMainMatrix());
 	}
@@ -97,7 +97,10 @@ QQ.Camera = class Camera {
 	}
 	
 	getPosition() {
-		return { x: this._x, y: this._y };
+		return {
+			x: this._x,
+			y: this._y
+		};
 	}
 	
 	getEpsilon() {
@@ -105,7 +108,7 @@ QQ.Camera = class Camera {
 	}
 	
 	setClip(left, right, top, bottom) {
-		this._clip = {left, right, top, bottom};
+		this._clip = { left, right, top, bottom };
 	}
 	
 	setPos(x, y) {

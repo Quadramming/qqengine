@@ -1,14 +1,15 @@
-QQ.SubjectSpriteMix = base => class SubjectSpriteMix extends base {
+QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 	
-	constructor(imgSrc, width, height) {
-		super(width, height);
-		this._sprite = new QQ.Sprite( QQ.imgManager.get(imgSrc) );
+	constructor(app, imgSrc, width, height) {
+		super(app, width, height);
+		this._sprite = new QQ.Sprite( this._app.getImgManager().get(imgSrc) );
 		this._alpha = 1;
 	}
 	
 	draw() {
+		const ctx = this._app.getContext();
 		super.draw();
-		this._sprite.draw();
+		this._sprite.draw(ctx);
 	}
 	
 	getImgSize() {

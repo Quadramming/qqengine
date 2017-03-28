@@ -1,5 +1,5 @@
 QQ.Touch = class Touch {
-
+	
 	constructor(mouse) {
 		let   x       = 0;
 		let   y       = 0;
@@ -29,7 +29,7 @@ QQ.Touch = class Touch {
 			e.preventDefault();
 			return false;
 		}, options);
-
+		
 		window.addEventListener('touchend', (e) => {
 			mouse.emulate(x, y, false);
 			e.preventDefault();

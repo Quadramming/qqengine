@@ -1,5 +1,5 @@
 QQ.Application = class Application {
-
+	
 	constructor(config) {
 		this._canvas     = new QQ.Canvas('QQApplicationCanvas',
 				config.width,
@@ -11,22 +11,40 @@ QQ.Application = class Application {
 		this._mouse      = new QQ.Mouse();
 		this._touch      = new QQ.Touch(this._mouse);
 		this._storage    = new QQ.Storage();
-		QQ.Sprite.globalContext(this._canvas.getContext());
+		this._imgManager = new QQ.ImgManager();
+		this._seizures   = new QQ.Seizures.Manager(this);
+		this._imgs       = config.imgs;
+		this.loadImgs(
+			this.init.bind(this)
+		);
+	}
+	
+	loadImgs(cb) {
+		let imgManager = this._imgManager;
+		for ( let img of this._imgs ) {
+			imgManager.get(img);
+		}
+		(function imgLoading() {
+			imgManager.isAllReady() ?
+				cb():
+				setTimeout(imgLoading, 10);
+		})();
 	}
 	
 	init() {
-		QQ.seizures.set('Main');
+		this._seizures.init();
+		this._seizures.set('Main');
 		
 		this._mouse.setM1DownCB( () => {
 			if ( this.isMouseInCanvas() ) {
 				let {x, y} = this._getMousePosition();
-				QQ.seizures.clickDown(x, y);
+				this._seizures.clickDown(x, y);
 			}
 		});
 		this._mouse.setM1UpCB( () => {
 			if ( this.isMouseInCanvas() ) {
 				let {x, y} = this._getMousePosition();
-				QQ.seizures.clickUp(x, y);
+				this._seizures.clickUp(x, y);
 			}
 		});
 		this._process();
@@ -36,8 +54,16 @@ QQ.Application = class Application {
 		return this._storage.storage(key, value);
 	}
 	
+	sz() {
+		return this._seizures;
+	}
+	
 	pause() {
-		QQ.seizures.popUp('Pause');
+		this._seizures.popUp('Pause');
+	}
+	
+	getImgManager() {
+		return this._imgManager;
 	}
 	
 	getCanvas() {
@@ -48,19 +74,19 @@ QQ.Application = class Application {
 		return this._canvas.getContext();
 	}
 	
-	isM1Pressed() {
-		return this._mouse.getM1();
-	}
-	
 	getMouseXY() {
 		if ( this.isMouseInCanvas() ) {
 			return this._getMousePosition();
 		}
-		return { x: -1, y: -1 };
+		return { x : -1, y : -1 };
 	}
 	
 	getTime() {
 		return this._time;
+	}
+	
+	isM1Pressed() {
+		return this._mouse.getM1();
 	}
 	
 	isMouseInCanvas() {
@@ -88,13 +114,13 @@ QQ.Application = class Application {
 	_tick() {
 		let delta = this._time.update();
 		this._fpsCounter.tick(delta);
-		QQ.seizures.tick(delta);
+		this._seizures.tick(delta);
 	}
-
+	
 	_draw() {
-		QQ.seizures.draw();
+		this._seizures.draw();
 		//this._canvas.drawBorder();
 		this._fpsCounter.show(this._canvas.getContext());
 	}
-
+	
 };

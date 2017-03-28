@@ -1,9 +1,7 @@
-//REFACTOR
-
-QQ.PhysicsWorld = class PhysicsWorld extends QQ.World {
+QQ.World.Physics = class Physics extends QQ.World.Main {
 	
-	constructor() {
-		super();
+	constructor(app) {
+		super(app);
 		this._collisions                 = [];
 		this._physics                    = Matter.Engine.create();
 		this._physics.velocityIterations =  4;

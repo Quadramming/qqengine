@@ -1,6 +1,9 @@
-QQ.World = class World {
+QQ.World = {};
+
+QQ.World.Main = class Main {
 	
-	constructor() {
+	constructor(app) {
+		this._app        = app;
 		this._maxTicks   = 1;
 		this._timeStep   = 0.0166;
 		this._deltaAccum = 0;
@@ -39,7 +42,7 @@ QQ.World = class World {
 	}
 	
 	addBackground(url) {
-		this._background = new QQ.Subject(url);
+		this._background = new QQ.Subject.Sprite(this._app, url);
 	}
 	
 	addSubject(subj) {

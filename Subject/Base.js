@@ -1,7 +1,10 @@
-QQ.SubjectBase = class SubjectBase {
+QQ.Subject = {};
+
+QQ.Subject.Base = class Base {
 	
-	constructor(width = 1, height = 1) {
-		this._ctx         = QQ.application.getContext();
+	constructor(app, width = 1, height = 1) {
+		this._app         = app;
+		this._ctx         = this._app.getContext();
 		this._x           = 0;
 		this._y           = 0;
 		this._width       = width;

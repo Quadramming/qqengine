@@ -1,4 +1,4 @@
-QQ.imgManager = new class ImgManager {
+QQ.ImgManager = class ImgManager {
 	
 	constructor() {
 		this._imgs = [];
@@ -36,4 +36,4 @@ QQ.imgManager = new class ImgManager {
 		return false;
 	}
 	
-}();
+};

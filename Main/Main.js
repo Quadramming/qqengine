@@ -1,21 +1,21 @@
-let QQ        = {
-	engine: {}
-};
+const QQ = {};
 
-QQ.engine.start = function(imgs, appConfig) {
-	for ( let img of imgs ) {
-		QQ.imgManager.get(img);
-	}
-	
-	(function me() {
-		QQ.imgManager.isAllReady() ?
-			QQ.engine.init(appConfig):
-			setTimeout(me, 10);
-	})();
-};
-
-QQ.engine.init = function(appConfig) {
-	QQ.application = new QQ.Application(appConfig);
-	QQ.seizures.init();
-	QQ.application.init();
+QQ.start = function(cfg) {
+	window.addEventListener('load', () => {
+		
+		function main() {
+			while ( document.body.firstChild ) {
+				document.body.removeChild( document.body.firstChild );
+			}
+			new QQ.Application(cfg);
+		}
+		
+		if ( window.cordova ) {
+			document.addEventListener('deviceready', () => {
+				main();
+			}, false);
+		} else {
+			main();
+		}
+	});
 };

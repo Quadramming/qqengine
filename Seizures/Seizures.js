@@ -1,19 +1,20 @@
-QQ.Seizures = class Seizures {
+QQ.Seizures = {
+	register: new Map
+};
+
+QQ.Seizures.Manager = class Seizures {
 	
-	constructor() {
+	constructor(app) {
+		this._register = QQ.Seizures.register;
+		this._app      = app;
 		this._loading  = null;
 		this._reset    = () => {};
-		this._seizures = [];
 		this._actives  = [];
 	}
 	
 	init() {
-		this._loading = new QQ.Seizures.SeizureLoading();
+		this._loading = new (this._register.get('Loading'))(this._app);
 		this._actives.push(this._loading);
-	}
-	
-	add(name, newSeizure) {
-		this._seizures[name] = newSeizure;
 	}
 	
 	popUp(sz, input) {
@@ -31,13 +32,15 @@ QQ.Seizures = class Seizures {
 	set(sz, input, popup = false) {
 		if ( popup === false ) {
 			this._closeActive();
-			this._reset = () => { this.set(sz, input, popup); };
+			this._reset = () => { this.set(sz, input); };
 		}
-		this._actives.push( this._loading );
+		//this._actives.push( this._loading );
 		//setTimeout( () => {
-			this._closeActive();
-			this._actives.push( new this._seizures[sz](input) );
-		//}, 200);
+		//this._closeActive();
+		this._actives.push(
+			new (this._register.get(sz))(this._app, input)
+		);
+		//}, 1000);
 	}
 	
 	tick(delta) {
@@ -59,7 +62,7 @@ QQ.Seizures = class Seizures {
 	}
 	
 	create(sz, input) {
-		return new this._seizures[sz](input);
+		return new (this._register.get(sz))(this._app, input);
 	}
 	
 	_closeActive() {
@@ -76,5 +79,3 @@ QQ.Seizures = class Seizures {
 	}
 	
 };
-
-QQ.seizures = new QQ.Seizures();

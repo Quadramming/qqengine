@@ -1,11 +1,13 @@
-QQ.Seizures.SeizureLoading = class SeizureLoading
-	extends QQ.Seizures.SeizureBase
-{
-	
-	constructor() {
-		super();
-		this._camera.init();
-		//this._world.addBackground('');
+QQ.Seizures.register.set('Loading',
+	class SeizureLoading
+		extends QQ.Seizures.Base
+	{
+		
+		constructor(app) {
+			super(app);
+			this._camera.init();
+			//this._world.addBackground('');
+		}
+		
 	}
-	
-};
+);

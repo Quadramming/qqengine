@@ -1,3 +1,4 @@
+// FIX ACTIONS
 QQ.Actions.Move = class Move extends QQ.Actions.Base {
 	
 	constructor(app, subj, from, to, duration) {

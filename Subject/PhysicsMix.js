@@ -1,7 +1,7 @@
-QQ.SubjectPhysicsMix = base => class SubjectPhysicsMix extends base {
+QQ.Subject.PhysicsMix = base => class PhysicsMix extends base {
 	
-	constructor(width, height) {
-		super(width, height);
+	constructor(app, width, height) {
+		super(app, width, height);
 		this._physicsBody = null;
 	}
 	

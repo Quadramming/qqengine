@@ -1,12 +1,12 @@
-QQ.Seizures.SeizureBase = class SeizureBase {
+QQ.Seizures.Base = class Base {
 	
-	constructor(physicsWorld = false) {
-		this._app          = QQ.application;
-		this._camera       = new QQ.Camera(this._app.getCanvas());
+	constructor(app, physicsWorld = false) {
+		this._app          = app;
+		this._camera       = new QQ.Camera(app.getCanvas());
 		if ( physicsWorld ) {
-			this._world    = new QQ.PhysicsWorld();
+			this._world    = new QQ.World.Physics(app);
 		} else {
-			this._world    = new QQ.World();
+			this._world    = new QQ.World.Main(app);
 		}
 		this._isClicked    = false;
 		this._hud          = null;
@@ -122,7 +122,7 @@ QQ.Seizures.SeizureBase = class SeizureBase {
 	}
 	
 	_setHud(sz, input) {
-		this._hud = QQ.seizures.create(sz, input);
+		this._hud = this._app.sz().create(sz, input);
 	}
 	
 };

@@ -1,3 +1,4 @@
+// FIX ACTIONS
 QQ.Actions.Disapear = class Disapear extends QQ.Actions.Base {
 	
 	constructor(app, subj, duration) {

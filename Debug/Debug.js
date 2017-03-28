@@ -1,10 +1,12 @@
-QQ.Debug     = {
+QQ.Debug = {
+	
 	log(str) {
 		console.log(str);
 	}
+	
 };
 
-let c = function(str) {
+const c = function(str) {
 	QQ.Debug.log(str);
 };
 

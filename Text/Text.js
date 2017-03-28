@@ -1,7 +1,7 @@
-QQ.Text = class Text extends QQ.SubjectBase {
+QQ.Text = class Text extends QQ.Subject.Base {
 	
-	constructor(text, x=0, y=0, fitSize=1, fit=QQ.Text.fit.HEIGHT) {
-		super(0, 0);
+	constructor(app, text, x=0, y=0, fitSize=1, fit=QQ.Text.fit.HEIGHT) {
+		super(app, 0, 0);
 		this._fitSize    = fitSize;
 		this._ratio      = 0;
 		this._fit        = fit;
@@ -129,6 +129,6 @@ QQ.Text = class Text extends QQ.SubjectBase {
 };
 
 QQ.Text.fit = {
-	WIDTH         : 0,
-	HEIGHT        : 1
+	WIDTH  : 0,
+	HEIGHT : 1
 };
