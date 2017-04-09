@@ -32,7 +32,7 @@ QQ.World.Main = class Main {
 		} else {
 			this._deltaAccum = 0;
 			if ( this._pauseable ) {
-				QQ.application.pause();
+				this._app.pause();
 			}
 		}
 		//c(ticksDone);
