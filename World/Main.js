@@ -2,15 +2,17 @@ QQ.World = {};
 
 QQ.World.Main = class Main {
 	
-	constructor(app) {
+	constructor(app, settings = {}) {
 		this._app        = app;
-		this._maxTicks   = 1;
-		this._timeStep   = 0.0166;
-		this._deltaAccum = 0;
 		this._subjects   = [];
 		this._background = null;
+		this._deltaAccum = 0;
+		// Default
+		this._maxTicks   = 1;
+		this._timeStep   = 0.0166;
 		this._pauseTime  = 0.5;
 		this._pauseable  = false;
+		this.setSettings(settings);
 	}
 	
 	tickBase(delta) {
@@ -89,7 +91,22 @@ QQ.World.Main = class Main {
 	}
 	
 	setPauseable(v) {
-		this._pauseable = v;
+		this.setSettings({pauseable: v});
+	}
+	
+	setSettings(settings = {}) {
+		if ( typeof(settings.maxTicks) === 'number' ) {
+			this._maxTicks   = settings.maxTicks;
+		}
+		if ( typeof(settings.timeStep) === 'number' ) {
+			this._timeStep   = settings.timeStep;
+		}
+		if ( typeof(settings.pauseTime) === 'number' ) {
+			this._pauseTime  = settings.pauseTime;
+		}
+		if ( typeof(settings.pauseable) === 'boolean' ) {
+			this._pauseable  = settings.pauseable;
+		}
 	}
 	
 	deleteSubject(subj) {

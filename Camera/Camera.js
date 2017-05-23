@@ -15,12 +15,12 @@ QQ.Camera = class Camera {
 		this._clip       = null;
 	}
 	
-	init(width = 1, height = 1, x = 0, y = 0) {
+	init(width = 1, height = 1, x = 0, y = 0, epsilon = 3) {
 		this._width      = width;
 		this._height     = height;
 		this._x          = x;
 		this._y          = y;
-		this._epsilon    = this.widthPercent(3);
+		this._epsilon    = this.widthPercent(epsilon);
 		this._calcMainMatrix();
 		window.addEventListener('resize', () => this._calcMainMatrix());
 	}
