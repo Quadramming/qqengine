@@ -1,4 +1,3 @@
-// FIX ACTIONS
 QQ.Actions = {};
 
 QQ.Actions.Base = class Base {
@@ -28,4 +27,5 @@ QQ.Actions.Base = class Base {
 	type() {
 		return 'base';
 	}
+	
 };

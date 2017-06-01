@@ -6,7 +6,7 @@ QQ.Sprite = class Sprite {
 		}
 		this._alpha   = 1;
 		this._img     = readyImg;
-		this._manager = new Sprite.Static(
+		this._manager = new Sprite.StaticMngr(
 			readyImg.width,
 			readyImg.height
 		);
@@ -21,11 +21,19 @@ QQ.Sprite = class Sprite {
 	}
 	
 	setAnimation(w, h, fps) {
-		this._manager = new Sprite.Animate(
+		this._manager = new Sprite.AnimateMngr(
 				w, h,
 				fps,
 				this._img.width
 			);
+	}
+	
+	setTileSize(x, y) {
+		this._manager = new Sprite.TileMngr(
+			this._img.width,
+			this._img.height
+		);
+		this._manager.setTileSize(x, y);
 	}
 	
 	setAlpha(a) {

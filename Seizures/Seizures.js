@@ -1,5 +1,5 @@
 QQ.Seizures = {
-	register: new Map
+	register: new Map()
 };
 
 QQ.Seizures.Manager = class Seizures {

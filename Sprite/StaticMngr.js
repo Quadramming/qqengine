@@ -1,4 +1,4 @@
-QQ.Sprite.Static = class Static extends QQ.Sprite.Manager {
+QQ.Sprite.StaticMngr = class Static extends QQ.Sprite.Mngr {
 	
 	constructor(w, h) {
 		super(w, h);

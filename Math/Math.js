@@ -12,6 +12,16 @@ QQ.Math.any = function(a, b) {
 	return Math.random() < 0.5 ? a : b;
 };
 
+QQ.Math.increaseToRatio = function(x, y, target) {
+	const ratio = x/y;
+	if ( ratio < target ) {
+		x = y * target;
+	} else {
+		y = x / target;
+	}
+	return {x, y};
+};
+
 QQ.Math.reduceToSize = function(w, h, size) {
 	let scaleW = 1;
 	let scaleH = 1;

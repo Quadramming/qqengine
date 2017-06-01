@@ -5,22 +5,26 @@ QQ.Camera = class Camera {
 			isActive: false,
 			prevM1:   false
 		};
-		this._epsilon    = 0;
-		this._canvas     = canvas;
-		this._width      = 0;
-		this._height     = 0;
-		this._x          = 0;
-		this._y          = 0;
-		this._mainMatrix = 0;
-		this._clip       = null;
+		this._epsilon        = 0;
+		this._canvas         = canvas;
+		this._width          = 0;
+		this._height         = 0;
+		this._initWidth      = 0;
+		this._initHeight     = 0;
+		this._x              = 0;
+		this._y              = 0;
+		this._mainMatrix     = 0;
+		this._clip           = null;
 	}
 	
 	init(width = 1, height = 1, x = 0, y = 0, epsilon = 3) {
-		this._width      = width;
-		this._height     = height;
-		this._x          = x;
-		this._y          = y;
-		this._epsilon    = this.widthPercent(epsilon);
+		this._initWidth      = width;
+		this._initHeight     = height;
+		this._width          = width;
+		this._height         = height;
+		this._x              = x;
+		this._y              = y;
+		this._epsilon        = this.widthPercent(epsilon);
 		this._calcMainMatrix();
 		window.addEventListener('resize', () => this._calcMainMatrix());
 	}
@@ -35,8 +39,8 @@ QQ.Camera = class Camera {
 			if ( ! scroll.prevM1 && m1 ) {
 				scroll.prevM1   = m1;
 				scroll.isActive = false;
-				scroll.startX   = x;
-				scroll.startY   = y;
+				scroll.initX   = x;
+				scroll.initY   = y;
 				return;
 			}
 			if ( scroll.prevM1 && ! m1 ) {
@@ -45,8 +49,8 @@ QQ.Camera = class Camera {
 				return;
 			}
 			let isClose = this._isPositionsClose(
-				{ x: x,             y: y             },
-				{ x: scroll.startX, y: scroll.startY }
+				{ x: x,            y: y            },
+				{ x: scroll.initX, y: scroll.initY }
 			);
 			if ( m1 && ! scroll.isActive && ! isClose ) {
 				let position    = this.getWorldPoint(x, y);
@@ -66,6 +70,13 @@ QQ.Camera = class Camera {
 			scroll.prevM1   = false;
 			scroll.isActive = false;
 		}
+	}
+	
+	getView() {
+		return {
+			width:  this._width,
+			height: this._height
+		};
 	}
 	
 	getViewRect() {
@@ -118,8 +129,8 @@ QQ.Camera = class Camera {
 	}
 	
 	setView(w, h) {
-		this._width  = w;
-		this._height = h;
+		this._initWidth  = w;
+		this._initHeight = h;
 		this._calcMainMatrix();
 	}
 	
@@ -130,8 +141,8 @@ QQ.Camera = class Camera {
 	}
 	
 	addView(w, h) {
-		this._width  += w;
-		this._height += h;
+		this._initWidth  += w;
+		this._initHeight += h;
 		this._calcMainMatrix();
 	}
 	
@@ -244,6 +255,16 @@ QQ.Camera = class Camera {
 	}
 	
 	_calcMainMatrix() {
+		const canvasRatio = (this._canvas.width / this._canvas.height);
+		const cameraRatio = (this._initWidth    / this._initHeight);
+		if ( canvasRatio !== cameraRatio ) {
+			({x: this._width, y: this._height} = 
+					QQ.Math.increaseToRatio(
+						this._initWidth,
+						this._initHeight,
+						canvasRatio
+					));
+		}
 		this._fixClip();
 		this._mainMatrix = QQ.Matrix.mul(
 			this._getInverseMatrix(),

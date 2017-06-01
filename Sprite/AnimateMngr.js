@@ -1,4 +1,4 @@
-QQ.Sprite.Animate = class Animate extends QQ.Sprite.Manager {
+QQ.Sprite.AnimateMngr = class Animate extends QQ.Sprite.Mngr {
 	
 	constructor(w, h, fps, fullWidth) {
 		super(w, h);

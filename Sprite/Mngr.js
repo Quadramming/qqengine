@@ -1,4 +1,4 @@
-QQ.Sprite.Manager = class Manager {
+QQ.Sprite.Mngr = class Mngr {
 	
 	constructor(w, h) {
 		this._width  = w;
