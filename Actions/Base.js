@@ -7,6 +7,7 @@ QQ.Actions.Base = class Base {
 		this._time  = app.getTime();
 		this._start = this._time.now();
 		this._subj  = subj;
+		this.onStart();
 	}
 	
 	onStart() {

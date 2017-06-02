@@ -5,13 +5,11 @@ QQ.Actions.Move = class Move extends QQ.Actions.Base {
 		this._from     = from;
 		this._to       = to;
 		this._duration = duration;
-		this.onStart();
 	}
 	
 	tick(delta) {
 		let s         = ( x => Math.sign(x) );
 		let a         = ( x => Math.abs(x)  );
-		
 		let progress  = QQ.Math.calcProgress(this._start, this._duration);
 		let xDist     = this._to.x - this._from.x;
 		let yDist     = this._to.y - this._from.y;
@@ -19,7 +17,7 @@ QQ.Actions.Move = class Move extends QQ.Actions.Base {
 		let y         = this._from.y + progress * yDist;
 		this._subj.setPosition(x, y);
 		if ( progress === 1 ) {
-			this._subj.setIdle();
+			this._subj.setIdleAction();
 			this.onEnd();
 		}
 	}

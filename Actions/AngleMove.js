@@ -5,7 +5,6 @@ QQ.Actions.AngleMove = class AngleMove extends QQ.Actions.Base {
 		this._from     = from;
 		this._to       = to;
 		this._duration = duration;
-		this.onStart();
 	}
 	
 	tick(delta) {
