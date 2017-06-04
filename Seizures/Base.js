@@ -18,6 +18,18 @@ QQ.Seizures.Base = class Base {
 		this._blockInput = value;
 	}
 	
+	getWorld() {
+		return this._world;
+	}
+	
+	getApp() {
+		return this._app;
+	}
+	
+	getCamera() {
+		return this._camera;
+	}
+	
 	//================================================================
 	
 	tickBase(delta) {
@@ -87,20 +99,28 @@ QQ.Seizures.Base = class Base {
 	}
 	
 	clickDown(x, y) {
+		return this.doWithSubjIfHit(x, y, (subj, worldX, worldY) => {
+			subj.onClickDown(worldX, worldY);
+		});
 	}
 	
 	clickUp(x, y) {
+		return this.doWithSubjIfHit(x, y, (subj, worldX, worldY) => {
+			subj.onClickUp(worldX, worldY);
+		});
 	}
 	
 	click(x, y) {
-		return this.clickSubj(x, y);
+		return this.doWithSubjIfHit(x, y, (subj, worldX, worldY) => {
+			subj.onClick(worldX, worldY);
+		});
 	}
 	
-	clickSubj(x, y) {
-		const point   = this._camera.getWorldPoint(x, y);
-		const clicked = this._world.getSubjectAtPoint(point.x, point.y);
-		if ( clicked ) {
-			clicked.click();
+	doWithSubjIfHit(x, y, fn) {
+		const point = this._camera.getWorldPoint(x, y);
+		const hited = this._world.getSubjectAtPoint(point.x, point.y);
+		if ( hited ) {
+			fn(hited, point.x, point.y);
 			return true;
 		}
 		return false;

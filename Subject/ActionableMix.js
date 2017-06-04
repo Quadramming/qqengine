@@ -2,7 +2,7 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	
 	constructor(app, width, height) {
 		super(app, width, height);
-		this._action = null;
+		this._action = new QQ.Actions.Base(this._app, this);
 		this.setIdleAction();
 	}
 	
@@ -17,12 +17,16 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	}
 	
 	setAction(action) {
-		this._action.onAbort();
-		this._action = action;
+		if ( this._action.isAbortable() ) {
+			this._action.onAbort();
+			this._action = action;
+		}
 	}
 	
 	setIdleAction() {
-		this._action = new QQ.Actions.Base(this._app, this);
+		this.setAction(
+			new QQ.Actions.Base(this._app, this)
+		);
 	}
 	
 };

@@ -16,7 +16,13 @@ QQ.Subject.Base = class Base {
 		return 'subject';
 	}
 	
-	click() {
+	onClickDown() {
+	}
+	
+	onClickUp() {
+	}
+	
+	onClick() {
 	}
 	
 	tick(delta) {
@@ -30,7 +36,7 @@ QQ.Subject.Base = class Base {
 		return true;
 	}
 	
-	isHit(x, y) {
+	worldToLocalPoint(x, y) {
 		let M = QQ.Matrix.getIdentity();
 			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-this._angle));
 			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._x, this._y));
@@ -38,13 +44,18 @@ QQ.Subject.Base = class Base {
 				[[x, y, 1]],
 				QQ.Matrix.inverse( M )
 			);
+		return {x: M[0][0], y: M[0][1]};
+	}
+	
+	isHit(x, y) {
+		let local = this.worldToLocalPoint(x, y);
 		const rect  = { 
 			left:   -this._width  /2,
 			top:     this._height /2,
 			right:   this._width  /2,
 			bottom: -this._height /2
 		};
-		return QQ.Math.isInside(rect, M[0][0], M[0][1]);
+		return QQ.Math.isInside(rect, local.x, local.y);
 	}
 	
 	getBoundsRect() {
@@ -83,6 +94,11 @@ QQ.Subject.Base = class Base {
 		if ( y !== undefined ) {
 			this._y = p ? QQ.Math.calcPivotY(p, y, this._height) : y;
 		}
+	}
+	
+	addPosition(x, y) {
+		this._x += x;
+		this._y += y;
 	}
 	
 	fitInRect(rect) {

@@ -7,8 +7,8 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 	}
 	
 	draw() {
-		const ctx = this._app.getContext();
 		super.draw();
+		const ctx = this._app.getContext();
 		this._sprite.draw(ctx);
 	}
 	

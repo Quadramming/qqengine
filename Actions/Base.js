@@ -10,6 +10,10 @@ QQ.Actions.Base = class Base {
 		this.onStart();
 	}
 	
+	isAbortable() {
+		return true;
+	}
+	
 	onStart() {
 	}
 	
