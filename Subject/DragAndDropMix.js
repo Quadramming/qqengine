@@ -1,9 +1,9 @@
 QQ.Subject.DragAndDropMix = base => class DragAndDropMix extends base {
 	
-	constructor(sz, width, height) {
-		super(sz.getApp(), width, height);
-		this._sz     = sz;
-		this._camera = sz.getCamera();
+	constructor(app, img, width, height) {
+		super(app, img, width, height);
+		this._sz         = app.getSz();
+		this._camera     = this._sz.getCamera();
 		this.dragAndDrop = {
 			isDraging: false,
 			x:         0,
@@ -13,15 +13,19 @@ QQ.Subject.DragAndDropMix = base => class DragAndDropMix extends base {
 	
 	onClickDown(x, y) {
 		super.onClickDown();
-		let subjPoint = this.worldToLocalPoint(x, y);
+		let subjPoint              = this.worldToLocalPoint(x, y);
 		this.dragAndDrop.isDraging = true;
-		this.dragAndDrop.x = subjPoint.x;
-		this.dragAndDrop.y = subjPoint.y;
+		this.dragAndDrop.x         = subjPoint.x;
+		this.dragAndDrop.y         = subjPoint.y;
 	}
 	
 	onClickUp() {
 		super.onClickUp();
+		this.onDrop();
 		this.dragAndDrop.isDraging = false;
+	}
+	
+	onDrop() {
 	}
 	
 	tick() {
@@ -35,6 +39,7 @@ QQ.Subject.DragAndDropMix = base => class DragAndDropMix extends base {
 				let deltaY   = position.y - subjPos.y - this.dragAndDrop.y;
 				this.addPosition(deltaX, deltaY);
 			} else {
+				this.onClickUp();
 				this.dragAndDrop.isDraging = false;
 			}
 		}

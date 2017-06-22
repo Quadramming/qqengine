@@ -12,6 +12,10 @@ QQ.Math.any = function(a, b) {
 	return Math.random() < 0.5 ? a : b;
 };
 
+QQ.Math.randDispersion = function(x) {
+	return x * Math.random() * QQ.Math.any(1,-1);
+};
+
 QQ.Math.increaseToRatio = function(x, y, target) {
 	const ratio = x/y;
 	if ( ratio < target ) {

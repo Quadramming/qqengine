@@ -14,6 +14,9 @@ QQ.Seizures.Base = class Base {
 		this._blockInput   = false;
 	}
 	
+	init() {
+	}
+	
 	blockInput(value = true) {
 		this._blockInput = value;
 	}

@@ -31,8 +31,8 @@ QQ.FpsCounter = class FpsCounter {
 		if ( this._details ) {
 			ctx.setTransform(1, 0, 0, 1, 0, 0, 0);
 			ctx.font         = this._font;
-			ctx.textBaseline = 'middle'; 
-			ctx.textAlign    = 'center'; 
+			ctx.textBaseline = 'middle';
+			ctx.textAlign    = 'center';
 			let i = 0;
 			for ( let slot of this._slots ) {
 				ctx.fillStyle = 'green';

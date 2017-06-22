@@ -2,7 +2,7 @@ QQ.Seizures = {
 	register: new Map()
 };
 
-QQ.Seizures.Manager = class Seizures {
+QQ.Seizures.Manager = class Manager {
 	
 	constructor(app) {
 		this._register = QQ.Seizures.register;
@@ -14,6 +14,7 @@ QQ.Seizures.Manager = class Seizures {
 	
 	init() {
 		this._loading = new (this._register.get('Loading'))(this._app);
+		this._loading.init();
 		this._actives.push(this._loading);
 	}
 	
@@ -37,14 +38,14 @@ QQ.Seizures.Manager = class Seizures {
 		//this._actives.push( this._loading );
 		//setTimeout( () => {
 		//this._closeActive();
-		this._actives.push(
-			new (this._register.get(sz))(this._app, input)
-		);
+		let activeSz = new (this._register.get(sz))(this._app, input);
+		this._actives.push(activeSz);
+		activeSz.init();
 		//}, 1000);
 	}
 	
 	tick(delta) {
-		this._getActive().tickBase(delta);
+		this.getActive().tickBase(delta);
 	}
 	
 	draw() {
@@ -54,28 +55,30 @@ QQ.Seizures.Manager = class Seizures {
 	}
 	
 	clickDown(x, y) {
-		this._getActive().clickDownBase(x, y);
+		this.getActive().clickDownBase(x, y);
 	}
 	
 	clickUp(x, y) {
-		this._getActive().clickUpBase(x, y);
+		this.getActive().clickUpBase(x, y);
 	}
 	
 	create(sz, input) {
-		return new (this._register.get(sz))(this._app, input);
+		let newSz = new (this._register.get(sz))(this._app, input);
+		newSz.init();
+		return newSz;
+	}
+	
+	getActive() {
+		if ( this._actives.length > 0 ) {
+			return this._actives[this._actives.length-1];
+		}
+		alert('Error: Getting undefined active');
 	}
 	
 	_closeActive() {
 		if ( this._actives.length > 0 ) {
 			this._actives.pop();
 		}
-	}
-	
-	_getActive() {
-		if ( this._actives.length > 0 ) {
-			return this._actives[this._actives.length-1];
-		}
-		alert('Error: Getting undefined active');
 	}
 	
 };

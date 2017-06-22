@@ -80,6 +80,17 @@ QQ.World.Main = class Main {
 		}
 	}
 	
+	getAllSubjectsAtPoint(x, y) {
+		let subjs = [];
+		for ( let i = this._subjects.length-1 ; i >= 0 ; --i ) {
+			const subj = this._subjects[i];
+			if ( subj.isHit(x, y) ) {
+				subjs.push(subj);
+			}
+		}
+		return subjs;
+	}
+	
 	getSubjects(pred = () => true) {
 		const subjs = [];
 		this._subjects.forEach(function (subj) {
@@ -91,7 +102,7 @@ QQ.World.Main = class Main {
 	}
 	
 	setPauseable(v) {
-		this.setSettings({pauseable: v});
+		this.setSettings({ pauseable: v });
 	}
 	
 	setSettings(settings = {}) {
