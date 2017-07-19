@@ -5,8 +5,8 @@ QQ.Seizures = {
 QQ.Seizures.Manager = class Manager {
 	
 	constructor(app) {
-		this._register = QQ.Seizures.register;
 		this._app      = app;
+		this._register = QQ.Seizures.register;
 		this._loading  = null;
 		this._reset    = () => {};
 		this._actives  = [];
@@ -45,7 +45,7 @@ QQ.Seizures.Manager = class Manager {
 	}
 	
 	tick(delta) {
-		this.getActive().tickBase(delta);
+		this.getActive().tick(delta);
 	}
 	
 	draw() {

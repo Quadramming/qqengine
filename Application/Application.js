@@ -61,6 +61,11 @@ QQ.Application = class Application {
 		return this._seizures.getActive();
 	}
 	
+	setSz(...args) {
+		this._seizures.set(...args);
+		
+	}
+	
 	pause() {
 		this._seizures.popUp('Pause');
 	}

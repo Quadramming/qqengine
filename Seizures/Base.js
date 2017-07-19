@@ -17,9 +17,9 @@ QQ.Seizures.Base = class Base {
 	init() {
 	}
 	
-	blockInput(value = true) {
-		this._blockInput = value;
-	}
+	//================================================================
+	// Gets
+	//================================================================
 	
 	getWorld() {
 		return this._world;
@@ -35,14 +35,16 @@ QQ.Seizures.Base = class Base {
 	
 	//================================================================
 	
-	tickBase(delta) {
+	blockInput(value = true) {
+		this._blockInput = value;
+	}
+	
+	//================================================================
+
+	tick(delta) {
 		if ( this._isClicked && ! this._app.isMouseInCanvas() ) {
 			this.clickUpBase(-1, -1);
 		}
-		this.tick(delta);
-	}
-	
-	tick() {
 	}
 	
 	tickWorld(delta) {
@@ -72,6 +74,9 @@ QQ.Seizures.Base = class Base {
 	}
 	
 	clickDownBase(x, y) {
+		if ( x < 0 || y < 0 ) {
+			return;
+		}
 		if ( this._blockInput ) {
 			return;
 		}
@@ -87,12 +92,15 @@ QQ.Seizures.Base = class Base {
 	}
 	
 	clickUpBase(x, y) {
+		if ( x < 0 || y < 0 ) {
+			return;
+		}
 		if ( this._blockInput ) {
 			return;
 		}
 		if ( this._isClicked ) {
-			const isClose   = this._isPositionsClose(this._startClick, {x, y});
-			const isScroll  = this._camera.isScrolling();
+			const isClose  = this._isPositionsClose(this._startClick, {x, y});
+			const isScroll = this._camera.isScrolling();
 			if ( isClose && ! isScroll ) {
 				this.click(x, y);
 			}
@@ -102,24 +110,24 @@ QQ.Seizures.Base = class Base {
 	}
 	
 	clickDown(x, y) {
-		return this.doWithSubjIfHit(x, y, (subj, worldX, worldY) => {
+		return this._doWithSubjIfHits(x, y, (subj, worldX, worldY) => {
 			subj.onClickDown(worldX, worldY);
 		});
 	}
 	
 	clickUp(x, y) {
-		return this.doWithSubjIfHit(x, y, (subj, worldX, worldY) => {
+		return this._doWithSubjIfHits(x, y, (subj, worldX, worldY) => {
 			subj.onClickUp(worldX, worldY);
 		});
 	}
 	
 	click(x, y) {
-		return this.doWithSubjIfHit(x, y, (subj, worldX, worldY) => {
+		return this._doWithSubjIfHits(x, y, (subj, worldX, worldY) => {
 			subj.onClick(worldX, worldY);
 		});
 	}
 	
-	doWithSubjIfHit(x, y, fn) {
+	_doWithSubjIfHits(x, y, fn) {
 		const point = this._camera.getWorldPoint(x, y);
 		const hited = this._world.getSubjectAtPoint(point.x, point.y);
 		if ( hited ) {
