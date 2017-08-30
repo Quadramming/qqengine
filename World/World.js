@@ -49,6 +49,7 @@ QQ.World.Main = class Main {
 	
 	addSubject(subj) {
 		this._subjects.push(subj);
+		subj.setWorld(this);
 	}
 	
 	unshiftSubject(subj) {

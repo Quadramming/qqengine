@@ -5,10 +5,6 @@ QQ.Sprite.Mngr = class Mngr {
 		this._height = h;
 	}
 	
-	getRatio() {
-		return this._width / this._height;
-	}
-	
 	getSize() {
 		return {
 			width:  this._width,
@@ -16,18 +12,22 @@ QQ.Sprite.Mngr = class Mngr {
 		};
 	}
 	
+	getRatio() {
+		return this._width / this._height;
+	}
+	
 	calcPosition(pivot) {
 		let x, y;
-		if ( pivot === QQ.Sprite.pivot.LEFTTOP ) {
+		if ( pivot === QQ.Sprite.Pivot.LEFTTOP ) {
 			x = 0;
 			y = 0;
-		} else if ( pivot === QQ.Sprite.pivot.CENTER ) {
+		} else if ( pivot === QQ.Sprite.Pivot.CENTER ) {
 			x = -this._width/2;
 			y = -this._height/2;
-		} else if ( pivot === QQ.Sprite.pivot.CENTERBOTTOM ) {
+		} else if ( pivot === QQ.Sprite.Pivot.CENTERBOTTOM ) {
 			x = -this._width/2;
 			y = -this._height;
-		} else if ( pivot === QQ.Sprite.pivot.CENTERTOP ) {
+		} else if ( pivot === QQ.Sprite.Pivot.CENTERTOP ) {
 			x = -this._width/2;
 			y = 0;
 		}

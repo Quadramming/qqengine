@@ -1,9 +1,8 @@
 QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	
-	constructor(app, width, height) {
-		super(app, width, height);
+	constructor(app, options = {}) {
+		super(app, options);
 		this._action = new QQ.Actions.Base(this._app, this);
-		this.setIdleAction();
 	}
 	
 	tick(delta) {
@@ -20,7 +19,9 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 		if ( this._action.isAbortable() ) {
 			this._action.onAbort();
 			this._action = action;
+			return true;
 		}
+		return false;
 	}
 	
 	setIdleAction() {

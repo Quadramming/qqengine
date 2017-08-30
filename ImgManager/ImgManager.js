@@ -12,7 +12,7 @@ QQ.ImgManager = class ImgManager {
 		}
 		let img     = {};
 		img.url     = url;
-		img.obj     = new Image;
+		img.obj     = new Image();
 		img.obj.src = url;
 		this._imgs.push(img);
 		return img.obj;

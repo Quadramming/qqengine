@@ -63,11 +63,18 @@ QQ.Application = class Application {
 	
 	setSz(...args) {
 		this._seizures.set(...args);
-		
 	}
 	
 	pause() {
 		this._seizures.popUp('Pause');
+	}
+	
+	getWorld() {
+		return this.getSz().getWorld();
+	}
+	
+	getImg(imgSrc) {
+		return this._imgManager.get(imgSrc);
 	}
 	
 	getImgManager() {

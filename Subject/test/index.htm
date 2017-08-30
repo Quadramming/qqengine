@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test</title>
+		<link rel='icon' href='data:;base64,iVBORw0KGgo='>
+		<meta charset='UTF-8'>
+		<script>
+			let console = {
+				log(text) {
+					let cnsl = document.getElementById('divConsole');
+					cnsl.innerHTML += text + '<br>';
+				}
+			};
+			
+			function c(text) {
+				console.log(text);
+			}
+		</script>
+		<script src='../../Main/Main.js'></script>
+		<script src='../../Math/Math.js'></script>
+		<script src='../../Matrix/Matrix.js'></script>
+		<script src='../Subject.js'></script>
+		<script src='../SpriteMix.js'></script>
+		<script src='../TileSpriteMix.js'></script>
+		<script src='../PhysicsMix.js'></script>
+		<script src='../ActionableMix.js'></script>
+		<script src='../DragAndDropMix.js'></script>
+		<script src='../SubjectBase.js'></script>
+		<script src='../Subjects.js'></script>
+		<script>
+			let app = {
+				
+				getContext() {
+					let cvs = document.getElementById('canvas');
+					return cvs.getContext('2d');
+				}
+				
+			};
+			
+			function showSubj(subj) {
+				c('typeof: ' + typeof subj);
+				c('Angle: ' + subj.getAngle());
+				c('Position X: ' + subj.getPosition().x);
+				c('Position Y: ' + subj.getPosition().y);
+				c('Size width: ' + subj.getSize().width);
+				c('Size height: ' + subj.getSize().height);
+				c('Scale X: ' + subj.getScale().x);
+				c('Scale Y: ' + subj.getScale().y);
+				
+				c('Left: ' + subj.getBoundsRect().left);
+				c('Right: ' + subj.getBoundsRect().right);
+				c('Top: ' + subj.getBoundsRect().top);
+				c('Bottom: ' + subj.getBoundsRect().bottom);
+				
+				c('Word point to local X (10, 20): ' + subj.worldToLocalPoint(10, 20).x);
+				c('Word point to local Y (10, 20): ' + subj.worldToLocalPoint(10, 20).y);
+				c('isHit (10, 20): ' + (subj.isHit(10, 20) ? 'true' : 'false') );
+				c('isClickable: ' + (subj.isClickable() ? 'true' : 'false') );
+				subj._drawWorldBorder();
+				c('================================================');
+			}
+			
+			function main() {
+				const baseSubj = new QQ.Subject.Base(app);
+				showSubj(baseSubj);
+				baseSubj.setAngle(3.14/4);
+				baseSubj.setSize(10, 20);
+				baseSubj.setPosition(10, 20);
+				baseSubj.movePosition(5, 10);
+				showSubj(baseSubj);
+				baseSubj.fitInRect({
+					left : 5, right : 55,
+					top : 55, bottom : 15
+				});
+				showSubj(baseSubj);
+				
+				const options = {
+					x : 10,
+					y : 20,
+					width : 30,
+					height : 40,
+					angle : 1,
+					isClickable : false
+				};
+				const testSubj = new QQ.Subject.Base(app, options);
+				showSubj(testSubj);
+			}
+		</script>
+	</head>
+	<body onload='main()'>
+		<div id='divConsole'></div>
+		<canvas id='canvas' width='800' height='600'></canvas>
+	</body>
+</html>

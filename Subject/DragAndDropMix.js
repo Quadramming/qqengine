@@ -1,7 +1,7 @@
 QQ.Subject.DragAndDropMix = base => class DragAndDropMix extends base {
 	
-	constructor(app, img, width, height) {
-		super(app, img, width, height);
+	constructor(app, options = {}) {
+		super(app, options);
 		this._sz         = app.getSz();
 		this._camera     = this._sz.getCamera();
 		this.dragAndDrop = {

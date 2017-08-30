@@ -1,39 +1,39 @@
-QQ.Subject = {};
-
 QQ.Subject.Base = class Base {
 	
-	constructor(app, width = 1, height = 1) {
+	constructor(app, options = {}) {
 		this._app         = app;
 		this._ctx         = this._app.getContext();
-		this._x           = 0;
-		this._y           = 0;
-		this._width       = width;
-		this._height      = height;
-		this._angle       = 0;
+		this._x           = QQ.default(options.x,           0);
+		this._y           = QQ.default(options.y,           0);
+		this._width       = QQ.default(options.width,       1);
+		this._height      = QQ.default(options.height,      1);
+		this._angle       = QQ.default(options.angle,       0);
+		this._isClickable = QQ.default(options.isClickable, true);
+		this._z           = QQ.default(options.z,           0);
+		this._world       = null;
 	}
 	
-	type() {
-		return 'subject';
+	onClickDown(x, y) {
 	}
 	
-	onClickDown() {
+	onClickUp(x, y) {
 	}
 	
-	onClickUp() {
-	}
-	
-	onClick() {
+	onClick(x, y) {
+		let local = this.worldToLocalPoint(x, y);
+		//c(x + ' - ' + y);
+		//c(local.x + ' - ' + local.y);
 	}
 	
 	tick(delta) {
 	}
 	
 	draw() {
-		//this._drawBorder();
+		//this._drawLocalBorder();
 	}
 	
 	isClickable() {
-		return true;
+		return this._isClickable;
 	}
 	
 	worldToLocalPoint(x, y) {
@@ -49,7 +49,7 @@ QQ.Subject.Base = class Base {
 	
 	isHit(x, y) {
 		let local = this.worldToLocalPoint(x, y);
-		const rect  = { 
+		const rect  = {
 			left:   -this._width  /2,
 			top:     this._height /2,
 			right:   this._width  /2,
@@ -79,7 +79,16 @@ QQ.Subject.Base = class Base {
 	}
 	
 	getScale() {
+		// TODO : me
 		return { x : 1, y : 1 };
+	}
+	
+	getSize() {
+		return { width : this._width, height : this._height };
+	}
+	
+	getZ() {
+		return this._z;
 	}
 	
 	setSize(width, height) {
@@ -96,7 +105,19 @@ QQ.Subject.Base = class Base {
 		}
 	}
 	
-	addPosition(x, y) {
+	setAngle(a) {
+		this._angle = a;
+	}
+	
+	setZ(value) {
+		this._z = value;
+	}
+	
+	setWorld(world) {
+		this._world = world;
+	}
+	
+	movePosition(x, y) {
 		this._x += x;
 		this._y += y;
 	}
@@ -109,7 +130,19 @@ QQ.Subject.Base = class Base {
 		this._angle  = 0;
 	}
 	
-	_drawBorder() {
+	_drawWorldBorder() {
+		let M = QQ.Matrix.getIdentity();
+			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-this._angle));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._x, this._y));
+		this._ctx.setTransform(
+				M[0][0], M[0][1],
+				M[1][0], M[1][1],
+				M[2][0], M[2][1]
+			);
+		this._drawLocalBorder();
+	}
+	
+	_drawLocalBorder() {
 		const scale = this.getScale();
 		this._ctx.beginPath();
 		this._ctx.rect(

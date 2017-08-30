@@ -148,8 +148,8 @@ QQ.Seizures.Base = class Base {
 		if ( Math.min(f.x, f.y, s.x, s.y) < 0 ) {
 			return false;
 		}
-		return  Math.abs(f.x - s.x) < epsilon &&
-				Math.abs(f.y - s.y) < epsilon;
+		return Math.abs(f.x - s.x) < epsilon &&
+			   Math.abs(f.y - s.y) < epsilon;
 	}
 	
 	_setHud(sz, input) {

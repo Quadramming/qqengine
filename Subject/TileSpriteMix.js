@@ -1,9 +1,9 @@
 QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 	
-	constructor(app, imgSrc, width, height) {
-		super(app, width, height);
+	constructor(app, options = {}) {
+		super(app, options);
 		this._tileSprite = new QQ.Sprite(
-				this._app.getImgManager().get(imgSrc)
+				this._app.getImgManager().get(options.imgSrc)
 			);
 		this._tileWidth  = 1;
 		this._tileHeight = 1;
@@ -43,9 +43,9 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 		let wRatio = (size.width  / this._width);
 		let hRatio = (size.height / this._height);
 		this._tileSprite.setTileSize(
-				this._tileWidth  * wRatio,
-				this._tileHeight * hRatio
-			);
+			this._tileWidth  * wRatio,
+			this._tileHeight * hRatio
+		);
 	}
 	
 };

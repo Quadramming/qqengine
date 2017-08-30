@@ -73,6 +73,12 @@ QQ.Math.sinBetweenVectors = function(ax, ay, bx, by) {
 	return Math.sqrt(arg);
 };
 
+QQ.Math.calcDistance = function(x1, y1, x2, y2) {
+	let a = x1 - x2;
+	let b = y1 - y2;
+	return Math.sqrt( a*a + b*b );
+};
+
 QQ.Math.calcProgress = function(start, duration) {
 	const passed   = Date.now() - start;
 	const progress = passed / duration;

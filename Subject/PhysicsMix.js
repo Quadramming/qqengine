@@ -1,8 +1,11 @@
 QQ.Subject.PhysicsMix = base => class PhysicsMix extends base {
 	
-	constructor(app, width, height) {
-		super(app, width, height);
+	constructor(app, options = {}) {
+		super(app, options);
 		this._physicsBody = null;
+		if ( options.physics ) {
+			this.setDefaultPhysics(options.physics);
+		}
 	}
 	
 	tick(delta) {
@@ -18,11 +21,11 @@ QQ.Subject.PhysicsMix = base => class PhysicsMix extends base {
 		return true;
 	}
 	
-	setDefaultPhysics(options) {
+	setDefaultPhysics(physicsOptions) {
 		this._physicsBody = Matter.Bodies.rectangle(
 			this._x,     this._y,
 			this._width, this._height,
-			options
+			physicsOptions
 		);
 	}
 	

@@ -152,6 +152,13 @@ QQ.Camera = class Camera {
 	
 	draw(subjects, type) {
 		let count = 0;
+		let copy = subjects.slice();
+		subjects = copy.sort((a, b) => {
+			if ( a.getZ() === b.getZ() ) {
+				return subjects.indexOf(a) - subjects.indexOf(b);
+			}
+			return a.getZ() - b.getZ();
+		});
 		for ( let subj of subjects ) {
 			let pos   = subj.getPosition();
 			let scale = subj.getScale();

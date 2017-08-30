@@ -19,3 +19,30 @@ QQ.start = function(cfg) {
 		}
 	});
 };
+
+QQ.mixins = function(...mixins) {
+	let base = mixins[mixins.length-1];
+	for ( let i = 0; i < mixins.length-1; ++i ) {
+		base = mixins[i](base);
+	}
+	return base;
+};
+
+QQ.changeBaseProto = function(obj, target) {
+	if ( obj instanceof Object ) {
+		let proto = Object.getPrototypeOf(obj);
+		if ( proto === Object.getPrototypeOf({}) ) {
+			Object.setPrototypeOf(obj, target);
+		} else {
+			QQ.changeBaseProto(proto, target);
+		}
+	}
+};
+
+QQ.default = function(value, byDefault) {
+	if ( value === undefined ) { 	
+		return byDefault;
+	}
+	return value;
+};
+
