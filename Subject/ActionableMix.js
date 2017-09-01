@@ -10,9 +10,9 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 		this._action.tick(delta);
 	}
 	
-	draw() {
-		super.draw();
-		this._action.draw();
+	draw(ctx) {
+		super.draw(ctx);
+		this._action.draw(ctx);
 	}
 	
 	setAction(action) {

@@ -2,7 +2,6 @@ QQ.Subject.Base = class Base {
 	
 	constructor(app, options = {}) {
 		this._app         = app;
-		this._ctx         = this._app.getContext();
 		this._x           = QQ.default(options.x,           0);
 		this._y           = QQ.default(options.y,           0);
 		this._width       = QQ.default(options.width,       1);
@@ -28,8 +27,8 @@ QQ.Subject.Base = class Base {
 	tick(delta) {
 	}
 	
-	draw() {
-		//this._drawLocalBorder();
+	draw(ctx) {
+		//this._drawLocalBorder(ctx);
 	}
 	
 	isClickable() {
@@ -48,8 +47,8 @@ QQ.Subject.Base = class Base {
 	}
 	
 	isHit(x, y) {
-		let local = this.worldToLocalPoint(x, y);
-		const rect  = {
+		let local  = this.worldToLocalPoint(x, y);
+		const rect = {
 			left:   -this._width  /2,
 			top:     this._height /2,
 			right:   this._width  /2,
@@ -130,30 +129,30 @@ QQ.Subject.Base = class Base {
 		this._angle  = 0;
 	}
 	
-	_drawWorldBorder() {
+	_drawWorldBorder(ctx) {
 		let M = QQ.Matrix.getIdentity();
 			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-this._angle));
 			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._x, this._y));
-		this._ctx.setTransform(
+		ctx.setTransform(
 				M[0][0], M[0][1],
 				M[1][0], M[1][1],
 				M[2][0], M[2][1]
 			);
-		this._drawLocalBorder();
+		this._drawLocalBorder(ctx);
 	}
 	
-	_drawLocalBorder() {
+	_drawLocalBorder(ctx) {
 		const scale = this.getScale();
-		this._ctx.beginPath();
-		this._ctx.rect(
+		ctx.beginPath();
+		ctx.rect(
 			-this._width  / scale.x/2,
 			-this._height / scale.y/2,
 			 this._width  / scale.x,
 			 this._height / scale.y
 		);
-		this._ctx.lineWidth   = 1;
-		this._ctx.strokeStyle = '#000000';
-		this._ctx.stroke();
+		ctx.lineWidth   = 1;
+		ctx.strokeStyle = '#000000';
+		ctx.stroke();
 	}
 	
 };

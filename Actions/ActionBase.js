@@ -35,7 +35,7 @@ QQ.Actions.Base = class Base {
 	tick() {
 	}
 	
-	draw() {
+	draw(ctx) {
 	}
 	
 	type() {

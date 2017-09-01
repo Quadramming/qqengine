@@ -4,7 +4,7 @@ QQ.World.Main = class Main {
 	
 	constructor(app, settings = {}) {
 		this._app        = app;
-		this._subjects   = [];
+		this._subjects   = []; // Top at low index
 		this._background = null;
 		this._deltaAccum = 0;
 		// Default
@@ -43,36 +43,34 @@ QQ.World.Main = class Main {
 	tick(delta) {
 	}
 	
-	addBackground(url) {
-		this._background = new QQ.Subject.Sprite(this._app, url);
+	setBackground(url) {
+		this._background = new QQ.Subject.Sprite(this._app, {imgSrc: url});
 	}
 	
 	addSubject(subj) {
-		this._subjects.push(subj);
-		subj.setWorld(this);
-	}
-	
-	unshiftSubject(subj) {
 		this._subjects.unshift(subj);
+		subj.setWorld(this);
+		this._sortSubjectsByZ();
 	}
 	
 	getSubjectsInRect(rect) {
+		this._sortSubjectsByZ();
 		const result = [];
+		for ( let subj of this._subjects ) {
+			if ( QQ.Math.isIntersect(rect, subj.getBoundsRect()) ) {
+				result.push(subj);
+			}
+		}
 		if ( this._background ) {
 			this._background.fitInRect(rect);
 			result.push(this._background);
-		}
-		for ( let subj of this._subjects ) {
-			if ( QQ.Math.isIntersect(rect, subj.getBoundsRect()) ) {
-				result.push(subj); 
-			}
 		}
 		return result;
 	}
 	
 	getSubjectAtPoint(x, y) {
-		for ( let i = this._subjects.length-1 ; i >= 0 ; --i ) {
-			const subj = this._subjects[i];
+		this._sortSubjectsByZ();
+		for ( let subj of this._subjects ) {
 			if ( subj.isClickable() ) {
 				if ( subj.isHit(x, y) ) {
 					return subj;
@@ -82,9 +80,9 @@ QQ.World.Main = class Main {
 	}
 	
 	getAllSubjectsAtPoint(x, y) {
+		this._sortSubjectsByZ();
 		let subjs = [];
-		for ( let i = this._subjects.length-1 ; i >= 0 ; --i ) {
-			const subj = this._subjects[i];
+		for ( let subj of this._subjects ) {
 			if ( subj.isHit(x, y) ) {
 				subjs.push(subj);
 			}
@@ -93,6 +91,7 @@ QQ.World.Main = class Main {
 	}
 	
 	getSubjects(pred = () => true) {
+		this._sortSubjectsByZ();
 		const subjs = [];
 		this._subjects.forEach(function (subj) {
 			if ( pred(subj) ) {
@@ -103,7 +102,7 @@ QQ.World.Main = class Main {
 	}
 	
 	setPauseable(v) {
-		this.setSettings({ pauseable: v });
+		this.setSettings({pauseable: v});
 	}
 	
 	setSettings(settings = {}) {
@@ -126,6 +125,16 @@ QQ.World.Main = class Main {
 		if ( i > 0 ) {
 			this._subjects.splice(i, 1);
 		}
+	}
+	
+	_sortSubjectsByZ() {
+		let copy = this._subjects.slice();
+		this._subjects.sort((a, b) => {
+			if ( a.getZ() === b.getZ() ) {
+				return copy.indexOf(a) - copy.indexOf(b);
+			}
+			return b.getZ() - a.getZ();
+		});
 	}
 	
 };

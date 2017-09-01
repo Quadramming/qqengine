@@ -8,8 +8,8 @@ QQ.Actions.BallisticsMove = class BallisticsMove extends QQ.Actions.Base {
 	}
 	
 	tick(delta) {
-		let s         = ( x => Math.sign(x) );
-		let a         = ( x => Math.abs(x)  );
+		let s         = Math.sign;
+		let a         = Math.abs;
 		let progress  = QQ.Math.calcProgress(this._start, this._duration);
 		let xDist     = this._to.x - this._from.x;
 		let yDist     = this._to.y - this._from.y;

@@ -29,12 +29,7 @@
 		<script src='../Subjects.js'></script>
 		<script>
 			let app = {
-				
-				getContext() {
-					let cvs = document.getElementById('canvas');
-					return cvs.getContext('2d');
-				}
-				
+
 			};
 			
 			function showSubj(subj) {
@@ -56,7 +51,10 @@
 				c('Word point to local Y (10, 20): ' + subj.worldToLocalPoint(10, 20).y);
 				c('isHit (10, 20): ' + (subj.isHit(10, 20) ? 'true' : 'false') );
 				c('isClickable: ' + (subj.isClickable() ? 'true' : 'false') );
-				subj._drawWorldBorder();
+
+				let cvs = document.getElementById('canvas');
+				let ctx = cvs.getContext('2d');
+				subj._drawWorldBorder(ctx);
 				c('================================================');
 			}
 			

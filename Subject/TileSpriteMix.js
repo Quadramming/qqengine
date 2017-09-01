@@ -10,9 +10,8 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 		this._calcTileSize();
 	}
 	
-	draw() {
-		const ctx = this._app.getContext();
-		super.draw();
+	draw(ctx) {
+		super.draw(ctx);
 		this._tileSprite.draw(ctx);
 	}
 	

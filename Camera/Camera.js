@@ -7,6 +7,7 @@ QQ.Camera = class Camera {
 		};
 		this._epsilon        = 0;
 		this._canvas         = canvas;
+		this._ctx            = canvas.getContext('2d');
 		this._width          = 0;
 		this._height         = 0;
 		this._initWidth      = 0;
@@ -152,19 +153,13 @@ QQ.Camera = class Camera {
 	
 	draw(subjects, type) {
 		let count = 0;
-		let copy = subjects.slice();
-		subjects = copy.sort((a, b) => {
-			if ( a.getZ() === b.getZ() ) {
-				return subjects.indexOf(a) - subjects.indexOf(b);
-			}
-			return a.getZ() - b.getZ();
-		});
+		subjects.reverse();
 		for ( let subj of subjects ) {
 			let pos   = subj.getPosition();
 			let scale = subj.getScale();
 			let angle = subj.getAngle();
 			this._setTransform( this._getSubjMatrix(pos, scale, angle) );
-			subj.draw();
+			subj.draw(this._ctx);
 			//this.drawRect(subj.getBoundsRect());
 			count++;
 		}
@@ -173,19 +168,18 @@ QQ.Camera = class Camera {
 	}
 	
 	drawRect(rect) {
-		let M   = this._mainMatrix;
-		let ctx = this._canvas.getContext('2d');
+		let M = this._mainMatrix;
 		this._setTransform(M);
-		ctx.beginPath();
-		ctx.rect(
+		this._ctx.beginPath();
+		this._ctx.rect(
 			rect.left,
 			rect.top,
 			rect.right - rect.left,
 			rect.bottom - rect.top
 		);
-		ctx.lineWidth   = 1;
-		ctx.strokeStyle = '#000000';
-		ctx.stroke();
+		this._ctx.lineWidth   = 1;
+		this._ctx.strokeStyle = '#000000';
+		this._ctx.stroke();
 	}
 	
 	widthToPercent(x) {
@@ -265,12 +259,12 @@ QQ.Camera = class Camera {
 		const canvasRatio = (this._canvas.width / this._canvas.height);
 		const cameraRatio = (this._initWidth    / this._initHeight);
 		if ( canvasRatio !== cameraRatio ) {
-			({x: this._width, y: this._height} = 
-					QQ.Math.increaseToRatio(
-						this._initWidth,
-						this._initHeight,
-						canvasRatio
-					));
+			({x: this._width, y: this._height} =
+				QQ.Math.increaseToRatio(
+					this._initWidth,
+					this._initHeight,
+					canvasRatio
+				));
 		}
 		this._fixClip();
 		this._mainMatrix = QQ.Matrix.mul(
@@ -280,8 +274,8 @@ QQ.Camera = class Camera {
 	}
 	
 	_drawAxis() {
+		let ctx = this._ctx;
 		let M   = this._mainMatrix;
-		let ctx = this._canvas.getContext('2d');
 		this._setTransform(M);
 		for ( let i = -10; i <= 10; i++ ) {
 			ctx.beginPath();
@@ -307,9 +301,8 @@ QQ.Camera = class Camera {
 	
 	_cleanCanvas() {
 		this.cleanTransform();
-		let ctx       = this._canvas.getContext('2d');
-		ctx.fillStyle = 'gray';
-		ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+		this._ctx.fillStyle = 'gray';
+		this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 	}
 	
 };
