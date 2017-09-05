@@ -17,8 +17,7 @@ QQ.Actions.Move = class Move extends QQ.Actions.Base {
 		let y         = this._from.y + progress * yDist;
 		this._subj.setPosition(x, y);
 		if ( progress === 1 ) {
-			this._subj.setIdleAction();
-			this.onEnd();
+			this.finishAction();
 		}
 	}
 	

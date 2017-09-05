@@ -21,8 +21,7 @@ QQ.Actions.AngleMove = class AngleMove extends QQ.Actions.Base {
 		let y         = this._from.y + yProgress * s(yDist);
 		this._subj.setPosition(x, y);
 		if ( progress === 1 ) {
-			this._subj.setIdle();
-			this.onEnd();
+			this.finishAction();
 		}
 	}
 	

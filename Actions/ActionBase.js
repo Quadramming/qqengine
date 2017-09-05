@@ -32,6 +32,11 @@ QQ.Actions.Base = class Base {
 	onAbort() {
 	}
 	
+	finishAction() {
+		this._subj.setIdleAction();
+		this.onEnd();
+	}
+	
 	tick() {
 	}
 	
