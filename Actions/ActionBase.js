@@ -2,11 +2,15 @@ QQ.Actions = {};
 
 QQ.Actions.Base = class Base {
 	
-	constructor(app, subj) {
+	constructor(app, options) {
+		if ( ! QQ.isObject(options.subj) ) {
+			debugger;
+			alert('Not an object in Action');
+		}
 		this._app         = app;
 		this._time        = app.getTime();
 		this._start       = this._time.now();
-		this._subj        = subj;
+		this._subj        = options.subj;
 		this._isAbortable = true;
 		this.onStart();
 	}

@@ -20,6 +20,10 @@ QQ.start = function(cfg) {
 	});
 };
 
+QQ.isObject = function(obj) {
+	return obj === Object(obj);
+};
+
 QQ.mixins = function(...mixins) {
 	let base = mixins[mixins.length-1];
 	for ( let i = 0; i < mixins.length-1; ++i ) {

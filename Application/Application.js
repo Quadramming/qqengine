@@ -120,9 +120,9 @@ QQ.Application = class Application {
 	}
 	
 	_process(time) {
-		requestAnimationFrame(this._process.bind(this));
 		this._tick();
 		this._draw();
+		requestAnimationFrame(this._process.bind(this));
 		//setTimeout(this._process.bind(this), 1);
 	}
 	

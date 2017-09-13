@@ -1,8 +1,8 @@
 QQ.Actions.Disapear = class Disapear extends QQ.Actions.Base {
 	
-	constructor(app, subj, duration) {
-		super(app, subj);
-		this._duration = duration;
+	constructor(app, options) {
+		super(app, options);
+		this._duration = options.duration;
 	}
 	
 	tick(delta) {

@@ -1,11 +1,11 @@
 QQ.Actions.BallisticsMove = class BallisticsMove extends QQ.Actions.Base {
 	
-	constructor(app, subj, to, duration) {
-		super(app, subj);
-		this._from     = { x: subj._x, y: subj._y };
-		this._to       = to;
-		this._duration = duration;
-		this._size     = subj.getSize();
+	constructor(app, options) {
+		super(app, options);
+		this._from     = this._subj.getPosition();
+		this._to       = options.to;
+		this._duration = options.duration;
+		this._size     = this._subj.getSize();
 	}
 	
 	tick(delta) {
