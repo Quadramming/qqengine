@@ -30,6 +30,7 @@ Subject/SubjectBase.js
 Subject/Subjects.js
 Text/Text.js
 Time/Time.js
+Sound/Sound.js
 Touch/Touch.js
 Value/Value.js
 Value/XY.js

@@ -12,11 +12,13 @@ QQ.Application = class Application {
 		this._touch      = new QQ.Touch(this._mouse);
 		this._storage    = new QQ.Storage();
 		this._imgManager = new QQ.ImgManager();
+		this._sound      = new QQ.Sound();
 		this._seizures   = new QQ.Seizures.Manager(this);
 		this._imgs       = config.imgs;
 		this.loadImgs(
 			this.init.bind(this)
 		);
+		this._sound.set(config.sounds);
 	}
 	
 	loadImgs(cb) {
@@ -47,6 +49,7 @@ QQ.Application = class Application {
 				this._seizures.clickUp(x, y);
 			}
 		});
+		//this._fpsCounter.showDetails();
 		this._process();
 	}
 	
@@ -98,6 +101,10 @@ QQ.Application = class Application {
 	
 	getTime() {
 		return this._time;
+	}
+	
+	playSound(str) {
+		this._sound.play(str);
 	}
 	
 	isM1Pressed() {
