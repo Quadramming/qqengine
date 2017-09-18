@@ -4,7 +4,6 @@ QQ.Actions.Base = class Base {
 	
 	constructor(app, options) {
 		if ( ! QQ.isObject(options.subj) ) {
-			debugger;
 			alert('Not an object in Action');
 		}
 		this._app         = app;
