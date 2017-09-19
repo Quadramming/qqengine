@@ -11,6 +11,9 @@ QQ.Actions.Base = class Base {
 		this._start       = this._time.now();
 		this._subj        = options.subj;
 		this._isAbortable = true;
+		if ( options.onEnd ) {
+			this.onEnd = options.onEnd;
+		}
 		this.onStart();
 	}
 	

@@ -24,6 +24,10 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 		return false;
 	}
 	
+	setActionOnEnd(fn) {
+		this._action.setOnEnd(fn);
+	}
+	
 	setIdleAction() {
 		this.setAction(
 			new QQ.Actions.Base(this._app, {subj: this})
