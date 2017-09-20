@@ -6,14 +6,12 @@ QQ.Actions.Base = class Base {
 		if ( ! QQ.isObject(options.subj) ) {
 			alert('Not an object in Action');
 		}
-		this._app         = app;
-		this._time        = app.getTime();
-		this._start       = this._time.now();
-		this._subj        = options.subj;
-		this._isAbortable = true;
-		if ( options.onEnd ) {
-			this.onEnd = options.onEnd;
-		}
+		this._app           = app;
+		this._time          = app.getTime();
+		this._start         = this._time.now();
+		this._subj          = options.subj;
+		this._isAbortable   = QQ.default(options.isAbortable, true);
+		this.onEnd          = QQ.default(options.onEnd, this.onEnd);
 		this.onStart();
 	}
 	

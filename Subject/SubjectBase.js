@@ -9,7 +9,7 @@ QQ.Subject.Base = class Base {
 		this._angle       = QQ.default(options.angle,       0);
 		this._isClickable = QQ.default(options.isClickable, true);
 		this._z           = QQ.default(options.z,           0);
-		this._world       = null;
+		this._world       = QQ.default(options.world,       null);
 	}
 	
 	onClickDown(x, y) {
