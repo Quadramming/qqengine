@@ -95,6 +95,11 @@ QQ.Subject.Base = class Base {
 		this._height = height;
 	}
 	
+	addPosition(x, y) {
+		this._x += x;
+		this._y += y;
+	}
+	
 	setPosition(x, y, p) {
 		if ( x !== undefined ) {
 			this._x = p ? QQ.Math.calcPivotX(p, x, this._width) : x;

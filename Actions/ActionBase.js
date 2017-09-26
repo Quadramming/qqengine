@@ -10,9 +10,15 @@ QQ.Actions.Base = class Base {
 		this._time          = app.getTime();
 		this._start         = this._time.now();
 		this._subj          = options.subj;
+		this._toRestore     = null;
+		this._lasting       = 0;
+		this._duration      = QQ.default(options.duration, null);
 		this._isAbortable   = QQ.default(options.isAbortable, true);
 		this.onEnd          = QQ.default(options.onEnd, this.onEnd);
 		this.onStart();
+		if ( options.isRestoreOnFinish ) {
+			this._toRestore = this._subj.getAction();
+		}
 	}
 	
 	setAbortable(value) {
@@ -37,18 +43,26 @@ QQ.Actions.Base = class Base {
 	}
 	
 	finishAction() {
-		this._subj.setIdleAction();
+		if ( this._toRestore ) {
+			this._subj.forceAction(this._toRestore);
+		} else {
+			this._subj.forceIdleAction();
+		}
 		this.onEnd();
 	}
 	
-	tick() {
+	tick(delta) {
+		this._lasting += delta*1000;
+		if ( this._duration < this._lasting ) {
+			this.finishAction();
+		}
 	}
 	
 	draw(ctx) {
 	}
 	
 	type() {
-		return 'base';
+		return 'action';
 	}
 	
 };

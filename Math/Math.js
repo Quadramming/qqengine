@@ -136,6 +136,10 @@ QQ.Math.calcPivotY = function(p, y, h, yAxis = 1) {
 	}
 };
 
+QQ.Math.isEqual = function(a, b, epsilon) {
+	return a < b+epsilon && a > b-epsilon;
+};
+
 QQ.Math.isNumbers = function(...args) {
 	for ( let arg of args ) {
 		if ( typeof arg !== 'number' ) {

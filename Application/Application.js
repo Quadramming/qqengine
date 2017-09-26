@@ -60,6 +60,7 @@ QQ.Application = class Application {
 	sz() {
 		return this._seizures;
 	}
+	
 	getSz() {
 		return this._seizures.getActive();
 	}
@@ -78,6 +79,10 @@ QQ.Application = class Application {
 	
 	getImg(imgSrc) {
 		return this._imgManager.get(imgSrc);
+	}
+	
+	createSprite(img) {
+		return new QQ.Sprite( this.getImg(img) );
 	}
 	
 	getImgManager() {

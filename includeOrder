@@ -39,6 +39,7 @@ World/Physics.js
 Actions/ActionBase.js
 Actions/Disapear.js
 Actions/Move.js
+Actions/MoveTo.js
 Actions/BallisticsMove.js
 Actions/Patrol.js
 GUI/Button.js
