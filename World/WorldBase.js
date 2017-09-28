@@ -1,6 +1,6 @@
 QQ.World = {};
 
-QQ.World.Main = class Main {
+QQ.World.Base = class Base {
 	
 	constructor(app, settings = {}) {
 		this._app        = app;

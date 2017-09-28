@@ -6,7 +6,7 @@ QQ.Seizures.Base = class Base {
 		if ( physicsWorld ) {
 			this._world    = new QQ.World.Physics(app);
 		} else {
-			this._world    = new QQ.World.Main(app);
+			this._world    = new QQ.World.Base(app);
 		}
 		this._isClicked    = false;
 		this._hud          = null;

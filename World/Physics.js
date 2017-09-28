@@ -1,4 +1,4 @@
-QQ.World.Physics = class Physics extends QQ.World.Main {
+QQ.World.Physics = class Physics extends QQ.World.Base {
 	
 	constructor(app) {
 		super(app);
