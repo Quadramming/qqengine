@@ -20,6 +20,13 @@ QQ.Canvas = class Canvas {
 		window.addEventListener('resize', () => this.resize());
 	}
 	
+	getSizeRect() {
+		return new QQ.Rect(0, 0,
+			this._canvas.width,
+			this._canvas.height
+		);
+	}
+	
 	getWidth() {
 		return this._width;
 	}
@@ -34,6 +41,13 @@ QQ.Canvas = class Canvas {
 	
 	getCanvas() {
 		return this._canvas;
+	}
+	
+	getCanvasOffset() {
+		return new QQ.Point(
+			this._canvas.offsetLeft,
+			this._canvas.offsetTop,
+		);
 	}
 	
 	getContext() {

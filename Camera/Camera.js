@@ -89,6 +89,14 @@ QQ.Camera = class Camera {
 		};
 	}
 	
+	screenToWorld(point) {
+		let M = QQ.Matrix.mul(
+			[[point.x(), point.y(), 1]],
+			QQ.Matrix.inverse(this._mainMatrix)
+		);
+		return new QQ.Point(M[0][0], M[0][1]);
+	}
+	
 	getWorldPoint(x, y) {
 		let M = QQ.Matrix.mul(
 			[[x, y, 1]],
@@ -239,7 +247,7 @@ QQ.Camera = class Camera {
 	}
 	
 	_setTransform(M) {
-		this._canvas.getContext('2d').setTransform(
+		this._ctx.setTransform(
 				M[0][0], M[0][1],
 				M[1][0], M[1][1],
 				M[2][0], M[2][1]

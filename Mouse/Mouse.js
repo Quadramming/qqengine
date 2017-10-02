@@ -3,68 +3,71 @@ QQ.Mouse = class Mouse {
 	constructor() {
 		
 		window.addEventListener('mousemove', (e) => {
-			if ( QQ.Math.isNumbers(e.clientX, e.clientY, e.buttons) ) {
-				this._process(e.clientX, e.clientY, e.buttons === 1);
+			if ( QQ.isNumbers(e.clientX, e.clientY, e.buttons) ) {
+				const point = new QQ.Point(e.clientX, e.clientY);
+				this._process(point, e.buttons === 1);
 			}
 		});
 	
 		window.addEventListener('mousedown', (e) => {
-			if ( QQ.Math.isNumbers(e.clientX, e.clientY) ) {
-				this._process(e.clientX, e.clientY, true);
+			if ( QQ.isNumbers(e.clientX, e.clientY) ) {
+				const point = new QQ.Point(e.clientX, e.clientY);
+				this._process(new QQ.Point(e.clientX, e.clientY), true);
 			}
 		});
 
 		window.addEventListener('mouseup', (e) => {
-			if ( QQ.Math.isNumbers(e.clientX, e.clientY) ) {
-				this._process(e.clientX, e.clientY, false);
+			if ( QQ.isNumbers(e.clientX, e.clientY) ) {
+				const point = new QQ.Point(e.clientX, e.clientY);
+				this._process(point, false);
 			}
 		});
 		
-		this._x        = 0;
-		this._y        = 0;
+		this._point    = new QQ.Point();
 		this._m1       = false;
-		this._m1DownCB = null;
-		this._m1UpCB   = null;
+		this._m1DownCb = () => {};
+		this._m1UpCb   = () => {};
+		this._moveCb   = () => {};
+	}
+	
+	getPoint() {
+		return this._point;
 	}
 	
 	getX() {
-		return this._x;
+		return this._point.x();
 	}
 	
 	getY() {
-		return this._y;
+		return this._point.y();
 	}
 	
-	getM1() {
-		return this._m1;
+	setM1DownCb(f) {
+		this._m1DownCb = f;
 	}
 	
-	setM1DownCB(f) {
-		this._m1DownCB = f;
+	setM1UpCb(f) {
+		this._m1UpCb = f;
 	}
 	
-	setM1UpCB(f) {
-		this._m1UpCB = f;
+	setMoveCb(f) {
+		this._moveCb = f;
 	}
 	
-	emulate(x, y, m) {
-		this._process(x, y, m); 
+	emulate(point, m) {
+		this._process(point, m);
 	}
 	
-	_process(newX, newY, newM1) {
-		this._x = newX;
-		this._y = newY;	
-		if ( newM1 === true && this._m1 === false ) {
+	_process(point, m1) {
+		this._point = point;
+		if ( m1 === true && this._m1 === false ) {
 			this._m1 = true;
-			if ( this._m1DownCB ) {
-				this._m1DownCB();
-			}
-		}
-		if ( newM1 === false && this._m1 === true ) {
+			this._m1DownCb();
+		} else if ( m1 === false && this._m1 === true ) {
 			this._m1 = false;
-			if ( this._m1UpCB ) {
-				this._m1UpCB();
-			}
+			this._m1UpCb();
+		} else {
+			this._moveCb();
 		}
 	}
 	

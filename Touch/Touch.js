@@ -1,8 +1,8 @@
 QQ.Touch = class Touch {
 	
 	constructor(mouse) {
-		let   x       = 0;
-		let   y       = 0;
+		let point = new QQ.Point();
+
 		const options = {
 			capture: true,
 			passive: false
@@ -10,10 +10,9 @@ QQ.Touch = class Touch {
 		
 		window.addEventListener('touchstart', (e) => {
 			const touchobj = e.touches[0];
-			if ( QQ.Math.isNumbers(touchobj.clientX, touchobj.clientY) ) {
-				x = touchobj.clientX;
-				y = touchobj.clientY;
-				mouse.emulate(x, y, true);
+			if ( QQ.isNumbers(touchobj.clientX, touchobj.clientY) ) {
+				point.set(touchobj.clientX, touchobj.clientY);
+				mouse.emulate(point, true);
 			}
 			e.preventDefault();
 			return false;
@@ -21,17 +20,17 @@ QQ.Touch = class Touch {
 		
 		window.addEventListener('touchmove', (e) => {
 			const touchobj = e.touches[0];
-			if ( QQ.Math.isNumbers(touchobj.clientX, touchobj.clientY) ) {
-				x = touchobj.clientX;
-				y = touchobj.clientY;
-				mouse.emulate(x, y, true);
+			if ( QQ.isNumbers(touchobj.clientX, touchobj.clientY) ) {
+				point.set(touchobj.clientX, touchobj.clientY);
+				mouse.emulate(point, true);
 			}
 			e.preventDefault();
 			return false;
 		}, options);
 		
 		window.addEventListener('touchend', (e) => {
-			mouse.emulate(x, y, false);
+			const noPoint = new QQ.Point(NaN);
+			mouse.emulate(noPoint, false);
 			e.preventDefault();
 			return false;
 		}, options);

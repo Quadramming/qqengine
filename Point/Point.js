@@ -1,6 +1,6 @@
 QQ.Point = class Point {
 	
-	constructor(x = 0, y = 0) {
+	constructor(x = 0, y = x) {
 		this._x = x;
 		this._y = y;
 	}
@@ -23,20 +23,44 @@ QQ.Point = class Point {
 		this._y = QQ.default(y, 0);
 	}
 	
-	setX(x) {
-		this._x = x;
+	setX(value) {
+		this._x = value;
 	}
 	
-	setY(y) {
-		this._y = y;
+	setY(value) {
+		this._y = value;
 	}
 	
-	x() {
-		return this._x;
+	isCorrect() {
+		return ! this.isNaN();
 	}
 	
-	y() {
-		return this._y;
+	isNear(point, epsilon) {
+		if ( point.isNaN() || this.isNaN() ) {
+			return false;
+		}
+		return Math.abs(point.x() - this.x()) < epsilon &&
+			   Math.abs(point.y() - this.y()) < epsilon;
+	}
+	
+	isNaN() {
+		return Number.isNaN(this._x) || Number.isNaN(this._y);
+	}
+	
+	x(value) {
+		if ( value !== undefined ) {
+			this._x = value;
+		} else {
+			return this._x;
+		}
+	}
+	
+	y(value) {
+		if ( value !== undefined ) {
+			this._y = value;
+		} else {
+			return this._y;
+		}
 	}
 	
 	debug() {

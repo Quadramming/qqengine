@@ -3,10 +3,14 @@ QQ.Seizures.register.set('Loading',
 		extends QQ.Seizures.Base
 	{
 		
-		constructor(app) {
-			super(app);
+		constructor(input) {
+			super(input);
 			this._camera.init();
-			//this._world.addBackground('');
+			/*
+			this._world.addSubject(
+				new QQ.Text(app, 'Loading')
+			);
+			*/
 		}
 		
 	}

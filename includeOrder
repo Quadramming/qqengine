@@ -1,4 +1,6 @@
 Main/Main.js
+Point/Point.js
+Rect/Rect.js
 Application/Application.js
 Camera/Camera.js
 Canvas/Canvas.js
@@ -41,7 +43,5 @@ Actions/Disapear.js
 Actions/Move.js
 Actions/MoveTo.js
 Actions/BallisticsMove.js
-Point/Point.js
-Rect/Rect.js
 Container/Container.js
 GUI/Button.js

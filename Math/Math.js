@@ -140,15 +140,6 @@ QQ.Math.isEqual = function(a, b, epsilon) {
 	return a < b+epsilon && a > b-epsilon;
 };
 
-QQ.Math.isNumbers = function(...args) {
-	for ( let arg of args ) {
-		if ( typeof arg !== 'number' ) {
-			return false;
-		}
-	}
-	return true;
-};
-
 QQ.Math.PIx2 = Math.PI * 2;
 
 QQ.Math.pivot = {

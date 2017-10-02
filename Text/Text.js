@@ -26,9 +26,9 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		return 'text';
 	}
 	
-	draw() {
-		super.draw();
-		this._setupContext();
+	draw(ctx) {
+		super.draw(ctx);
+		this._setupContext(ctx);
 		let offsetX = 0; // center
 		let offsetY = -(this._line.height/2)*(this._lines-1);
 		if ( this._align === 'left' ) {
@@ -38,7 +38,7 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		}
 		let x       = 0;
 		for ( let str of this._strings ) {
-			this._ctx.fillText(str, offsetX, offsetY + x*this._line.height);
+			ctx.fillText(str, offsetX, offsetY + x*this._line.height);
 			++x;
 		}
 	}
@@ -92,11 +92,11 @@ QQ.Text = class Text extends QQ.Subject.Base {
 	}
 	
 	_setupContext() {
-		this._ctx.textBaseline = 'middle';
-		this._ctx.textAlign    = this._align;
-		this._ctx.fillStyle    = '#878787';
+		ctx.textBaseline = 'middle';
+		ctx.textAlign    = this._align;
+		ctx.fillStyle    = '#878787';
 		const size = this._line.height - this._line.space;
-		this._ctx.font         = size + 'px ' + this._font;
+		ctx.font         = size + 'px ' + this._font;
 	}
 	
 	_calcSizes() {

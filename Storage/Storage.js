@@ -1,15 +1,23 @@
 QQ.Storage = class Storage {
 	
 	constructor() {
-		this._storage    = window.localStorage;
+		this._storage = window.localStorage;
 	}
 	
-	storage(key, value) {
-		if ( value ) {
-			this._storage.setItem(key, value);
+	remove(key) {
+		this._storage.removeItem(key);
+	}
+	
+	set(key, value) {
+		if ( value === null ) {
+			this.remove(key);
 		} else {
-			return this._storage.getItem(key);
+			this._storage.setItem(key, value);
 		}
+	}
+	
+	get(key) {
+		return this._storage.getItem(key);
 	}
 	
 };

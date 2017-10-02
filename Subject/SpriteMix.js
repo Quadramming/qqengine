@@ -5,7 +5,7 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		this._imgSrc = options.imgSrc;
 		this._alpha  = 1;
 		this._sprite = new QQ.Sprite(
-				this._app.getImgManager().get(this._imgSrc)
+				this._app.getImg(this._imgSrc)
 			);
 	}
 	

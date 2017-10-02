@@ -51,7 +51,11 @@ QQ.Rect = class Rect {
 		return this;
 	}
 	
-	contains(x, y) {
+	isContains(x, y) { // (Point) or (x, y)
+		if ( x instanceof QQ.Point) {
+			y = x.y();
+			x = x.x();
+		}
 		if ( this._width <= 0 || this._height <= 0 ) {
 			return false;
 		}

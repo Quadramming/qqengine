@@ -3,7 +3,7 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 	constructor(app, options = {}) {
 		super(app, options);
 		this._tileSprite = new QQ.Sprite(
-				this._app.getImgManager().get(options.imgSrc)
+				this._app.getImg(options.imgSrc)
 			);
 		this._tileWidth  = 1;
 		this._tileHeight = 1;

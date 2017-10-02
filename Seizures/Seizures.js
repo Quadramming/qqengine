@@ -4,6 +4,10 @@ QQ.Seizures = {
 
 QQ.Seizures.Manager = class Manager {
 	
+	//================================================================
+	// Constructor
+	//================================================================
+	
 	constructor(app) {
 		this._app      = app;
 		this._register = QQ.Seizures.register;
@@ -13,59 +17,52 @@ QQ.Seizures.Manager = class Manager {
 	}
 	
 	init() {
-		this._loading = new (this._register.get('Loading'))(this._app);
-		this._loading.init();
-		this._actives.push(this._loading);
+		this.create('Loading', {}, true);
 	}
 	
-	popUp(sz, input) {
-		this.set(sz, input, true);
-	}
-	
-	closePopUp() {
-		this._closeActive();
-	}
-	
-	reset() {
-		this._reset();
-	}
-	
-	set(sz, input, popup = false) {
-		if ( popup === false ) {
-			this._closeActive();
-			this._reset = () => { this.set(sz, input); };
-		}
-		//this._actives.push( this._loading );
-		//setTimeout( () => {
-		//this._closeActive();
-		let activeSz = new (this._register.get(sz))(this._app, input);
-		this._actives.push(activeSz);
-		activeSz.init();
-		//}, 1000);
-	}
+	//================================================================
+	// Tick & draw
+	//================================================================
 	
 	tick(delta) {
 		this.getActive().tick(delta);
 	}
 	
 	draw() {
-		for ( let sz of this._actives ) {
+		for ( const sz of this._actives ) {
 			sz.draw();
 		}
 	}
 	
-	clickDown(x, y) {
-		this.getActive().clickDownBase(x, y);
-	}
+	//================================================================
+	// Manage
+	//================================================================
 	
-	clickUp(x, y) {
-		this.getActive().clickUpBase(x, y);
-	}
-	
-	create(sz, input) {
-		let newSz = new (this._register.get(sz))(this._app, input);
+	create(sz, input = {}, activate = false) {
+		input.app       = this._app;
+		input.szManager = this;
+		const newSz = new (this._register.get(sz))(input);
+		if ( activate ) {
+			this._actives.push(newSz);
+		}
 		newSz.init();
 		return newSz;
+	}
+	
+	set(sz, input, popup = false) {
+		if ( popup === false ) {
+			this._closeActive();
+			this._reset = () => this.set(sz, input);
+		}
+		//this._actives.push( this._loading );
+		//setTimeout( () => {
+		//this._closeActive();
+		this.create(sz, input, true);
+		//}, 1000);
+	}
+	
+	reset() {
+		this._reset();
 	}
 	
 	getActive() {
@@ -75,10 +72,27 @@ QQ.Seizures.Manager = class Manager {
 		alert('Error: Getting undefined active');
 	}
 	
+	forActive(fn) {
+		const active = this.getActive();
+		return fn(active);
+	}
+	
 	_closeActive() {
 		if ( this._actives.length > 0 ) {
 			this._actives.pop();
 		}
+	}
+	
+	//================================================================
+	// Pop up
+	//================================================================
+	
+	popUp(sz, input) {
+		this.set(sz, input, true);
+	}
+	
+	closePopUp() {
+		this._closeActive();
 	}
 	
 };
