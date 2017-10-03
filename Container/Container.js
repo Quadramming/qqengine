@@ -9,7 +9,7 @@ QQ.Container = class Container {
 	}
 	
 	forAllSubjects(fn) {
-		for ( let subject of this._subjects ) {
+		for ( const subject of this._subjects ) {
 			fn(subject);
 		}
 	}

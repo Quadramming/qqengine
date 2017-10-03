@@ -2,21 +2,24 @@ QQ.Actions = {};
 
 QQ.Actions.Base = class Base {
 	
-	constructor(app, options) {
-		if ( ! QQ.isObject(options.subj) ) {
+	constructor(input) {
+		if ( ! QQ.isObject(input.app) ) {
+			alert('Not an app in Action');
+		}
+		if ( ! QQ.isObject(input.subj) ) {
 			alert('Not an object in Action');
 		}
 		this._app           = app;
 		this._time          = app.getTime();
 		this._start         = this._time.now();
-		this._subj          = options.subj;
+		this._subj          = input.subj;
 		this._toRestore     = null;
 		this._lasting       = 0;
-		this._duration      = QQ.default(options.duration, null);
-		this._isAbortable   = QQ.default(options.isAbortable, true);
-		this.onEnd          = QQ.default(options.onEnd, this.onEnd);
+		this._duration      = QQ.default(input.duration, null);
+		this._isAbortable   = QQ.default(input.isAbortable, true);
+		this.onEnd          = QQ.default(input.onEnd, this.onEnd);
 		this.onStart();
-		if ( options.isRestoreOnFinish ) {
+		if ( input.isRestoreOnFinish ) {
 			this._toRestore = this._subj.getAction();
 		}
 	}
@@ -52,17 +55,13 @@ QQ.Actions.Base = class Base {
 	}
 	
 	tick(delta) {
-		this._lasting += delta*1000;
+		this._lasting += delta * 1000;
 		if ( this._duration < this._lasting ) {
 			this.finishAction();
 		}
 	}
 	
 	draw(ctx) {
-	}
-	
-	type() {
-		return 'action';
 	}
 	
 };

@@ -31,8 +31,4 @@ QQ.Actions.BallisticsMove = class BallisticsMove extends QQ.Actions.Base {
 		super.finishAction();
 	}
 	
-	type() {
-		return 'ballisticsMove';
-	}
-	
 };

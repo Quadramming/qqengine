@@ -5,7 +5,7 @@ QQ.Sound = class Sound {
 	}
 	
 	set(input) {
-		for ( let sound of input ) {
+		for ( const sound of input ) {
 			this._sounds.set(sound[0], new Audio(sound[1]));
 		}
 	}

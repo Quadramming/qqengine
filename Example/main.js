@@ -1,7 +1,8 @@
 (function() {
 	
 	const imgs = [
-		['castle', 'castle.png']
+		['castle', 'castle.png'],
+		['grass',  'grass.png']
 	];
 	
 	const sounds = [
@@ -32,7 +33,9 @@ game.seizures.Main = class Main
 	}
 	
 	init() {
+		super.init();
 		this.setCamera();
+		this.setGrass();
 	}
 	
 	setCamera() {
@@ -49,6 +52,26 @@ game.seizures.Main = class Main
 		};
 		resizeCamera();
 		window.addEventListener('resize', resizeCamera);
+	}
+	
+	setGrass() {
+		debugger;
+		let bg = QQ.Subject.make(this._app, {
+			tiled:  true,
+			imgSrc: 'imgs/grass.png'
+		});
+		bg.setPosition(0, 0);
+		bg.setTileSize(3, 3);
+		let resizeBg = () => {
+			let cameraView = this._camera.getView();
+			let cameraX = 0;
+			let cameraY = (cameraView.height-40)/2;
+			bg.setSize(cameraView.width, cameraView.height);
+			bg.setPosition(cameraX, cameraY);
+		};
+		resizeBg();
+		window.addEventListener('resize', resizeBg);
+		this._world.addSubject(bg);
 	}
 	
 };

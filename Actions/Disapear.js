@@ -13,10 +13,6 @@ QQ.Actions.Disapear = class Disapear extends QQ.Actions.Base {
 		}
 	}
 	
-	type() {
-		return 'disapear';
-	}
-	
 };
 
 QQ.Actions.WaitFor = class WaitFor extends QQ.Actions.Base {
@@ -31,10 +27,6 @@ QQ.Actions.WaitFor = class WaitFor extends QQ.Actions.Base {
 		if ( progress === 1 ) {
 			this.finishAction();
 		}
-	}
-	
-	type() {
-		return 'idleFor';
 	}
 	
 };

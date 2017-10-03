@@ -86,7 +86,7 @@ QQ.Application = class Application {
 		if ( rect.isContains(point) ) {
 			return point;
 		}
-		return new QQ.Point(NaN);
+		return false;
 	}
 	
 	//================================================================

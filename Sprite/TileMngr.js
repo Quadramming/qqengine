@@ -18,7 +18,7 @@ QQ.Sprite.TileMngr = class TileSprite extends QQ.Sprite.Mngr {
 				ctx.drawImage(
 					img,
 					x + coveredX, y + coveredY,
-					this._tileWidth,            this._tileHeight
+					this._tileWidth, this._tileHeight
 				);
 				coveredX += this._tileWidth;
 			}

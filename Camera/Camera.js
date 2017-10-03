@@ -97,14 +97,6 @@ QQ.Camera = class Camera {
 		return new QQ.Point(M[0][0], M[0][1]);
 	}
 	
-	getWorldPoint(x, y) {
-		let M = QQ.Matrix.mul(
-			[[x, y, 1]],
-			QQ.Matrix.inverse(this._mainMatrix)
-		);
-		return { x: M[0][0], y: M[0][1] };
-	}
-	
 	getLocalPoint(x, y, subj) {
 		let pos   = subj.getPosition();
 		let scale = subj.getScale();

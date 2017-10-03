@@ -51,7 +51,7 @@ QQ.default = function(value, byDefault) {
 
 
 QQ.isNumbers = function(...args) {
-	for ( let arg of args ) {
+	for ( const arg of args ) {
 		if ( typeof arg !== 'number' ) {
 			return false;
 		}

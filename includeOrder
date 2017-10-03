@@ -10,7 +10,9 @@ ImgManager/ImgManager.js
 Math/Math.js
 Matrix/Matrix.js
 Mouse/Mouse.js
+WorldPointer/WorldPointer.js
 Seizures/Seizures.js
+Seizures/FakeHud.js
 Seizures/SeizureBase.js
 Seizures/Loading.js
 Sprite/Sprite.js

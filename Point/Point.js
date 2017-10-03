@@ -5,30 +5,16 @@ QQ.Point = class Point {
 		this._y = y;
 	}
 	
-	
 	clone() {
 		return new Point(this._x, this._y);
 	}
-
+	
 	copy(point) {
 		this.set(point.x(), point.y());
 	}
 	
 	equals(point) {
 		return (point.x() === this._x) && (point.y() === this._y);
-	}
-	
-	set(x, y = x) {
-		this._x = QQ.default(x, 0);
-		this._y = QQ.default(y, 0);
-	}
-	
-	setX(value) {
-		this._x = value;
-	}
-	
-	setY(value) {
-		this._y = value;
 	}
 	
 	isCorrect() {
@@ -45,6 +31,27 @@ QQ.Point = class Point {
 	
 	isNaN() {
 		return Number.isNaN(this._x) || Number.isNaN(this._y);
+	}
+	
+	set(x, y = x) {
+		this._x = QQ.default(x, 0);
+		this._y = QQ.default(y, 0);
+	}
+	
+	setX(value) {
+		this.x(value);
+	}
+	
+	setY(value) {
+		this.y(value);
+	}
+	
+	w(value) {
+		return this.x(value);
+	}
+	
+	h(value) {
+		return this.y(value);
 	}
 	
 	x(value) {

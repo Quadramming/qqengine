@@ -1,115 +1,3 @@
-QQ.WorldPointer = class WorldPointer {
-	
-	constructor(camera) {
-		this._camera      = camera;
-		this._isBlocked   = false;
-		this._position    = this._calcPosition(NaN);
-		this._startPoint  = this._calcPosition(NaN);
-		this._isClicked   = false;
-		this._isNearStart = false;
-	}
-	
-	reset() {
-		this._position    = this._calcPosition(NaN);
-		this._startPoint  = this._calcPosition(NaN);
-		this._isClicked   = false;
-		this._isNearStart = false;
-	}
-	
-	block(value) {
-		this._isBlocked = value;
-		this.reset();
-	}
-	
-	isClicked() {
-		return this._isClicked;
-	}
-	
-	down(point) {
-		if ( this._isBlocked ) {
-			return;
-		}
-		if ( point.isCorrect() ) {
-			this._isClicked   = true;
-			this._isNearStart = true;
-			this._startPoint  = this._calcPosition(point);
-			this._position    = this._calcPosition(point);
-			c('Down ' + this._position.world.x());
-		} else {
-			this.reset();
-		}
-	}
-	
-	up(point) {
-		if ( this._isBlocked ) {
-			return;
-		}
-		if ( point.isCorrect() ) {
-			this._position = this._calcPosition(point);
-		}
-		if ( this._isClicked ) {
-			c('Up ' + this._position.world.x());
-		}
-		if ( this._isClicked && this._isNearStart ) {
-			c('Click ' + this._position.world.x());
-		}
-		if ( point.isNaN() ) {
-			this._position = this._calcPosition(NaN);
-		}
-		this._startPoint  = this._calcPosition(NaN);
-		this._isClicked   = false;
-		this._isNearStart = false;
-	}
-	
-	move(point) {
-		if ( this._isBlocked ) {
-			return;
-		}
-		if ( point.isCorrect() ) {
-			this._position = this._calcPosition(point);
-			if ( this._isClicked && this._isNearStart ) {
-				const isFar = ! this._position.screen.isNear(
-					this._startPoint.screen, 10
-				);
-				if ( isFar ) {
-					this._isNearStart = false;
-				}
-			}
-		} else {
-			this.reset();
-		}
-	}
-	
-	_calcPosition(point) {
-		if ( Number.isNaN(point) || point.isNaN() ) {
-			return {
-				screen: new QQ.Point(NaN),
-				world:  new QQ.Point(NaN)
-			};
-		} else {
-			return {
-				screen: point,
-				world:  this._camera.screenToWorld(point)
-			};
-		}
-	}
-	
-};
-
-QQ.Seizures.FakeHud = class FakeHud {
-	
-	draw() {
-	}
-	
-	blockInput() {
-	}
-	
-	isHitSomething() {
-		return false;
-	}
-	
-};
-
 QQ.Seizures.Base = class Base {
 	
 	//================================================================
@@ -117,25 +5,29 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 	
 	constructor(input) {
-		const physicsWorld = QQ.default(input.physicsWorld, false);
 		this._app          = input.app;
 		this._szManager    = input.szManager;
 		this._camera       = new QQ.Camera(this._app.getHtmlCanvas());
-		this._input        = new QQ.WorldPointer(this._camera);
-		if ( physicsWorld ) {
+		this._input        = new QQ.WorldPointer();
+		this._hud          = new QQ.Seizures.FakeHud();
+		this._hudRedirect  = false;
+		if ( QQ.default(input.physicsWorld, false) ) {
 			this._world    = new QQ.World.Physics(this._app);
 		} else {
 			this._world    = new QQ.World.Base(this._app);
 		}
-		this._isClicked    = false;
-		this._hud          = new QQ.Seizures.FakeHud();
-		this._hudRedirect  = false;
-		this._startClick   = {};
-		this._blockInput   = false;
 	}
 	
 	init() {
 		// Executes after seizure became active
+		this._input.setActions(
+			point => this.clickDown(point),
+			point => this.clickUp(point),
+			point => this.click(point)
+		);
+		this._input.setScreenToWorld(
+			point => this._camera.screenToWorld(point)
+		);
 	}
 	
 	//================================================================
@@ -159,9 +51,6 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 
 	tick(delta) {
-		if ( this._isClicked && ! this._app.isMouseInCanvas() ) {
-			this.clickUpBase(-1, -1);
-		}
 	}
 	
 	draw() {
@@ -176,8 +65,8 @@ QQ.Seizures.Base = class Base {
 	}
 	
 	tickScroll() {
-		const point = this._app.getPointer();
-		this._camera.tickScroll(mouse.x(), mouse.y(), this._isClicked);
+		//const point = this._app.getPointer();
+		//this._camera.tickScroll(mouse.x(), mouse.y(), this._isClicked);
 	}
 	
 	//================================================================
@@ -187,14 +76,6 @@ QQ.Seizures.Base = class Base {
 	blockInput(value = true) {
 		this._input.block(value);
 		this._hud.blockInput(value);
-	}
-	
-	pointerMove(point) {
-		if ( this._hudRedirect ) {
-			this._hud.pointerMove(point);
-		} else {
-			this._input.move(point);
-		}
 	}
 	
 	pointerDown(point) {
@@ -215,81 +96,58 @@ QQ.Seizures.Base = class Base {
 		}
 	}
 	
-	clickDownBase() {
-		let isHudClick = false;
-		//isHudClick = this._hud._clickDownHud(x, y);
-		if ( ! isHudClick ) {
-			this.clickDown(x, y);
-			this._startClick = {x, y};
-			this._isClicked  = true;
+	pointerMove(point) {
+		if ( this._hudRedirect ) {
+			this._hud.pointerMove(point);
+		} else {
+			this._input.move(point);
 		}
-	}
-	
-	clickUpBase(point) {
-		const x = point.x();
-		const y = point.y();
-		if ( x < 0 || y < 0 ) {
-			return;
-		}
-		if ( this._blockInput ) {
-			return;
-		}
-		if ( this._isClicked ) {
-			const isClose  = this._isPositionsClose(this._startClick, {x, y});
-			const isScroll = this._camera.isScrolling();
-			if ( isClose && ! isScroll ) {
-				this.click(x, y);
-			}
-			this.clickUp(x, y);
-			this._isClicked = false;
-		}
-	}
-	
-	clickDown(x, y) {
-		return this._doWithSubjIfHits(x, y, (subj, worldX, worldY) => {
-			subj.onClickDown(worldX, worldY);
-		});
-	}
-	
-	clickUp(x, y) {
-		return this._doWithSubjIfHits(x, y, (subj, worldX, worldY) => {
-			subj.onClickUp(worldX, worldY);
-		});
-	}
-	
-	click(x, y) {
-		return this._doWithSubjIfHits(x, y, (subj, worldX, worldY) => {
-			subj.onClick(worldX, worldY);
-		});
-	}
-	
-	isHitSomething(point) {
-		if ( point.isNaN() ) {
-			return false;
-		}
-		const point = this._camera.getWorldPoint(point.x(), point.y());
-		return this._world.getSubjectAtPoint(point.x()	, point.y());
-	}
-	
-	_doWithSubjIfHits(x, y, fn) {
-		const point = this._camera.getWorldPoint(x, y);
-		const hited = this._world.getSubjectAtPoint(point.x, point.y);
-		if ( hited ) {
-			fn(hited, point.x, point.y);
-			return true;
-		}
-		return false;
 	}
 	
 	//================================================================
+	// Actions
+	//================================================================
 	
-	_isPositionsClose(f, s) {
-		const epsilon = this._camera.getEpsilon();
-		if ( Math.min(f.x, f.y, s.x, s.y) < 0 ) {
+	clickDown(point) {
+		return this._doWithSubjIfHits(point, (subj, p) => {
+			subj.onClickDown(p);
+		});
+	}
+	
+	clickUp(point) {
+		return this._doWithSubjIfHits(point, (subj, p) => {
+			subj.onClickUp(p);
+		});
+	}
+	
+	click(point) {
+		if ( this._camera.isScrolling() ) {
 			return false;
 		}
-		return Math.abs(f.x - s.x) < epsilon &&
-			   Math.abs(f.y - s.y) < epsilon;
+		return this._doWithSubjIfHits(point, (subj, p) => {
+			subj.onClick(p);
+		});
+	}
+	
+	//================================================================
+	// Common
+	//================================================================
+	
+	isHitSomething(point) {
+		if ( point === false ) {
+			return false;
+		}
+		const worldPoint = this._camera.screenToWorld(point);
+		return this._world.getSubjectAtPoint(worldPoint);
+	}
+	
+	_doWithSubjIfHits(point, fn) {
+		const hited = this._world.getSubjectAtPoint(point);
+		if ( hited ) {
+			fn(hited, point);
+			return true;
+		}
+		return false;
 	}
 	
 	//================================================================

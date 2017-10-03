@@ -27,8 +27,8 @@ QQ.Math.increaseToRatio = function(x, y, target) {
 };
 
 QQ.Math.reduceToSize = function(w, h, size) {
-	let scaleW = 1;
-	let scaleH = 1;
+	const scaleW = 1;
+	const scaleH = 1;
 	if ( w > size ) {
 		scaleW = size / w;
 	}
@@ -39,8 +39,8 @@ QQ.Math.reduceToSize = function(w, h, size) {
 };
 
 QQ.Math.scaleToSize = function(w, h, size) {
-	let scaleW = size / w;
-	let scaleH = size / h;
+	const scaleW = size / w;
+	const scaleH = size / h;
 	return scaleW < scaleH ? scaleW : scaleH;
 };
 
@@ -74,8 +74,8 @@ QQ.Math.sinBetweenVectors = function(ax, ay, bx, by) {
 };
 
 QQ.Math.calcDistance = function(x1, y1, x2, y2) {
-	let a = x1 - x2;
-	let b = y1 - y2;
+	const a = x1 - x2;
+	const b = y1 - y2;
 	return Math.sqrt( a*a + b*b );
 };
 

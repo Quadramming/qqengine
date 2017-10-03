@@ -1,16 +1,16 @@
 QQ.Actions.AngleMove = class AngleMove extends QQ.Actions.Base {
 	
-	constructor(app, options) {
-		super(app, options);
-		this._from     = options.from;
-		this._to       = options.to;
-		this._duration = options.duration;
+	constructor(input) {
+		super(input);
+		this._from     = input.from;
+		this._to       = input.to;
+		this._duration = input.duration;
 	}
 	
 	tick(delta) {
-		let s         = Math.sign;
-		let a         = Math.abs;
-		let progress  = QQ.Math.calcProgress(this._start, this._duration);
+		const s         = Math.sign;
+		const a         = Math.abs;
+		const progress  = QQ.Math.calcProgress(this._start, this._duration);
 		let xDist     = this._to.x - this._from.x;
 		let yDist     = this._to.y - this._from.y;
 		let dist      = a(xDist) + a(yDist);
@@ -23,10 +23,6 @@ QQ.Actions.AngleMove = class AngleMove extends QQ.Actions.Base {
 		if ( progress === 1 ) {
 			this.finishAction();
 		}
-	}
-	
-	type() {
-		return 'move';
 	}
 	
 };
