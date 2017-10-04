@@ -1,8 +1,8 @@
 QQ.Actions.MoveTo = class MoveTo extends QQ.Actions.Move {
 	
-	constructor(app, options) {
+	constructor(input) {
 		options.from = options.subj.getPosition();
-		super(app, options);
+		super(input);
 	}
 	
 };

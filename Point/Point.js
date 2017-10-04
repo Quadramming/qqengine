@@ -1,4 +1,4 @@
-QQ.Point = class Point {
+QQ.Point = QQ.Size = class Point {
 	
 	constructor(x = 0, y = x) {
 		this._x = x;
@@ -38,12 +38,12 @@ QQ.Point = class Point {
 		this._y = QQ.default(y, 0);
 	}
 	
-	setX(value) {
-		this.x(value);
+	width(value) {
+		return this.x(value);
 	}
 	
-	setY(value) {
-		this.y(value);
+	height(value) {
+		return this.y(value);
 	}
 	
 	w(value) {

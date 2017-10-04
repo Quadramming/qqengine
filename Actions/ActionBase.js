@@ -11,10 +11,10 @@ QQ.Actions.Base = class Base {
 		}
 		this._app           = app;
 		this._time          = app.getTime();
-		this._start         = this._time.now();
 		this._subj          = input.subj;
 		this._toRestore     = null;
 		this._lasting       = 0;
+		this._progress      = 0;
 		this._duration      = QQ.default(input.duration, null);
 		this._isAbortable   = QQ.default(input.isAbortable, true);
 		this.onEnd          = QQ.default(input.onEnd, this.onEnd);
@@ -56,8 +56,14 @@ QQ.Actions.Base = class Base {
 	
 	tick(delta) {
 		this._lasting += delta * 1000;
-		if ( this._duration < this._lasting ) {
-			this.finishAction();
+		if ( this._duration !== null ) {
+			this._progress = this._lasting / this._duration;
+			if ( this._progress > 1 ) {
+				this._progress = 1;
+			}
+			if ( this._progress === 1 ) {
+				this.finishAction();
+			}
 		}
 	}
 	
