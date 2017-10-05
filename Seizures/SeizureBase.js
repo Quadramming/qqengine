@@ -25,8 +25,8 @@ QQ.Seizures.Base = class Base {
 			point => this.clickUp(point),
 			point => this.click(point)
 		);
-		this._input.setScreenToWorld(
-			point => this._camera.screenToWorld(point)
+		this._input.setWorldFromScreen(
+			point => this._camera.getWorldFromScreen(point)
 		);
 	}
 	
@@ -137,7 +137,7 @@ QQ.Seizures.Base = class Base {
 		if ( point === false ) {
 			return false;
 		}
-		const worldPoint = this._camera.screenToWorld(point);
+		const worldPoint = this._camera.getWorldFromScreen(point);
 		return this._world.getSubjectAtPoint(worldPoint);
 	}
 	

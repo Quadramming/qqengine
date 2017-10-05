@@ -12,16 +12,16 @@ QQ.Matrix = {};
 				[0, 0, 1]];
 	};
 	
-	QQ.Matrix.getScale = function(x, y) {
-		return [[x, 0, 0],
-				[0, y, 0],
-				[0, 0, 1]];
+	QQ.Matrix.getScale = function(scale) {
+		return [[scale.x(),     0,   0],
+				[      0, scale.y(), 0],
+				[      0,       0,   1]];
 	};
 	
-	QQ.Matrix.getMove = function(x, y) {
-		return [[1, 0, 0],
-				[0, 1, 0],
-				[x, y, 1]];
+	QQ.Matrix.getMove = function(offset) {
+		return [[       1,          0,   0],
+				[       0,          1,   0],
+				[offset.x(), offset.y(), 1]];
 	};
 	
 	QQ.Matrix.getRotate = function(A) {

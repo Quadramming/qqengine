@@ -1,9 +1,17 @@
 QQ.Point = QQ.Size = class Point {
 	
+	//================================================================
+	// Constructor
+	//================================================================
+	
 	constructor(x = 0, y = x) {
 		this._x = x;
 		this._y = y;
 	}
+	
+	//================================================================
+	// Set value functions
+	//================================================================
 	
 	clone() {
 		return new Point(this._x, this._y);
@@ -13,7 +21,16 @@ QQ.Point = QQ.Size = class Point {
 		this.set(point.x(), point.y());
 	}
 	
-	equals(point) {
+	set(x, y = x) {
+		this._x = QQ.default(x, 0);
+		this._y = QQ.default(y, 0);
+	}
+	
+	//================================================================
+	// Check functions
+	//================================================================
+	
+	isEquals(point) {
 		return (point.x() === this._x) && (point.y() === this._y);
 	}
 	
@@ -33,9 +50,12 @@ QQ.Point = QQ.Size = class Point {
 		return Number.isNaN(this._x) || Number.isNaN(this._y);
 	}
 	
-	set(x, y = x) {
-		this._x = QQ.default(x, 0);
-		this._y = QQ.default(y, 0);
+	//================================================================
+	// Get/set functions
+	//================================================================
+	
+	getRatio() {
+		return this._x / this._y;
 	}
 	
 	width(value) {
@@ -69,6 +89,23 @@ QQ.Point = QQ.Size = class Point {
 			return this._y;
 		}
 	}
+	
+	//================================================================
+	// Change functions
+	//================================================================
+	
+	translate(point) {
+		this._x += point.x();
+		this._y += point.y();
+	}
+	
+	add(point) {
+		this.translate(point);
+	}
+	
+	//================================================================
+	// Debug
+	//================================================================
 	
 	debug() {
 		c('Point: (' + this._x + ', '+this._y+')');

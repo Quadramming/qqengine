@@ -8,24 +8,18 @@ QQ.Camera = class Camera {
 		this._epsilon        = 0;
 		this._canvas         = canvas;
 		this._ctx            = canvas.getContext('2d');
-		this._width          = 0;
-		this._height         = 0;
-		this._initWidth      = 0;
-		this._initHeight     = 0;
-		this._x              = 0;
-		this._y              = 0;
 		this._mainMatrix     = 0;
-		this._clip           = null;
+		this._clip           = new QQ.Rect();
+		this._viewSize       = new QQ.Point();
+		this._initViewSize   = new QQ.Point();
+		this._position       = new QQ.Point();
 	}
 	
-	init(width = 1, height = 1, x = 0, y = 0, epsilon = 3) {
-		this._initWidth      = width;
-		this._initHeight     = height;
-		this._width          = width;
-		this._height         = height;
-		this._x              = x;
-		this._y              = y;
-		this._epsilon        = this.widthPercent(epsilon);
+	init(viewSize, position, epsilon = 3) {
+		this._viewSize.copy(viewSize);
+		this._initViewSize.copy(viewSize);
+		this._position.copy(position);
+		this._epsilon = this.widthPercent(epsilon);
 		this._calcMainMatrix();
 		window.addEventListener('resize', () => this._calcMainMatrix());
 	}
@@ -35,6 +29,7 @@ QQ.Camera = class Camera {
 	}
 	
 	tickScroll(x, y, m1) {
+		/*
 		let scroll = this._scroll;
 		if ( x >= 0 && y >= 0 ) {
 			if ( ! scroll.prevM1 && m1 ) {
@@ -71,79 +66,71 @@ QQ.Camera = class Camera {
 			scroll.prevM1   = false;
 			scroll.isActive = false;
 		}
+		*/
 	}
 	
-	getView() {
-		return {
-			width:  this._width,
-			height: this._height
-		};
+	getViewSize() {
+		return this._viewSize;
 	}
 	
 	getViewRect() {
-		return {
-			left:   this._x - this._width/2,
-			top:    this._y + this._height/2,
-			right:  this._x + this._width/2,
-			bottom: this._y - this._height/2
-		};
+		return new QQ.Rect(
+			this._position.x() - this._viewSize.width()/2,
+			this._position.y() + this._viewSize.height()/2,
+			this._position.x() + this._viewSize.width()/2,
+			this._position.y() - this._viewSize.height()/2
+		);
 	}
 	
-	screenToWorld(point) {
-		let M = QQ.Matrix.mul(
+	getWorldFromScreen(point) {
+		const M = QQ.Matrix.mul(
 			[[point.x(), point.y(), 1]],
 			QQ.Matrix.inverse(this._mainMatrix)
 		);
 		return new QQ.Point(M[0][0], M[0][1]);
 	}
 	
-	getLocalPoint(x, y, subj) {
-		let pos   = subj.getPosition();
-		let scale = subj.getScale();
-		let angle = subj.getAngle();
-		let M = QQ.Matrix.mul(
-			[[x, y, 1]],
+	getLocalPoint(point, subj) {
+		const pos   = subj.getPosition();
+		const scale = subj.getScale();
+		const angle = subj.getAngle();
+		const M     = QQ.Matrix.mul(
+			[[point.x(), point.y(), 1]],
 			QQ.Matrix.inverse( this._getSubjMatrix(pos, scale, angle) )
 		);
-		return { x: M[0][0], y: M[0][1] };
+		return new QQ.Point(M[0][0], M[0][1]);
+
 	}
 	
 	getPosition() {
-		return {
-			x: this._x,
-			y: this._y
-		};
+		return this._position;
 	}
 	
 	getEpsilon() {
 		return this._epsilon;
 	}
 	
-	setClip(left, right, top, bottom) {
-		this._clip = { left, right, top, bottom };
+	setClip(rect) {
+		this._clip.copy(rect);
 	}
 	
-	setPos(x, y) {
-		this._x = x;
-		this._y = y;
+	setPosition(point) {
+		this._position = point;
 		this._calcMainMatrix();
 	}
 	
-	setView(w, h) {
-		this._initWidth  = w;
-		this._initHeight = h;
+	setView(size) {
+		this._initViewSize = size;
 		this._calcMainMatrix();
 	}
 	
-	addPos(x, y) {
-		this._x += x;
-		this._y += y;
+	addPosition(offset) {
+		this._position.translate(offset);
 		this._calcMainMatrix();
 	}
 	
-	addView(w, h) {
-		this._initWidth  += w;
-		this._initHeight += h;
+	addView(addition) {
+		this._viewSize.add(addition);
 		this._calcMainMatrix();
 	}
 	
@@ -151,10 +138,10 @@ QQ.Camera = class Camera {
 		this._setTransform( QQ.Matrix.getIdentity() );
 	}
 	
-	draw(subjects, type) {
+	draw(subjects) {
 		let count = 0;
 		subjects.reverse();
-		for ( let subj of subjects ) {
+		for ( const subj of subjects ) {
 			let pos   = subj.getPosition();
 			let scale = subj.getScale();
 			let angle = subj.getAngle();
@@ -164,18 +151,18 @@ QQ.Camera = class Camera {
 			count++;
 		}
 		//c(count);
-		//this._drawAxis();
+		this._drawAxis();
 	}
 	
 	drawRect(rect) {
-		let M = this._mainMatrix;
+		const M = this._mainMatrix;
 		this._setTransform(M);
 		this._ctx.beginPath();
 		this._ctx.rect(
-			rect.left,
-			rect.top,
-			rect.right - rect.left,
-			rect.bottom - rect.top
+			rect.left(),
+			rect.top(),
+			rect.width(),
+			rect.height()
 		);
 		this._ctx.lineWidth   = 1;
 		this._ctx.strokeStyle = '#000000';
@@ -198,16 +185,11 @@ QQ.Camera = class Camera {
 		return this._canvas.height*y / 100;
 	}
 	
-	_isPositionsClose(first, second) {
-		return  Math.abs(first.x - second.x) < this._epsilon &&
-				Math.abs(first.y - second.y) < this._epsilon;
-	}
-	
 	_getMatrix() {
 		let M = QQ.Matrix.getIdentity();
-			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(1, 1));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(new QQ.Point(1, 1)));
 			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(0));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._x, this._y));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._position));
 		return M;
 	}
 	
@@ -218,53 +200,61 @@ QQ.Camera = class Camera {
 	_getScreenMatrix() {
 		let M = QQ.Matrix.getIdentity();
 			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(0));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(
-					 this._canvas.width  / this._width,
-					-this._canvas.height / this._height
-				));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(
-					this._canvas.width  / 2,
-					this._canvas.height / 2
-				));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(new QQ.Point(
+				 this._canvas.width  / this._viewSize.width(),
+				-this._canvas.height / this._viewSize.height()
+			)));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(new QQ.Point(
+				this._canvas.width  / 2,
+				this._canvas.height / 2
+			)));
 		return M;
 	}
 	
 	_getSubjMatrix(pos, scale, angle) {
-		let M      = QQ.Matrix.getIdentity();
-			M      = QQ.Matrix.mul(M, QQ.Matrix.getScale(scale.x, -scale.y));
-			M      = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-angle));
-			M      = QQ.Matrix.mul(M, QQ.Matrix.getMove(pos.x, pos.y));
-			M      = QQ.Matrix.mul(M, this._mainMatrix);
+		let M = QQ.Matrix.getIdentity();
+			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(new QQ.Point(
+				scale.x(), -scale.y()
+			)));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-angle));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(pos));
+			M = QQ.Matrix.mul(M, this._mainMatrix);
 		return M;
 	}
 	
 	_setTransform(M) {
 		this._ctx.setTransform(
-				M[0][0], M[0][1],
-				M[1][0], M[1][1],
-				M[2][0], M[2][1]
-			);
+			M[0][0], M[0][1],
+			M[1][0], M[1][1],
+			M[2][0], M[2][1]
+		);
 	}
 	
 	_fixClip() {
 		if ( this._clip !== null ) {
-			if ( this._x > this._clip.right  ) { this._x = this._clip.right;  };
-			if ( this._x < this._clip.left   ) { this._x = this._clip.left;   };
-			if ( this._y > this._clip.top    ) { this._y = this._clip.top;    };
-			if ( this._y < this._clip.bottom ) { this._y = this._clip.bottom; };
+			if ( this._position.x() > this._clip.right() ) {
+				this._position.x( this._clip.right() );
+			}
+			if ( this._position.x() < this._clip.left() ) {
+				this._position.x( this._clip.left() );
+			}
+			if ( this._position.y() > this._clip.top() ) {
+				this._position.y( this._clip.top() );
+			}
+			if ( this._position.y() < this._clip.bottom() ) {
+				this._position.y( this._clip.bottom() );
+			}
 		}
 	}
 	
 	_calcMainMatrix() {
 		const canvasRatio = (this._canvas.width / this._canvas.height);
-		const cameraRatio = (this._initWidth    / this._initHeight);
+		const cameraRatio = this._initViewSize.getRatio();
 		if ( canvasRatio !== cameraRatio ) {
-			({x: this._width, y: this._height} =
-				QQ.Math.increaseToRatio(
-					this._initWidth,
-					this._initHeight,
-					canvasRatio
-				));
+			this._viewSize = QQ.Math.increaseToRatio(
+				this._initViewSize,
+				canvasRatio
+			);
 		}
 		this._fixClip();
 		this._mainMatrix = QQ.Matrix.mul(
@@ -274,8 +264,8 @@ QQ.Camera = class Camera {
 	}
 	
 	_drawAxis() {
-		let ctx = this._ctx;
-		let M   = this._mainMatrix;
+		const ctx = this._ctx;
+		const M   = this._mainMatrix;
 		this._setTransform(M);
 		for ( let i = -10; i <= 10; i++ ) {
 			ctx.beginPath();

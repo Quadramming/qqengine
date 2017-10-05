@@ -14,7 +14,7 @@ QQ.Mouse = class Mouse {
 		window.addEventListener('mousedown', (e) => {
 			if ( QQ.isNumbers(e.clientX, e.clientY) ) {
 				const point = new QQ.Point(e.clientX, e.clientY);
-				this._process(new QQ.Point(e.clientX, e.clientY), true);
+				this._process(point, true);
 			}
 			e.preventDefault();
 			return false;

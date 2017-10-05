@@ -5,7 +5,7 @@ QQ.Seizures.register.set('Loading',
 		
 		constructor(input) {
 			super(input);
-			this._camera.init();
+			this._camera.init(new QQ.Point(), new QQ.Point());
 			/*
 			this._world.addSubject(
 				new QQ.Text(app, 'Loading')

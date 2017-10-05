@@ -1,19 +1,27 @@
 QQ.WorldPointer = class WorldPointer {
 	
+	//================================================================
+	// Constructor
+	//================================================================
+	
 	constructor() {
-		this._onDown        = () => {};
-		this._onUp          = () => {};
-		this._onClick       = () => {};
-		this._screenToWorld = () => {};
-		this._isBlocked     = false;
-		this._position      = this._processPoint();
-		this._startPoint    = this._processPoint();
-		this._isClicked     = false;
-		this._isNearStart   = false;
+		this._onDown             = () => {};
+		this._onUp               = () => {};
+		this._onClick            = () => {};
+		this._getWorldFromScreen = () => {};
+		this._isBlocked          = false;
+		this._position           = this._processPoint();
+		this._startPoint         = this._processPoint();
+		this._isClicked          = false;
+		this._isNearStart        = false;
 	}
 	
-	setScreenToWorld(fn) {
-		this._screenToWorld = fn;
+	//================================================================
+	// Set functions
+	//================================================================
+	
+	setWorldFromScreen(fn) {
+		this._getWorldFromScreen = fn;
 	}
 	
 	setActions(down, up, click) {
@@ -29,14 +37,26 @@ QQ.WorldPointer = class WorldPointer {
 		this._isNearStart = false;
 	}
 	
+	//================================================================
+	// Check
+	//================================================================
+	
+	isClicked() {
+		return this._isClicked;
+	}
+	
+	//================================================================
+	// Block
+	//================================================================
+	
 	block(value) {
 		this._isBlocked = value;
 		this.reset();
 	}
 	
-	isClicked() {
-		return this._isClicked;
-	}
+	//================================================================
+	// Actions
+	//================================================================
 	
 	down(point) {
 		if ( this._isBlocked ) {
@@ -97,11 +117,15 @@ QQ.WorldPointer = class WorldPointer {
 		}
 	}
 	
+	//================================================================
+	// Process point
+	//================================================================
+	
 	_processPoint(point) {
 		if ( point ) {
 			return {
-				screen: point,
-				world:  this._screenToWorld(point)
+				screen: point.clone(),
+				world:  this._getWorldFromScreen(point)
 			};
 		} else {
 			return {

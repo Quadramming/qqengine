@@ -12,8 +12,8 @@
 	const appConfig = {
 		imgs,
 		sounds,
-		width:  500,
-		height: 400
+		width:  800,
+		height: 600
 	};
 	
 	QQ.start(appConfig);
@@ -34,28 +34,15 @@ game.seizures.Main = class Main
 	
 	init() {
 		super.init();
-		this.setCamera();
-		this.setGrass();
-	}
-	
-	setCamera() {
-		let viewW = 30;
-		let viewH = 40;
-		let initX = 0;
-		let initY = 0;
-		this._camera.init(viewW, viewH, initX, initY);
-		let resizeCamera = () => {
-			let cameraView = this._camera.getView();
-			let cameraY    = (cameraView.height-viewH)/2;
-			this._camera.setPos(initX, cameraY);
-
-		};
-		resizeCamera();
-		window.addEventListener('resize', resizeCamera);
+		this._camera.init(
+			new QQ.Point(40, 30),
+			new QQ.Point( 0,  0)
+		);
+		
+		//this.setGrass();
 	}
 	
 	setGrass() {
-		debugger;
 		let bg = QQ.Subject.make(this._app, {
 			tiled:  true,
 			imgSrc: 'imgs/grass.png'

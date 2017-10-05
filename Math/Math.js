@@ -16,14 +16,12 @@ QQ.Math.randDispersion = function(x) {
 	return x * Math.random() * QQ.Math.any(1,-1);
 };
 
-QQ.Math.increaseToRatio = function(x, y, target) {
-	const ratio = x/y;
-	if ( ratio < target ) {
-		x = y * target;
+QQ.Math.increaseToRatio = function(size, target) {
+	if ( size.getRatio() < target ) {
+		return new QQ.Point(size.y()*target, size.y());
 	} else {
-		y = x / target;
+		return new QQ.Point(size.x(), size.x()/target);
 	}
-	return {x, y};
 };
 
 QQ.Math.reduceToSize = function(w, h, size) {

@@ -29,8 +29,8 @@ QQ.Touch = class Touch {
 		}, options);
 		
 		window.addEventListener('touchend', (e) => {
-			const noPoint = new QQ.Point(NaN);
-			mouse.emulate(noPoint, false);
+			point.set(NaN);
+			mouse.emulate(point, false);
 			e.preventDefault();
 			return false;
 		}, options);
