@@ -7,20 +7,26 @@ QQ.Mouse = class Mouse {
 				const point = new QQ.Point(e.clientX, e.clientY);
 				this._process(point, e.buttons === 1);
 			}
+			e.preventDefault();
+			return false;
 		});
-	
+		
 		window.addEventListener('mousedown', (e) => {
 			if ( QQ.isNumbers(e.clientX, e.clientY) ) {
 				const point = new QQ.Point(e.clientX, e.clientY);
 				this._process(new QQ.Point(e.clientX, e.clientY), true);
 			}
+			e.preventDefault();
+			return false;
 		});
-
+		
 		window.addEventListener('mouseup', (e) => {
 			if ( QQ.isNumbers(e.clientX, e.clientY) ) {
 				const point = new QQ.Point(e.clientX, e.clientY);
 				this._process(point, false);
 			}
+			e.preventDefault();
+			return false;
 		});
 		
 		this._point    = new QQ.Point();
