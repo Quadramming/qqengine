@@ -6,8 +6,7 @@ QQ.Application = class Application {
 	
 	constructor(config) {
 		this._canvas     = new QQ.Canvas('QQApplicationCanvas',
-			config.width,
-			config.height,
+			config.size,
 			config.maximize
 		);
 		this._fpsCounter = new QQ.FpsCounter();

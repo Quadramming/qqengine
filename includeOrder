@@ -1,5 +1,6 @@
 Main/Main.js
 Point/Point.js
+Size/Size.js
 Rect/Rect.js
 Application/Application.js
 Camera/Camera.js

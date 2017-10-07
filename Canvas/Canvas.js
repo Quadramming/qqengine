@@ -1,11 +1,16 @@
 QQ.Canvas = class Canvas {
 	
-	constructor(id, w, h, maximize = false) {
-		this._initSize   = {w, h};
+	//================================================================
+	// Constructor
+	//================================================================
+	
+	constructor(id, size, maximize = false) {
+		this._fullscreen = (size === undefined);
+		if ( ! this._fullscreen ) {
+			this._initSize   = size.clone();
+		}
 		this._maximize   = maximize;
-		this._fullscreen = (w === undefined || h === undefined);
-		this._width      = null;
-		this._height     = null;
+		this._size       = new QQ.Size();
 		this._scale      = 1;
 		this._unit       = null;
 		this._onCalcSize = () => {};
@@ -20,6 +25,10 @@ QQ.Canvas = class Canvas {
 		window.addEventListener('resize', () => this.resize());
 	}
 	
+	//================================================================
+	// Common
+	//================================================================
+	
 	getSizeRect() {
 		return new QQ.Rect(0, 0,
 			this._canvas.width,
@@ -28,11 +37,11 @@ QQ.Canvas = class Canvas {
 	}
 	
 	getWidth() {
-		return this._width;
+		return this._size.width();
 	}
 	
 	getHeight() {
-		return this._height;
+		return this._size.height();
 	}
 	
 	getUnit() {
@@ -59,7 +68,7 @@ QQ.Canvas = class Canvas {
 	}
 	
 	getRatio() {
-		return this._width / this._height;
+		return this._size.width() / this._size.height();
 	}
 	
 	setOnCalcSize(fn) {
@@ -75,7 +84,7 @@ QQ.Canvas = class Canvas {
 		const context = this._context;
 		context.setTransform(1, 0, 0, 1, 0, 0, 0);
 		context.beginPath();
-		context.rect(0, 0, this._width, this._height);
+		context.rect(0, 0, this._size.width(), this._size.height());
 		context.lineWidth   = this._unit;
 		context.strokeStyle = 'black';
 		context.stroke();
@@ -84,6 +93,10 @@ QQ.Canvas = class Canvas {
 	remove() {
 		document.body.removeChild(this._canvas);
 	}
+	
+	//================================================================
+	// Private
+	//================================================================
 	
 	_calcSize() {
 		if ( this._fullscreen ) {
@@ -100,49 +113,48 @@ QQ.Canvas = class Canvas {
 	}
 	
 	_calcNormalSize() {
-		this._width  = this._initSize.w;
-		this._height = this._initSize.h;
-		if ( window.innerWidth < this._width ) {
-			this._height = Math.floor(
-				this._height * (window.innerWidth / this._width)
-			);
-			this._width  = Math.floor(window.innerWidth );
+		this._size.copy(this._initSize);
+		if ( window.innerWidth < this._size.width() ) {
+			this._size.height(Math.floor(
+				this._size.height() * (window.innerWidth / this._size.width())
+			));
+			this._size.width( Math.floor(window.innerWidth) );
 		}
-		if ( window.innerHeight < this._height ) {
-			this._width  = Math.floor(
-				this._width * (window.innerHeight / this._height)
-			);
-			this._height = Math.floor( window.innerHeight );
+		if ( window.innerHeight < this._size.height() ) {
+			this._size.width(Math.floor(
+				this._size.width() * (window.innerHeight / this._size.height())
+			));
+			this._size.height( Math.floor(window.innerHeight) );
 		}
-		this._scale = this._width / this._initSize.w;
-		this._unit  = this._width / 100;
+		this._scale = this._size.width() / this._initSize.width();
+		this._unit  = this._size.width() / 100;
 	}
 	
 	_calcFullscreenSize() {
-		this._width  = window.innerWidth;
-		this._height = window.innerHeight;
+		this._size.width(window.innerWidth);
+		this._size.height(window.innerHeight);
 		this._scale  = 1;
-		this._unit   = this._width / 100;
+		this._unit   = this._size.width() / 100;
 	}
 	
 	_calcMaximizedSize() {
-		const ratio  = this._initSize.w / this._initSize.h;
-		this._width  = window.innerWidth;
-		this._height = Math.floor(this._width/ratio);
-		if ( window.innerHeight < this._height ) {
-			this._height = window.innerHeight;
-			this._width  = Math.floor(this._height*ratio);
+		const ratio  = this._initSize.getRatio();
+		this._size.width(window.innerWidth);
+		this._size.height( Math.floor(this._size.width()/ratio) );
+		if ( window.innerHeight < this._size.height() ) {
+			this._size.height(window.innerHeight);
+			this._size.width(Math.floor(this._size.height()*ratio));
 		}
-		this._scale = this._width / this._initSize.w;
-		this._unit  = this._width / 100;
+		this._scale = this._size.width() / this._initSize.width();
+		this._unit  = this._size.width() / 100;
 	}
 	
 	_calcCanvasSize() {
-		const canvas       = this._canvas;
-		canvas.width       = this._width;
-		canvas.height      = this._height;
-		canvas.style.left  = (window.innerWidth/2  - this._width/2)  + 'px';
-		canvas.style.top   = (window.innerHeight/2 - this._height/2) + 'px';
+		const canvas      = this._canvas;
+		canvas.width      = this._size.width();
+		canvas.height     = this._size.height();
+		canvas.style.left = (window.innerWidth/2  - this._size.w()/2) + 'px';
+		canvas.style.top  = (window.innerHeight/2 - this._size.h()/2) + 'px';
 		this._context.font = 'bold ' +
 							 Math.floor(20 * this.getScale()) + 'px' +
 							 'defaultFont';

@@ -1,8 +1,8 @@
 QQ.Touch = class Touch {
 	
 	constructor(mouse) {
-		let point = new QQ.Point();
-
+		const point = new QQ.Point();
+		
 		const options = {
 			capture: true,
 			passive: false

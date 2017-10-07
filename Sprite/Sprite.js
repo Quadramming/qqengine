@@ -1,16 +1,39 @@
 QQ.Sprite = class Sprite {
 	
+	//================================================================
+	// Constructor
+	//================================================================
+	
 	constructor(readyImg) {
 		if ( readyImg.complete === false ) {
 			alert('QQ.Sprite: img must be completed');
 		}
-		this._alpha   = 1;
-		this._img     = readyImg;
-		this._manager = new Sprite.StaticMngr(
-			readyImg.width,
-			readyImg.height
-		);
 		this._isDisabled = false;
+		this._anchor     = new QQ.Point(0, 0);
+		this._alpha      = 1;
+		this._img        = readyImg;
+		this._manager    = null;
+		this.setStatic();
+	}
+	
+	//================================================================
+	// Common
+	//================================================================
+	
+	isDisabled() {
+		return this._isDisabled;
+	}
+	
+	setAlpha(a) {
+		this._alpha = a;
+	}
+	
+	setAnchor(point) {
+		this._anchor.copy(point);
+	}
+	
+	setDisabled(value) {
+		this._isDisabled = value;
 	}
 	
 	getSize() {
@@ -21,98 +44,92 @@ QQ.Sprite = class Sprite {
 		return this._manager.getRatio();
 	}
 	
-	getDisabled() {
-		return this._isDisabled;
-	}
+	//================================================================
+	// Static manager
+	//================================================================
 	
 	setStatic() {
-		this._manager = new Sprite.StaticMngr(
+		this._manager = new Sprite.StaticMngr( new QQ.Size(
 			this._img.width,
 			this._img.height
-		);
+		));
 	}
 	
-	setDisabled(value) {
-		this._isDisabled = value;
+	//================================================================
+	// Animation manager
+	//================================================================
+	
+	setAnimation(size, fps) {
+		this._manager = new Sprite.AnimateMngr(size, fps, this._img.width);
 	}
 	
-	setAnimation(w, h, fps) {
-		this._manager = new Sprite.AnimateMngr(
-			w, h,
-			fps,
-			this._img.width
-		);
+	//================================================================
+	// Tile manager
+	//================================================================
+	
+	setTileSize(tileSize, size = null) {
+		if ( size === null ) {
+			size = new QQ.Pont(this._img.width, this._img.height);
+		}
+		this._manager = new Sprite.TileMngr(tileSize, size);
 	}
 	
-	setTileSize(x, y, w = this._img.width, h = this._img.height) {
-		this._manager = new Sprite.TileMngr(x, y, w, h);
+	//================================================================
+	// Clip manager
+	//================================================================
+	
+	setClip(rect) {
+		this._manager = new Sprite.ClipMngr(rect);
 	}
 	
-	setClip(x, y, w, h) {
-		this._manager = new Sprite.ClipMngr(x, y, w, h);
-	}
+	//================================================================
+	// Layer manager
+	//================================================================
 	
-	setClipLayer(x, y, w, h) {
-		this._manager = new Sprite.ClipLayerMngr(x, y, w, h);
-	}
-	
-	addClipLayer(x, y, w, h) {
-		if ( this._manager instanceof QQ.Sprite.ClipLayerMngr ) {
-			this._manager.addLayer(x, y, w, h);
+	setClipLayer(rect) {
+		if ( rect instanceof QQ.Rect ) {
+			this._manager = new Sprite.ClipLayerMngr(rect);
 		} else {
-			this.setClipLayer(x, y, w, h);
+			alert('setClipLayer error');
 		}
 	}
 	
-	setAlpha(a) {
-		this._alpha = a;
+	addClipLayer(rect) {
+		if ( this._manager instanceof QQ.Sprite.ClipLayerMngr ) {
+			this._manager.addLayer(rect);
+		} else {
+			this.setClipLayer(rect);
+		}
 	}
 	
-	draw(ctx, inX, inY) {
+	//================================================================
+	// Draw
+	//================================================================
+	
+	draw(ctx) {
 		if ( this._isDisabled ) {
 			return;
 		}
-		//================================================================
-		const isX = (typeof inX === 'number');
-		const isY = (typeof inY === 'number');
-		let pivot, x, y;
-		//================================================================
-		// Input
-		//================================================================
-		if ( isX && isY ) {
-			pivot = Sprite.Pivot.NONE;
-			x     = inX;
-			y     = inY;
-		} else if ( isX && ! isY ) {
-			pivot = inX;
-		} else {
-			pivot = Sprite.Pivot.CENTER;
-		}
-		//================================================================
-		// Calc pivot
-		//================================================================
-		if ( pivot !== Sprite.Pivot.NONE ) {
-			({x, y} = this._calcPosition(pivot));
-		}
-		if ( x === undefined || y === undefined ) {
-			alert('Sprite.draw(): No X and Y provided');
-			return;
-		}
-		//================================================================
-		// Draw
-		//================================================================
+		const point       = this._calcDrawPoint();
 		const changeAlpha = (this._alpha !== 1);
 		if ( changeAlpha ) {
 			ctx.globalAlpha = this._alpha;
 		}
-		this._manager.draw(ctx, x, y, this._img);
+		this._manager.draw(ctx, point, this._img);
 		if ( changeAlpha ) {
 			ctx.globalAlpha = 1;
 		}
 	}
 	
-	_calcPosition(pivot) {
-		return this._manager.calcPosition(pivot);
+	//================================================================
+	// Private
+	//================================================================
+	
+	_calcDrawPoint() {
+		return new QQ.Point(
+			this._anchor.x() * (-this._manager._size.x()),
+			this._anchor.y() * (-this._manager._size.y())
+		);
 	}
 	
 };

@@ -1,23 +1,30 @@
 QQ.Sprite.ClipLayerMngr = class Layer extends QQ.Sprite.Mngr {
 	
-	constructor(x, y, w, h) {
-		super(w, h);
+	constructor(rect) {
+		super( new QQ.Size(rect.width(), rect.height()) );
 		this._clips = [];
-		this.addLayer(x, y, w, h);
+		this.addLayer(rect);
 	}
 	
-	addLayer(x, y, w = this._width, h = this._height) {
-		this._clips.push({x, y, w, h});
+	addLayer(rect) {
+		if ( rect instanceof QQ.Rect ) {
+			this._clips.push(rect);
+		} else {
+			this._clips.push(new QQ.Rect(
+				rect.x(), rect.y(),
+				this._size.w(), this._size.h())
+			);
+		}
 	}
 	
-	draw(ctx, x, y, img) {
-		for ( let l of this._clips ) {
+	draw(ctx, point, img) {
+		for ( const rect of this._clips ) {
 			ctx.drawImage(
 				img,
-				l.x, l.y,
-				l.w, l.h,
-				x, y,
-				this._width, this._height
+				rect.x(), rect.y(),
+				rect.width(), rect.height(),
+				point.x(), point.y(),
+				this._size.w(), this._size.h()
 			);
 		}
 	}

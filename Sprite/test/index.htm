@@ -10,6 +10,9 @@
 			}
 		</script>
 		<script src='../../Main/Main.js'></script>
+		<script src='../../Point/Point.js'></script>
+		<script src='../../Size/Size.js'></script>
+		<script src='../../Rect/Rect.js'></script>
 		<script src='../Sprite.js'></script>
 		<script src='../Pivot.js'></script>
 		<script src='../Mngr.js'></script>
@@ -31,12 +34,12 @@
 			let cvs;
 			let ctx;
 			
-			function draw(offsetX, offsetY, input, pivotText, img = null) {
+			function draw(offsetX, offsetY, pivotText, img = null) {
 				ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
 				if ( img === null ) {
-					char.draw(ctx, ...input);
+					char.draw(ctx);
 				} else {
-					img.draw(ctx, ...input);
+					img.draw(ctx);
 				}
 				ctx.fillText('Pivot: ' + pivotText, 0, 15);
 				ctx.rect(-3, -3, 6, 6);
@@ -53,11 +56,11 @@
 				ctx   = cvs.getContext('2d');
 				char  = new QQ.Sprite(charImg);
 				achar = new QQ.Sprite(charAImg);
-				achar.setAnimation(107, 148, 3);
+				achar.setAnimation(new QQ.Point(107, 148), 3);
 				lchar = new QQ.Sprite(charLImg);
-				lchar.setClipLayer(0, 0, 171, 150);
-				lchar.addClipLayer(171, 0);
-				lchar.addClipLayer(418, 75, 16, 16);
+				lchar.setClipLayer(new QQ.Rect(0, 0, 171, 150));
+				lchar.addClipLayer(new QQ.Point(171, 0));
+				lchar.addClipLayer(new QQ.Rect(418, 75, 16, 16));
 				frame();
 			}
 			
@@ -68,77 +71,61 @@
 				
 				// STATIC
 				char.setStatic();
-				draw(60, 75,   [QQ.Sprite.Pivot.CENTER],       'CENTER');
-				draw(150, 5,   [QQ.Sprite.Pivot.LEFTTOP],      'LEFTTOP');
-				draw(340, 150, [QQ.Sprite.Pivot.CENTERBOTTOM], 'CENTERBOTTOM');
-				draw(480, 5,   [QQ.Sprite.Pivot.CENTERTOP],    'CENTERTOP');
+				char.setAnchor(new QQ.Point(0.5, 0.5));
+				draw(60, 75, '0.5 0.5');
+				char.setAnchor(new QQ.Point(0.75, 0.25));
 				char.setAlpha(0.5);
-				draw(630, 75,  [], 'default');
-				text('Alpha 0.5', 630, 85);
+				draw(220, 40, '0.75, 0.25 (Alpha)');
 				char.setAlpha(1);
-				draw(750, 75,  [-53, -74], '-53, -74');
-				text('Image ratio: ' + char.getRatio(),       0, 170);
-				text('Image width ' + char.getSize().width,  0, 190);
-				text('Image height: ' + char.getSize().height, 0, 210);
+				text('Image ratio: '  + char.getRatio(),         0, 170);
+				text('Image width '   + char.getSize().width(),  0, 190);
+				text('Image height: ' + char.getSize().height(), 0, 210);
 				
 				// CLIP
-				char.setClip(49, 43, 28, 45);
-				draw(60, 275,  [QQ.Sprite.Pivot.CENTER],       'CENTER');
-				draw(150, 255, [QQ.Sprite.Pivot.LEFTTOP],      'LEFTTOP');
-				draw(340, 300, [QQ.Sprite.Pivot.CENTERBOTTOM], 'CENTERBOTTOM');
-				draw(480, 250, [QQ.Sprite.Pivot.CENTERTOP],    'CENTERTOP');
+				char.setClip(new QQ.Rect(49, 43, 28, 45));
+				char.setAnchor(new QQ.Point(0.5, 0.5));
+				draw(60, 300, '0.5 0.5');
+				char.setAnchor(new QQ.Point(0.75, 0.25));
 				char.setAlpha(0.5);
-				draw(630, 275, [], 'default');
-				text('Alpha 0.5', 630, 285);
+				draw(180, 290, '0.75, 0.25 (Alpha)');
 				char.setAlpha(1);
-				draw(750, 275, [-20, -15], '-20, -15');
-				text('Image ratio: ' + char.getRatio(),       0, 370);
-				text('Image width ' + char.getSize().width,  0, 390);
-				text('Image height: ' + char.getSize().height, 0, 410);
-				
+				text('ratio Image: '  + char.getRatio(),         0, 370);
+				text('Image width '   + char.getSize().width(),  0, 390);
+				text('Image height: ' + char.getSize().height(), 0, 410);
+
 				// ANIMATE
-				draw(60,  525, [QQ.Sprite.Pivot.CENTER],       'CENTER', achar);
-				draw(150, 450, [QQ.Sprite.Pivot.LEFTTOP],      'LEFTTOP', achar);
-				draw(340, 600, [QQ.Sprite.Pivot.CENTERBOTTOM], 'CENTERBOTTOM', achar);
-				draw(480, 450, [QQ.Sprite.Pivot.CENTERTOP],    'CENTERTOP', achar);
+				achar.setAnchor(new QQ.Point(0.5, 0.5));
+				draw(60,  525, '0.5 0.5', achar);
+				achar.setAnchor(new QQ.Point(0.75, 0.25));
 				achar.setAlpha(0.5);
-				draw(630, 525, [], 'default', achar);
-				text('Alpha 0.5', 630, 535);
+				draw(220, 485, '0.75, 0.25 (Alpha)', achar);
 				achar.setAlpha(1);
-				draw(725, 470, [-20, -15], '-20, -15', achar);
 				text('Image ratio: ' + achar.getRatio(),       0, 600);
-				text('Image width ' + achar.getSize().width,  0, 615);
-				text('Image height: ' + achar.getSize().height, 0, 630);
-				
+				text('Image width ' + achar.getSize().width(),  0, 615);
+				text('Image height: ' + achar.getSize().height(), 0, 630);
+					
 				// LAYERS
-				draw(100, 750, [QQ.Sprite.Pivot.CENTER],       'CENTER', lchar);
-				draw(200, 675, [QQ.Sprite.Pivot.LEFTTOP],      'LEFTTOP', lchar);
-				draw(500, 830, [QQ.Sprite.Pivot.CENTERBOTTOM], 'CENTERBOTTOM', lchar);
-				draw(700, 675, [QQ.Sprite.Pivot.CENTERTOP],    'CENTERTOP', lchar);
+				lchar.setAnchor(new QQ.Point(0.5, 0.5));
+				draw(100, 750, '0.5 0.5', lchar);
+				lchar.setAnchor(new QQ.Point(0.75, 0.25));
 				lchar.setAlpha(0.5);
-				draw(900, 750, [], 'default', lchar);
-				text('Alpha 0.5', 900, 760);
+				draw(350, 700, '0.75, 0.25 (Alpha)', lchar);
 				lchar.setAlpha(1);
-				draw(1025, 700, [-20, -15], '-20, -15', lchar);
 				text('Image ratio: ' + lchar.getRatio(),       0, 850);
-				text('Image width ' + lchar.getSize().width,  0, 865);
-				text('Image height: ' + lchar.getSize().height, 0, 880);
+				text('Image width ' + lchar.getSize().width(),  0, 865);
+				text('Image height: ' + lchar.getSize().height(), 0, 880);
 				
 				// TILE
-				//char.setTileSize(30, 30, 100, 50);
-				char.setTileSize(50, 30, 100, 50);
-				draw(60,  950, [QQ.Sprite.Pivot.CENTER],       'CENTER');
-				draw(200, 930, [QQ.Sprite.Pivot.LEFTTOP],      'LEFTTOP');
-				draw(400, 970, [QQ.Sprite.Pivot.CENTERBOTTOM], 'CENTERBOTTOM');
-				draw(600, 930, [QQ.Sprite.Pivot.CENTERTOP],    'CENTERTOP');
+				char.setTileSize(new QQ.Size(50, 30), new QQ.Size(100, 50));
+				char.setAnchor(new QQ.Point(0.5, 0.5));
+				draw(60,  950, '0.5 0.5');
+				char.setAnchor(new QQ.Point(0.75, 0.25));
 				char.setAlpha(0.5);
-				draw(800, 950, [], 'default');
-				text('Alpha 0.5', 800, 960);
+				draw(200, 940, '0.75, 0.25 (Alpha)');
 				char.setAlpha(1);
-				draw(1000, 950, [-20, -15], '-20, -15');
 				text('Image ratio: ' + char.getRatio(),       0, 1000);
-				text('Image width ' + char.getSize().width,  0, 1010);
-				text('Image height: ' + char.getSize().height, 0, 1020);
+				text('Image width ' + char.getSize().width(),  0, 1010);
+				text('Image height: ' + char.getSize().height(), 0, 1020);
 			}
 		</script>
 	</head>

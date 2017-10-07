@@ -1,17 +1,17 @@
 QQ.Sprite.ClipMngr = class Clip extends QQ.Sprite.Mngr {
 	
-	constructor(x, y, w, h) {
-		super(w, h);
-		this._clip = {x, y, w, h};
+	constructor(rect) {
+		super( new QQ.Size(rect.w(), rect.h()) );
+		this._clip = rect;
 	}
 	
-	draw(ctx, x, y, img) {
+	draw(ctx, point, img) {
 		ctx.drawImage(
 			img,
-			this._clip.x, this._clip.y,
-			this._clip.w, this._clip.h,
-			x, y,
-			this._width, this._height
+			this._clip.x(), this._clip.y(),
+			this._clip.width(), this._clip.height(),
+			point.x(), point.y(),
+			this._size.w(), this._size.h()
 		);
 	}
 	

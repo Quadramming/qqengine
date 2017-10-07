@@ -47,6 +47,16 @@ QQ.Rect = class Rect {
 		return false;
 	}
 	
+	isIntersect(box) {
+		if ( this.top() < box.bottom() || this.bottom() > box.top() ) {
+			return false;
+		}
+		if ( this.right() < box.left() || this.left() > box.right() ) {
+			return false;
+		}
+		return true;
+	};
+	
 	//================================================================
 	// Get
 	//================================================================
@@ -80,6 +90,14 @@ QQ.Rect = class Rect {
 	}
 	
 	height() {
+		return this._height;
+	}
+	
+	w() {
+		return this._width;
+	}
+	
+	h() {
 		return this._height;
 	}
 	

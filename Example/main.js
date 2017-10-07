@@ -12,8 +12,7 @@
 	const appConfig = {
 		imgs,
 		sounds,
-		width:  800,
-		height: 600
+		size: new QQ.Size(800, 600)
 	};
 	
 	QQ.start(appConfig);

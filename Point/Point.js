@@ -1,4 +1,4 @@
-QQ.Point = QQ.Size = class Point {
+QQ.Point = class Point {
 	
 	//================================================================
 	// Constructor
@@ -53,6 +53,16 @@ QQ.Point = QQ.Size = class Point {
 	//================================================================
 	// Get/set functions
 	//================================================================
+
+	getDistance(point) {
+		const a = this._x - point.x();
+		const b = this._y - point.y();
+		return Math.sqrt( a*a + b*b );
+	}
+	
+	getLength() {
+		return Math.sqrt(this._x*this._x + this._y*this._y);
+	}
 	
 	getRatio() {
 		return this._x / this._y;

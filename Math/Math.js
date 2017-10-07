@@ -18,28 +18,31 @@ QQ.Math.randDispersion = function(x) {
 
 QQ.Math.increaseToRatio = function(size, target) {
 	if ( size.getRatio() < target ) {
-		return new QQ.Point(size.y()*target, size.y());
+		return new QQ.Point(size.height()*target, size.height());
 	} else {
-		return new QQ.Point(size.x(), size.x()/target);
+		return new QQ.Point(size.width(), size.width()/target);
 	}
 };
 
-QQ.Math.reduceToSize = function(w, h, size) {
+QQ.Math.reduceToSize = function(size, value) {
+	const scale = new QQ.Size(1, 1);
 	const scaleW = 1;
 	const scaleH = 1;
-	if ( w > size ) {
-		scaleW = size / w;
+	if ( size.width() > value ) {
+		scale.width(value / size.width());
 	}
-	if ( h > size ) {
-		scaleH = size / h;
+	if ( size.height() > value ) {
+		scale.height(value / size.height());
 	}
-	return scaleW < scaleH ? scaleW : scaleH;
+	return Math.min(scale.w(), scale.h());
 };
 
-QQ.Math.scaleToSize = function(w, h, size) {
-	const scaleW = size / w;
-	const scaleH = size / h;
-	return scaleW < scaleH ? scaleW : scaleH;
+QQ.Math.scaleToSize = function(size, value) {
+	const scale = new QQ.Size(
+		value / size.width(),
+		value / size.height()
+	);
+	return Math.min(scale.w(), scale.h());
 };
 
 QQ.Math.devidePeriod = function(v, period) {
@@ -59,22 +62,14 @@ QQ.Math.devideAngle = function(angle) {
 	return angle;
 };
 
-QQ.Math.sinBetweenVectors = function(ax, ay, bx, by) {
-	const mul  = ax*bx + ay*by;
-	const lenA = Math.sqrt(ax*ax + ay*ay);
-	const lenB = Math.sqrt(bx*bx + by*by);
-	const cos  = mul / (lenA*lenB);
+QQ.Math.sinBetweenVectors = function(A, B) {
+	const mul  = A.x()*B.x() + A.y()*B.y();
+	const cos  = mul / (A.getLength() * B.getLength());
 	let   arg  = 1 - cos*cos;
 	if ( arg < 0 ) {
 		arg = 0;
 	} 
 	return Math.sqrt(arg);
-};
-
-QQ.Math.calcDistance = function(x1, y1, x2, y2) {
-	const a = x1 - x2;
-	const b = y1 - y2;
-	return Math.sqrt( a*a + b*b );
 };
 
 QQ.Math.calcProgress = function(start, duration) {
@@ -90,23 +85,6 @@ QQ.Math.getSign = function(x) {
 QQ.Math.secToMs = function(x) { 
 	 return x * 1000;
  };
-
-QQ.Math.isIntersect = function(box1, box2) {
-	if ( box1.top < box2.bottom || box1.bottom > box2.top ) {
-		return false;
-	}
-	if ( box1.right < box2.left || box1.left > box2.right ) {
-		return false;
-	}
-	return true;
-};
-
-QQ.Math.isInside = function(box1, x, y) {
-	if ( box1.top > y && y > box1.bottom && box1.left < x && x < box1.right ) {
-		return true;
-	}
-	return false;
-};
 
 QQ.Math.calcPivotX = function(p, x, w) {
 	const pivot = QQ.Math.pivot;
