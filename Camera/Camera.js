@@ -109,8 +109,8 @@ QQ.Camera = class Camera {
 		return new QQ.Rect(
 			this._position.x() - this._viewSize.width()/2,
 			this._position.y() + this._viewSize.height()/2,
-			this._position.x() + this._viewSize.width()/2,
-			this._position.y() - this._viewSize.height()/2
+			this._viewSize.width(),
+			this._viewSize.height()
 		);
 	}
 	

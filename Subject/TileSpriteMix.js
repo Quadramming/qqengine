@@ -1,12 +1,11 @@
 QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 	
-	constructor(app, options = {}) {
-		super(app, options);
+	constructor(options) {
+		super(options);
 		this._tileSprite = new QQ.Sprite(
-				this._app.getImg(options.imgSrc)
-			);
-		this._tileWidth  = 1;
-		this._tileHeight = 1;
+			this._app.getImg(options.img)
+		);
+		this._tileSize = new QQ.Point(1, 1);
 		this._calcTileSize();
 	}
 	
@@ -15,14 +14,13 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 		this._tileSprite.draw(ctx);
 	}
 	
-	setTileSize(tw = 1, th = tw) {
-		this._tileWidth  = tw;
-		this._tileHeight = th;
+	setTileSize(size) {
+		this._tileSize.copy(size);
 		this._calcTileSize();
 	}
 	
-	setSize(w, h) {
-		super.setSize(w, h);
+	setSize(size) {
+		super.setSize(size);
 		this._calcTileSize();
 	}
 	
@@ -31,19 +29,20 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 	}
 	
 	getScale() {
-		let size   = this._tileSprite.getSize();
-		let scaleX = this._width  / size.width;
-		let scaleY = this._height / size.height;
-		return { x : scaleX, y : scaleY };
+		const size = this._tileSprite.getSize();
+		return new QQ.Point(
+			this._size.w() / spriteSize.w(),
+			this._size.h() / spriteSize.h()
+		);
 	}
 	
 	_calcTileSize() {
-		let size   = this._tileSprite.getSize();
-		let wRatio = (size.width  / this._width);
-		let hRatio = (size.height / this._height);
+		const size   = this._tileSprite.getSize();
+		const wRatio = (size.w() / this._size.w());
+		const hRatio = (size.h() / this._size.h());
 		this._tileSprite.setTileSize(
-			this._tileWidth  * wRatio,
-			this._tileHeight * hRatio
+			this._tileSize.w() * wRatio,
+			this._tileSize.h() * hRatio
 		);
 	}
 	

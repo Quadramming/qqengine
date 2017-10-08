@@ -1,7 +1,7 @@
 QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	
-	constructor(app, options = {}) {
-		super(app, options);
+	constructor(options) {
+		super(options);
 		this._idle = new QQ.Actions.Base(this._app, {subj: this});
 		this.forceIdleAction();
 	}

@@ -17,7 +17,6 @@ Seizures/FakeHud.js
 Seizures/SeizureBase.js
 Seizures/Loading.js
 Sprite/Sprite.js
-Sprite/Pivot.js
 Sprite/Mngr.js
 Sprite/StaticMngr.js
 Sprite/AnimateMngr.js
@@ -38,7 +37,6 @@ Time/Time.js
 Sound/Sound.js
 Touch/Touch.js
 Value/Value.js
-Value/XY.js
 World/WorldBase.js
 World/Physics.js
 Actions/ActionBase.js

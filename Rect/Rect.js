@@ -47,11 +47,11 @@ QQ.Rect = class Rect {
 		return false;
 	}
 	
-	isIntersect(box) {
-		if ( this.top() < box.bottom() || this.bottom() > box.top() ) {
+	isIntersect(rect) {
+		if ( this.top() < rect.bottom() || this.bottom() > rect.top() ) {
 			return false;
 		}
-		if ( this.right() < box.left() || this.left() > box.right() ) {
+		if ( this.right() < rect.left() || this.left() > rect.right() ) {
 			return false;
 		}
 		return true;

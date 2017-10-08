@@ -1,7 +1,7 @@
 QQ.World.Physics = class Physics extends QQ.World.Base {
 	
-	constructor(app) {
-		super(app);
+	constructor(settings) {
+		super(settings);
 		this._collisions                 = [];
 		this._physics                    = Matter.Engine.create();
 		this._physics.velocityIterations =  4;
@@ -10,7 +10,7 @@ QQ.World.Physics = class Physics extends QQ.World.Base {
 		this._physics.timing.timeScale   =  1;
 		
 		const fillCollisions = (collisions) => {
-			for ( let pair of collisions.pairs ) {
+			for ( const pair of collisions.pairs ) {
 				this._collisions.push(pair);
 			}
 		};
@@ -34,7 +34,7 @@ QQ.World.Physics = class Physics extends QQ.World.Base {
 	}
 	
 	getSubjectByPhysics(body) {
-		for ( let subj of this._subjects ) {
+		for ( const subj of this._subjects ) {
 			if ( subj.isPhysics && subj.getPhysicsBody() === body ) {
 				return subj;
 			}

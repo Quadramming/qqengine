@@ -1,25 +1,32 @@
 QQ.Subject.Base = class Base {
 	
-	constructor(app, options = {}) {
-		this._app         = app;
-		this._x           = QQ.default(options.x,           0);
-		this._y           = QQ.default(options.y,           0);
-		this._width       = QQ.default(options.width,       1);
-		this._height      = QQ.default(options.height,      1);
+	constructor(options) {
+		if ( ! options || ! options.app ) {
+			alert('Subject needs app');
+		}
+		this._app         = options.app;
+		this._position    = new QQ.Point(0, 0);
+		if ( options.position ) {
+			this._position.copy(options.position);
+		}
+		this._size        = new QQ.Point(1, 1);
+		if ( options.size ) {
+			this._size.copy(options.size);
+		}
 		this._angle       = QQ.default(options.angle,       0);
 		this._isClickable = QQ.default(options.isClickable, true);
 		this._z           = QQ.default(options.z,           0);
 		this._world       = QQ.default(options.world,       null);
 	}
 	
-	onClickDown(x, y) {
+	onClickDown(point) {
 	}
 	
-	onClickUp(x, y) {
+	onClickUp(point) {
 	}
 	
-	onClick(x, y) {
-		let local = this.worldToLocalPoint(x, y);
+	onClick(point) {
+		const local = this.worldToLocalPoint(point);
 		//c(x + ' - ' + y);
 		//c(local.x + ' - ' + local.y);
 	}
@@ -35,42 +42,42 @@ QQ.Subject.Base = class Base {
 		return this._isClickable;
 	}
 	
-	worldToLocalPoint(x, y) {
+	worldToLocalPoint(point) {
 		let M = QQ.Matrix.getIdentity();
 			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-this._angle));
-			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._x, this._y));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._position));
 			M = QQ.Matrix.mul(
-				[[x, y, 1]],
-				QQ.Matrix.inverse( M )
+				[[point.x(), point.y(), 1]],
+				QQ.Matrix.inverse(M)
 			);
-		return {x: M[0][0], y: M[0][1]};
+		return new QQ.Point(M[0][0], M[0][1]);
 	}
 	
-	isHit(x, y) {
-		let local  = this.worldToLocalPoint(x, y);
-		const rect = {
-			left:   -this._width  /2,
-			top:     this._height /2,
-			right:   this._width  /2,
-			bottom: -this._height /2
-		};
-		return QQ.Math.isInside(rect, local.x, local.y);
+	isHit(point) {
+		const local  = this.worldToLocalPoint(point);
+		const rect = new QQ.Rect(
+			-this._size.w() /2,
+			 this._size.h() /2,
+			 this._size.w() /2,
+			-this._size.h() /2
+		);
+		return rect.isInside(local);
 	}
 	
-	getBoundsRect() {
-		let size  = this._width  * this._width;
-			size += this._height * this._height;
-			size  = Math.pow(size, 0.5) / 2;
-		return {
-			left:   this._x - size,
-			top:    this._y + size,
-			right:  this._x + size,
-			bottom: this._y - size
-		};
+	getBounds() {
+		let size  = this._size.w() * this._size.w();
+			size += this._size.h() * this._size.h();
+			size  = Math.pow(size, 0.5);
+		return new QQ.Rect(
+			this._position.x() - size,
+			this._position.y() + size,
+			size*2,
+			size*2
+		);
 	}
 	
 	getPosition() {
-		return { x: this._x, y: this._y };
+		return this._position;
 	}
 	
 	getAngle() {
@@ -83,21 +90,23 @@ QQ.Subject.Base = class Base {
 	}
 	
 	getSize() {
-		return { width : this._width, height : this._height };
+		return this._size;
 	}
 	
 	getZ() {
 		return this._z;
 	}
 	
-	setSize(width, height) {
-		this._width  = width;
-		this._height = height;
+	setSize(size) {
+		this._size.copy(size);
 	}
 	
-	addPosition(x, y) {
-		this._x += x;
-		this._y += y;
+	addPosition(offset) {
+		this._position.add(offset);
+	}
+	
+	movePosition(offset) {
+		this.addPosition(offset);
 	}
 	
 	setPosition(x, y, p) {
@@ -119,11 +128,6 @@ QQ.Subject.Base = class Base {
 	
 	setWorld(world) {
 		this._world = world;
-	}
-	
-	movePosition(x, y) {
-		this._x += x;
-		this._y += y;
 	}
 	
 	fitInRect(rect) {

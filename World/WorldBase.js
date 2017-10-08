@@ -2,8 +2,8 @@ QQ.World = {};
 
 QQ.World.Base = class Base {
 	
-	constructor(app, settings = {}) {
-		this._app        = app;
+	constructor(settings) {
+		this._app        = settings.app;
 		this._subjects   = []; // Top at low index
 		this._background = null;
 		this._deltaAccum = 0;
@@ -25,7 +25,7 @@ QQ.World.Base = class Base {
 			}
 			while ( this._deltaAccum > this._timeStep ) {
 				this._deltaAccum -= this._timeStep;
-				for ( let subj of this._subjects ) {
+				for ( const subj of this._subjects ) {
 					subj.tick(this._timeStep);
 				}
 				this.tick(this._timeStep);
@@ -56,8 +56,8 @@ QQ.World.Base = class Base {
 	getSubjectsInRect(rect) {
 		this._sortSubjectsByZ();
 		const result = [];
-		for ( let subj of this._subjects ) {
-			if ( QQ.Math.isIntersect(rect, subj.getBoundsRect()) ) {
+		for ( const subj of this._subjects ) {
+			if ( rect.isIntersect(subj.getBounds()) ) {
 				result.push(subj);
 			}
 		}
@@ -70,7 +70,7 @@ QQ.World.Base = class Base {
 	
 	getSubjectAtPoint(x, y) {
 		this._sortSubjectsByZ();
-		for ( let subj of this._subjects ) {
+		for ( const subj of this._subjects ) {
 			if ( subj.isClickable() ) {
 				if ( subj.isHit(x, y) ) {
 					return subj;
@@ -81,8 +81,8 @@ QQ.World.Base = class Base {
 	
 	getAllSubjectsAtPoint(x, y) {
 		this._sortSubjectsByZ();
-		let subjs = [];
-		for ( let subj of this._subjects ) {
+		const subjs = [];
+		for ( const subj of this._subjects ) {
 			if ( subj.isHit(x, y) ) {
 				subjs.push(subj);
 			}
@@ -128,7 +128,7 @@ QQ.World.Base = class Base {
 	}
 	
 	_sortSubjectsByZ() {
-		let copy = this._subjects.slice();
+		const copy = this._subjects.slice();
 		this._subjects.sort((a, b) => {
 			if ( a.getZ() === b.getZ() ) {
 				return copy.indexOf(a) - copy.indexOf(b);

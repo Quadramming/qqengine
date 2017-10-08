@@ -1,7 +1,7 @@
 QQ.Subject.PhysicsMix = base => class PhysicsMix extends base {
 	
-	constructor(app, options = {}) {
-		super(app, options);
+	constructor(options) {
+		super(options);
 		this._physicsBody = null;
 		if ( options.physics ) {
 			this.setDefaultPhysics(options.physics);
