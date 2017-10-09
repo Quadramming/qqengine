@@ -41,10 +41,14 @@ game.seizures.Main = class Main
 		const options = {
 			app: this._app,
 			img: 'castle',
-			position: new QQ.Point(6, 7),
-			size: new QQ.Point(6, 3)
+			position: new QQ.Point(0, 0),
+			size: new QQ.Point(1, 1)
 		};
 		const castle = new QQ.Subject.Sprite(options);
+		debugger;
+		c(
+			this._camera.getLocalPoint(castle, new QQ.Point(0, 0))
+		);
 		this._world.addSubject(castle);
 		//this.setGrass();
 	}

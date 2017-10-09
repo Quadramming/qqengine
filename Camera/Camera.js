@@ -146,7 +146,6 @@ QQ.Camera = class Camera {
 		this._calcMainMatrix();
 	}
 	
-	
 	//================================================================
 	// Common
 	//================================================================
@@ -159,13 +158,10 @@ QQ.Camera = class Camera {
 		return new QQ.Point(M[0][0], M[0][1]);
 	}
 	
-	getLocalPoint(point, subj) {
-		const pos   = subj.getPosition();
-		const scale = subj.getScale();
-		const angle = subj.getAngle();
-		const M     = QQ.Matrix.mul(
+	getLocalPoint(subj, point) {
+		const M = QQ.Matrix.mul(
 			[[point.x(), point.y(), 1]],
-			QQ.Matrix.inverse( this._getSubjMatrix(pos, scale, angle) )
+			QQ.Matrix.inverse( this._getSubjMatrix(subj) )
 		);
 		return new QQ.Point(M[0][0], M[0][1]);
 	}
@@ -174,10 +170,7 @@ QQ.Camera = class Camera {
 		let count = 0;
 		subjects.reverse();
 		for ( const subj of subjects ) {
-			const pos   = subj.getPosition();
-			const scale = subj.getScale();
-			const angle = subj.getAngle();
-			this._setTransform( this._getSubjMatrix(pos, scale, angle) );
+			this._setTransform( this._getSubjMatrix(subj) );
 			subj.draw(this._ctx);
 			//this.drawRect(subj.getBoundsRect());
 			count++;
@@ -209,16 +202,16 @@ QQ.Camera = class Camera {
 	// Private
 	//================================================================
 	
-	_getMatrix() {
+	_getCameraMatrix() {
 		let M = QQ.Matrix.getIdentity();
-			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(new QQ.Size(1, 1)));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(new QQ.Scale(1, 1)));
 			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(0));
 			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(this._position));
 		return M;
 	}
 	
-	_getInverseMatrix() {
-		return QQ.Matrix.inverse( this._getMatrix() );
+	_getInverseCameraMatrix() {
+		return QQ.Matrix.inverse( this._getCameraMatrix() );
 	}
 	
 	_getScreenMatrix() {
@@ -235,11 +228,12 @@ QQ.Camera = class Camera {
 		return M;
 	}
 	
-	_getSubjMatrix(pos, scale, angle) {
+	_getSubjMatrix(subj) {
+		const pos   = subj.getPosition();
+		const scale = subj.getScale();
+		const angle = subj.getAngle();
 		let M = QQ.Matrix.getIdentity();
-			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(new QQ.Size(
-				scale.x(), -scale.y()
-			)));
+			M = QQ.Matrix.mul(M, QQ.Matrix.getScale(scale));
 			M = QQ.Matrix.mul(M, QQ.Matrix.getRotate(-angle));
 			M = QQ.Matrix.mul(M, QQ.Matrix.getMove(pos));
 			M = QQ.Matrix.mul(M, this._mainMatrix);
@@ -282,7 +276,7 @@ QQ.Camera = class Camera {
 		}
 		this._fixClip();
 		this._mainMatrix = QQ.Matrix.mul(
-			this._getInverseMatrix(),
+			this._getInverseCameraMatrix(),
 			this._getScreenMatrix()
 		);
 	}

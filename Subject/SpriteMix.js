@@ -23,8 +23,9 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 	}
 	
 	getScale() {
+		debugger;
 		const spriteSize = this._sprite.getSize();
-		return new QQ.Point(
+		return new QQ.Scale(
 			this._size.w() / spriteSize.w(),
 			this._size.h() / spriteSize.h()
 		);

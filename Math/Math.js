@@ -25,7 +25,7 @@ QQ.Math.increaseToRatio = function(size, target) {
 };
 
 QQ.Math.reduceToSize = function(size, value) {
-	const scale = new QQ.Size(1, 1);
+	const scale = new QQ.Scale(1, 1);
 	const scaleW = 1;
 	const scaleH = 1;
 	if ( size.width() > value ) {
@@ -38,7 +38,7 @@ QQ.Math.reduceToSize = function(size, value) {
 };
 
 QQ.Math.scaleToSize = function(size, value) {
-	const scale = new QQ.Size(
+	const scale = new QQ.Scale(
 		value / size.width(),
 		value / size.height()
 	);
