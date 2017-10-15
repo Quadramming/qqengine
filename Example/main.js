@@ -2,7 +2,9 @@
 	
 	const imgs = [
 		['castle', 'castle.png'],
-		['grass',  'grass.png']
+		['grass',  'grass.png'],
+		['sky',    'sky.png'],
+		['man',    'man.png']
 	];
 	
 	const sounds = [
@@ -35,41 +37,44 @@ game.seizures.Main = class Main
 		super.init();
 		this._camera.init(
 			new QQ.Point(40, 30),
-			new QQ.Point( 0,  0)
+			new QQ.Point( 3,  3)
 		);
 		
-		const options = {
-			app: this._app,
-			img: 'castle',
-			position: new QQ.Point(0, 0),
-			size: new QQ.Point(1, 1)
-		};
-		const castle = new QQ.Subject.Sprite(options);
-		debugger;
-		c(
-			this._camera.getLocalPoint(castle, new QQ.Point(0, 0))
-		);
-		this._world.addSubject(castle);
+		const grass = this.makeGrass();
+		this._world.addSubject(grass);
+		
+		const castle = new QQ.Subject.Sprite({
+			app:      this._app,
+			img:      'castle',
+			position: new QQ.Point(0, 2),
+			size:     new QQ.Point(10, 10)
+		});
+		grass.addSubject(castle);
+		
+		const man = new QQ.Subject.Sprite({
+			app:      this._app,
+			img:      'man',
+			position: new QQ.Point(2, 2),
+			size:     new QQ.Point(5, 5),
+			anchor:   new QQ.Point(0.5, 0.5)
+		});
+		man.setSpriteAnimation(3, 5);
+		castle.addSubject(man);
+		this._world.setBackground('sky');
+		
 		//this.setGrass();
 	}
 	
-	setGrass() {
-		let bg = QQ.Subject.make(this._app, {
-			tiled:  true,
-			imgSrc: 'imgs/grass.png'
+	makeGrass() {
+		let grass = QQ.Subject.make({
+			app:   this._app,
+			tiled: true,
+			img:   'grass',
+			anchor: new QQ.Point(0.5, 0),
+			size: new QQ.Size(30, 20)
 		});
-		bg.setPosition(0, 0);
-		bg.setTileSize(3, 3);
-		let resizeBg = () => {
-			let cameraView = this._camera.getView();
-			let cameraX = 0;
-			let cameraY = (cameraView.height-40)/2;
-			bg.setSize(cameraView.width, cameraView.height);
-			bg.setPosition(cameraX, cameraY);
-		};
-		resizeBg();
-		window.addEventListener('resize', resizeBg);
-		this._world.addSubject(bg);
+		grass.setTileSize(new QQ.Point(4, 4));
+		return grass;
 	}
 	
 };

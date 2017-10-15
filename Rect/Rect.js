@@ -11,6 +11,14 @@ QQ.Rect = class Rect {
 		this._height = height;
 	}
 	
+	static fromPoints(p) {
+		const left   = Math.min(p[0].x(), p[1].x(), p[2].x(), p[3].x());
+		const top    = Math.min(p[0].y(), p[1].y(), p[2].y(), p[3].y());
+		const right  = Math.max(p[0].x(), p[1].x(), p[2].x(), p[3].x());
+		const bottom = Math.max(p[0].y(), p[1].y(), p[2].y(), p[3].y());
+		return new Rect(left, top, right-left, bottom-top);
+	}
+	
 	//================================================================
 	// Copy functions
 	//================================================================
@@ -31,16 +39,15 @@ QQ.Rect = class Rect {
 	// Checks
 	//================================================================
 	
-	isContains(x, y) { // (Point) or (x, y)
-		if ( x instanceof QQ.Point) {
-			y = x.y();
-			x = x.x();
-		}
+	isContains(point) {
+		let x = point.x();
+		let y = point.y();
+		
 		if ( this._width <= 0 || this._height <= 0 ) {
 			return false;
 		}
 		if ( this._x <= x && x < this._x + this._width ) {
-			if ( this._y <= y  && y < this._y + this._height ) {
+			if ( this._y <= y && y < this._y + this._height ) {
 				return true;
 			}
 		}
@@ -48,7 +55,7 @@ QQ.Rect = class Rect {
 	}
 	
 	isIntersect(rect) {
-		if ( this.top() < rect.bottom() || this.bottom() > rect.top() ) {
+		if ( this.bottom() < rect.top() || this.top() > rect.bottom() ) {
 			return false;
 		}
 		if ( this.right() < rect.left() || this.left() > rect.right() ) {
@@ -107,9 +114,9 @@ QQ.Rect = class Rect {
 	
 	debug() {
 		c('Rect: (');
-		c('x: ' + this._x);
-		c('y: ' + this._y);
-		c('width: ' + this._width);
+		c('x: '      + this._x);
+		c('y: '      + this._y);
+		c('width: '  + this._width);
 		c('height: ' + this._height);
 		c(')');
 	}

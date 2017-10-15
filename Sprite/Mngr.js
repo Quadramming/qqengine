@@ -4,6 +4,10 @@ QQ.Sprite.Mngr = class Mngr {
 		this._size = size.clone();
 	}
 	
+	setSize(size) {
+		this._size = size.clone();
+	}
+	
 	getSize() {
 		return this._size;
 	}

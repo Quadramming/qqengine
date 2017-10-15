@@ -7,15 +7,18 @@ QQ.Seizures.Base = class Base {
 	constructor(input) {
 		this._app          = input.app;
 		this._szManager    = input.szManager;
-		this._camera       = new QQ.Camera(this._app.getHtmlCanvas());
 		this._input        = new QQ.WorldPointer();
 		this._hud          = new QQ.Seizures.FakeHud();
 		this._hudRedirect  = false;
 		if ( QQ.default(input.physicsWorld, false) ) {
-			this._world    = new QQ.World.Physics(this._app);
+			this._world    = new QQ.World.Physics({app: this._app});
 		} else {
-			this._world    = new QQ.World.Base(this._app);
+			this._world    = new QQ.World.Base({app: this._app});
 		}
+		this._camera       = new QQ.Camera(
+			this._app.getHtmlCanvas(),
+			this._world
+		);
 	}
 	
 	init() {
@@ -51,17 +54,13 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 
 	tick(delta) {
+		this._camera.tick();
+		this._world.tick(delta);
 	}
 	
 	draw() {
-		const rect   = this._camera.getViewRect();
-		const toDraw = this._world.getSubjectsInRect(rect);
-		this._camera.draw(toDraw);
+		this._camera.draw();
 		this._hud.draw();
-	}
-	
-	tickWorld(delta) {
-		this._world.tickBase(delta);
 	}
 	
 	tickScroll() {

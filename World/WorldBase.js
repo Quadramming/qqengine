@@ -4,18 +4,23 @@ QQ.World.Base = class Base {
 	
 	constructor(settings) {
 		this._app        = settings.app;
-		this._subjects   = []; // Top at low index
 		this._background = null;
 		this._deltaAccum = 0;
 		// Default
-		this._maxTicks   = 1;
-		this._timeStep   = 0.0166;
-		this._pauseTime  = 0.5;
-		this._pauseable  = false;
-		this.setSettings(settings);
+		this._maxTicks   = QQ.default(settings.maxTicks,  1);
+		this._timeStep   = QQ.default(settings.timeStep,  0.0166);
+		this._pauseTime  = QQ.default(settings.pauseTime, 0.5);
+		this._pauseable  = QQ.default(settings.pauseable, false);
+		this._stage      = new QQ.Container({
+			app: this._app,
+			size: new QQ.Point(10, 10),
+			anchor: new QQ.Point(0.5, 0.5),
+			angle: 0
+		});
+		this._stage.setWorld(this);
 	}
 	
-	tickBase(delta) {
+	tick(delta) {
 		let ticksDone = 0;
 		this._deltaAccum += delta;
 		if ( this._deltaAccum < this._pauseTime ) {
@@ -25,10 +30,8 @@ QQ.World.Base = class Base {
 			}
 			while ( this._deltaAccum > this._timeStep ) {
 				this._deltaAccum -= this._timeStep;
-				for ( const subj of this._subjects ) {
-					subj.tick(this._timeStep);
-				}
-				this.tick(this._timeStep);
+				this._stage.tick(delta);
+				this.tickStep(this._timeStep);
 				ticksDone++;
 			}
 		} else {
@@ -40,60 +43,49 @@ QQ.World.Base = class Base {
 		//c(ticksDone);
 	}
 	
-	tick(delta) {
+	tickStep(delta) {
 	}
 	
-	setBackground(url) {
-		this._background = new QQ.Subject.Sprite(this._app, {imgSrc: url});
+	setBackground(img) {
+		this._background = new QQ.Subject.Sprite({
+			app: this._app,
+			img: img
+		});
+	}
+	
+	getBackground() {
+		return this._background;
 	}
 	
 	addSubject(subj) {
-		this._subjects.unshift(subj);
-		subj.setWorld(this);
-		this._sortSubjectsByZ();
+		this._stage.addSubject(subj);
 	}
 	
-	getSubjectsInRect(rect) {
-		this._sortSubjectsByZ();
-		const result = [];
-		for ( const subj of this._subjects ) {
-			if ( rect.isIntersect(subj.getBounds()) ) {
-				result.push(subj);
-			}
-		}
-		if ( this._background ) {
-			this._background.fitInRect(rect);
-			result.push(this._background);
-		}
-		return result;
+	getStage() {
+		return this._stage;
 	}
 	
-	getSubjectAtPoint(x, y) {
-		this._sortSubjectsByZ();
-		for ( const subj of this._subjects ) {
-			if ( subj.isClickable() ) {
-				if ( subj.isHit(x, y) ) {
-					return subj;
-				}
-			}
+	getSubjectAtPoint(point) {
+		const subjs = this.getSubjects((subj) => {
+			return subj.isHit(point);
+		});
+		if ( subjs.length === 0 ) {
+			return null;
+		} else {
+			c(subjs);
+			return subjs.pop();
 		}
 	}
 	
-	getAllSubjectsAtPoint(x, y) {
-		this._sortSubjectsByZ();
-		const subjs = [];
-		for ( const subj of this._subjects ) {
-			if ( subj.isHit(x, y) ) {
-				subjs.push(subj);
-			}
-		}
-		return subjs;
+	getAllSubjectsAtPoint(point) {
+		return this.getSubjects((subj) => {
+			return subj.isHit(point);
+		});
 	}
 	
 	getSubjects(pred = () => true) {
-		this._sortSubjectsByZ();
 		const subjs = [];
-		this._subjects.forEach(function (subj) {
+		this._stage.forAllSubjects((subj) => {
 			if ( pred(subj) ) {
 				subjs.push(subj);
 			}
@@ -102,31 +94,10 @@ QQ.World.Base = class Base {
 	}
 	
 	setPauseable(v) {
-		this.setSettings({pauseable: v});
+		this._pauseable = v;
 	}
 	
-	setSettings(settings = {}) {
-		if ( typeof(settings.maxTicks) === 'number' ) {
-			this._maxTicks   = settings.maxTicks;
-		}
-		if ( typeof(settings.timeStep) === 'number' ) {
-			this._timeStep   = settings.timeStep;
-		}
-		if ( typeof(settings.pauseTime) === 'number' ) {
-			this._pauseTime  = settings.pauseTime;
-		}
-		if ( typeof(settings.pauseable) === 'boolean' ) {
-			this._pauseable  = settings.pauseable;
-		}
-	}
-	
-	deleteSubject(subj) {
-		const i = this._subjects.indexOf(subj);
-		if ( i > 0 ) {
-			this._subjects.splice(i, 1);
-		}
-	}
-	
+	/*
 	_sortSubjectsByZ() {
 		const copy = this._subjects.slice();
 		this._subjects.sort((a, b) => {
@@ -136,5 +107,6 @@ QQ.World.Base = class Base {
 			return b.getZ() - a.getZ();
 		});
 	}
+	*/
 	
 };

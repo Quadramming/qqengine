@@ -7,6 +7,8 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		this._sprite = new QQ.Sprite(
 			this._app.getImg(this._img)
 		);
+		this._sprite.setSize(this._size);
+		this._sprite.setAnchor(this._anchor);
 	}
 	
 	getImg() {
@@ -14,21 +16,14 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 	}
 	
 	draw(ctx) {
+		ctx.transform(this.getMatrix());
+		this._sprite.draw(ctx.get());
 		super.draw(ctx);
-		this._sprite.draw(ctx);
 	}
 	
-	getImgSize() {
-		return this._sprite.getSize();
-	}
-	
-	getScale() {
-		debugger;
-		const spriteSize = this._sprite.getSize();
-		return new QQ.Scale(
-			this._size.w() / spriteSize.w(),
-			this._size.h() / spriteSize.h()
-		);
+	setSize(size) {
+		super.setSize(size);
+		this._sprite.setSize(size);
 	}
 	
 	setSpriteAnimation(...args) {

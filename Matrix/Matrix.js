@@ -19,9 +19,9 @@ QQ.Matrix = {};
 	};
 	
 	QQ.Matrix.getMove = function(offset) {
-		return [[       1,          0,   0],
-				[       0,          1,   0],
-				[offset.x(), offset.y(), 1]];
+		return [[1, 0, offset.x()],
+				[0, 1, offset.y()],
+				[0, 0,        1  ]];
 	};
 	
 	QQ.Matrix.getRotate = function(A) {

@@ -36,6 +36,10 @@ QQ.Sprite = class Sprite {
 		this._isDisabled = value;
 	}
 	
+	setSize(size) {
+		return this._manager.setSize(size);
+	}
+	
 	getSize() {
 		return this._manager.getSize();
 	}
@@ -59,8 +63,10 @@ QQ.Sprite = class Sprite {
 	// Animation manager
 	//================================================================
 	
-	setAnimation(size, fps) {
-		this._manager = new Sprite.AnimateMngr(size, fps, this._img.width);
+	setAnimation(frames, fps) {
+		const size = this._manager.getSize();
+		const imgSize = new QQ.Point(this._img.width, this._img.height);
+		this._manager = new Sprite.AnimateMngr(frames, fps, size, imgSize);
 	}
 	
 	//================================================================
@@ -69,7 +75,7 @@ QQ.Sprite = class Sprite {
 	
 	setTileSize(tileSize, size = null) {
 		if ( size === null ) {
-			size = new QQ.Pont(this._img.width, this._img.height);
+			size = new QQ.Point(this._img.width, this._img.height);
 		}
 		this._manager = new Sprite.TileMngr(tileSize, size);
 	}
@@ -110,12 +116,12 @@ QQ.Sprite = class Sprite {
 		if ( this._isDisabled ) {
 			return;
 		}
-		const point       = this._calcDrawPoint();
+		const drawPoint   = this._calcDrawPoint();
 		const changeAlpha = (this._alpha !== 1);
 		if ( changeAlpha ) {
 			ctx.globalAlpha = this._alpha;
 		}
-		this._manager.draw(ctx, point, this._img);
+		this._manager.draw(ctx, drawPoint, this._img);
 		if ( changeAlpha ) {
 			ctx.globalAlpha = 1;
 		}

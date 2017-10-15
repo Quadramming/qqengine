@@ -58,3 +58,11 @@ QQ.isNumbers = function(...args) {
 	}
 	return true;
 };
+
+QQ.setTransform = function(ctx, M) {
+	ctx.setTransform(M[0][0], M[1][0], M[0][1], M[1][1], M[0][2], M[1][2]);
+};
+
+QQ.cleanTransform = function(ctx) {
+	ctx.setTransform(1,0,0,1,0,0);
+};

@@ -13,6 +13,10 @@ QQ.Point = class Point {
 	// Set value functions
 	//================================================================
 	
+	cloneOposite() {
+		return new Point(-this._x, -this._y);
+	}
+	
 	clone() {
 		return new Point(this._x, this._y);
 	}

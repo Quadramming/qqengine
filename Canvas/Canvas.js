@@ -68,7 +68,7 @@ QQ.Canvas = class Canvas {
 	}
 	
 	getRatio() {
-		return this._size.width() / this._size.height();
+		return this._size.getRatio();
 	}
 	
 	setOnCalcSize(fn) {
@@ -82,7 +82,7 @@ QQ.Canvas = class Canvas {
 	
 	drawBorder() {
 		const context = this._context;
-		context.setTransform(1, 0, 0, 1, 0, 0, 0);
+		context.setTransform(1, 0, 0, 1, 0, 0);
 		context.beginPath();
 		context.rect(0, 0, this._size.width(), this._size.height());
 		context.lineWidth   = this._unit;

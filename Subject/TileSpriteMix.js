@@ -6,12 +6,15 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 			this._app.getImg(options.img)
 		);
 		this._tileSize = new QQ.Point(1, 1);
+		this._tileSprite.setSize(this._size);
+		this._tileSprite.setAnchor(this._anchor);
 		this._calcTileSize();
 	}
 	
 	draw(ctx) {
+		ctx.transform(this.getMatrix());
+		this._tileSprite.draw(ctx.get());
 		super.draw(ctx);
-		this._tileSprite.draw(ctx);
 	}
 	
 	setTileSize(size) {
@@ -21,11 +24,8 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 	
 	setSize(size) {
 		super.setSize(size);
+		this._tileSprite.setSize(size);
 		this._calcTileSize();
-	}
-	
-	getImgSize() {
-		return this._tileSprite.getSize();
 	}
 	
 	getScale() {
@@ -37,13 +37,7 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 	}
 	
 	_calcTileSize() {
-		const size   = this._tileSprite.getSize();
-		const wRatio = (size.w() / this._size.w());
-		const hRatio = (size.h() / this._size.h());
-		this._tileSprite.setTileSize(
-			this._tileSize.w() * wRatio,
-			this._tileSize.h() * hRatio
-		);
+		this._tileSprite.setTileSize(this._tileSize, this._tileSprite.getSize());
 	}
 	
 };
