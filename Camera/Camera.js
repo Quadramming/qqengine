@@ -9,7 +9,7 @@ QQ.Camera = class Camera {
 			isActive: false,
 			prevM1:   false
 		};
-		this._epsilon        = 0;
+		this._epsilon        = 5;
 		this._canvas         = canvas;
 		this._ctx            = canvas.getContext('2d');
 		this._mainMatrix     = 0;
@@ -18,6 +18,13 @@ QQ.Camera = class Camera {
 		this._initViewSize   = new QQ.Size();
 		this._position       = new QQ.Point();
 		this._world          = world;
+		this._scroll         = {
+			isActive:  false,
+			isClicked: false,
+			start:     new QQ.Point(NaN),
+			world:     new QQ.Point(NaN),
+			screen:    new QQ.Point(NaN)
+		};
 	}
 	
 	init(viewSize, position, epsilon = 3) {
@@ -37,45 +44,42 @@ QQ.Camera = class Camera {
 		return this._scroll.isActive;
 	}
 	
-	tickScroll(x, y, m1) {
-		/*
-		let scroll = this._scroll;
-		if ( x >= 0 && y >= 0 ) {
-			if ( ! scroll.prevM1 && m1 ) {
-				scroll.prevM1   = m1;
-				scroll.isActive = false;
-				scroll.initX   = x;
-				scroll.initY   = y;
+	tickScroll(pointer) {
+		const scroll    = this._scroll;
+		const isClicked = pointer.isClicked();
+		const screen    = pointer.getScreenPoint();
+		const world     = pointer.getWorldPoint();
+		if ( screen ) {
+			if ( ! scroll.isClicked && isClicked ) {
+				scroll.isClicked = true;
+				scroll.isActive  = false;
+				scroll.start.copy(screen);
 				return;
 			}
-			if ( scroll.prevM1 && ! m1 ) {
-				scroll.prevM1   = m1;
-				scroll.isActive = false;
+			if ( scroll.isClicked && ! isClicked ) {
+				scroll.isClicked = false;
+				scroll.isActive  = false;
 				return;
 			}
-			let isClose = this._isPositionsClose(
-				{ x: x,            y: y            },
-				{ x: scroll.initX, y: scroll.initY }
-			);
-			if ( m1 && ! scroll.isActive && ! isClose ) {
-				let position    = this.getWorldPoint(x, y);
+			const isClose = screen.isNear(scroll.start);
+			if ( isClicked && ! scroll.isActive && ! isClose ) {
 				scroll.isActive = true;
-				({x: scroll.scrollX, y: scroll.scrollY} = position);
+				scroll.world.copy(world);
+				return;
 			}
 			if ( scroll.isActive ) {
-				let position = this.getWorldPoint(x, y);
-				this.addPos(
-						scroll.scrollX - position.x,
-						scroll.scrollY - position.y
-					);
-				let newPosition = this.getWorldPoint(x, y);
-				({x: scroll.scrollX, y: scroll.scrollY} = newPosition);
+				const offset = new QQ.Point(
+					scroll.world.x() - world.x(),
+					scroll.world.y() - world.y()
+				);
+				this.addPosition(offset);
 			}
 		} else {
-			scroll.prevM1   = false;
-			scroll.isActive = false;
+			scroll.isClicked = false;
+			scroll.isActive  = false;
+			scroll.screen.set(NaN);
+			scroll.world.set(NaN);
 		}
-		*/
 	}
 	
 	//================================================================
@@ -229,10 +233,10 @@ QQ.Camera = class Camera {
 			if ( this._position.x() < this._clip.left() ) {
 				this._position.x( this._clip.left() );
 			}
-			if ( this._position.y() > this._clip.top() ) {
+			if ( this._position.y() < this._clip.top() ) {
 				this._position.y( this._clip.top() );
 			}
-			if ( this._position.y() < this._clip.bottom() ) {
+			if ( this._position.y() > this._clip.bottom() ) {
 				this._position.y( this._clip.bottom() );
 			}
 		}

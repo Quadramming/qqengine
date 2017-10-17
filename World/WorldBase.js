@@ -12,10 +12,10 @@ QQ.World.Base = class Base {
 		this._pauseTime  = QQ.default(settings.pauseTime, 0.5);
 		this._pauseable  = QQ.default(settings.pauseable, false);
 		this._stage      = new QQ.Container({
-			app: this._app,
-			size: new QQ.Point(10, 10),
+			app:    this._app,
+			size:   new QQ.Point(10, 10),
 			anchor: new QQ.Point(0.5, 0.5),
-			angle: 0
+			angle:  0
 		});
 		this._stage.setWorld(this);
 	}
@@ -72,7 +72,6 @@ QQ.World.Base = class Base {
 		if ( subjs.length === 0 ) {
 			return null;
 		} else {
-			c(subjs);
 			return subjs.pop();
 		}
 	}

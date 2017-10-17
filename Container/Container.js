@@ -35,9 +35,8 @@ QQ.Container = class Container {
 	//================================================================
 	
 	onClickDown(worldPoint) {
-		this.deleteMe();
 		const local = this.worldToLocalPoint(worldPoint);
-		c(local);
+		//c(local);
 	}
 	
 	onClickUp(worldPoint) {

@@ -42,12 +42,12 @@ QQ.Point = class Point {
 		return ! this.isNaN();
 	}
 	
-	isNear(point, epsilon) {
+	isNear(point, epsilon = 0) {
 		if ( point.isNaN() || this.isNaN() ) {
 			return false;
 		}
-		return Math.abs(point.x() - this.x()) < epsilon &&
-			   Math.abs(point.y() - this.y()) < epsilon;
+		return Math.abs(point.x() - this.x()) <= epsilon &&
+			   Math.abs(point.y() - this.y()) <= epsilon;
 	}
 	
 	isNaN() {

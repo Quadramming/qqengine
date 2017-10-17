@@ -19,6 +19,7 @@ QQ.Seizures.Base = class Base {
 			this._app.getHtmlCanvas(),
 			this._world
 		);
+		this._isScrollable = true;
 	}
 	
 	init() {
@@ -54,18 +55,17 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 
 	tick(delta) {
+		this._input.update();
 		this._camera.tick();
+		if ( this._isScrollable ) {
+			this._camera.tickScroll(this._input);
+		}
 		this._world.tick(delta);
 	}
 	
 	draw() {
 		this._camera.draw();
 		this._hud.draw();
-	}
-	
-	tickScroll() {
-		//const point = this._app.getPointer();
-		//this._camera.tickScroll(mouse.x(), mouse.y(), this._isClicked);
 	}
 	
 	//================================================================

@@ -38,11 +38,19 @@ QQ.WorldPointer = class WorldPointer {
 	}
 	
 	//================================================================
-	// Check
+	// Gets
 	//================================================================
 	
 	isClicked() {
 		return this._isClicked;
+	}
+	
+	getScreenPoint() {
+		return this._position.screen;
+	}
+	
+	getWorldPoint() {
+		return this._position.world;
 	}
 	
 	//================================================================
@@ -115,6 +123,12 @@ QQ.WorldPointer = class WorldPointer {
 				this.reset();
 			}
 		}
+	}
+	
+	update() {
+		this._position = this._processPoint(
+			this._position.screen
+		);
 	}
 	
 	//================================================================
