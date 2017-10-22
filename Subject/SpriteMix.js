@@ -15,6 +15,11 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		return this._img;
 	}
 	
+	tick(delta) {
+		super.tick(delta);
+		this._sprite.tick(delta);
+	}
+	
 	draw(ctx) {
 		ctx.transform(this.getMatrix());
 		this._sprite.draw(ctx.get());

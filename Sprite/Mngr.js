@@ -16,4 +16,7 @@ QQ.Sprite.Mngr = class Mngr {
 		return this._size.getRatio();
 	}
 	
+	tick(delta) {
+	}
+	
 };

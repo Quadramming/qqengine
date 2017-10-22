@@ -32,6 +32,10 @@ QQ.World.Base = class Base {
 	tick(delta) {
 		let ticksDone = 0;
 		this._deltaAccum += delta;
+		if ( !this._ddd ) {
+			this._ddd = 0;
+		}
+		this._ddd += delta;
 		if ( this._deltaAccum < this._pauseTime ) {
 			if ( this._deltaAccum > (this._maxTicks+1)*this._timeStep ) {
 				this._deltaAccum = this._maxTicks * this._timeStep +

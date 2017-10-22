@@ -9,7 +9,7 @@
 	];
 	
 	const sounds = [
-		['town', 'town.ogg']
+		['town', 'sound.ogg']
 	];
 	
 	const appConfig = {
@@ -62,7 +62,7 @@ game.seizures.Main = class Main
 			anchor:   new QQ.Point(0.5, 0.5),
 			z:        2
 		});
-		man.setSpriteAnimation(3, 5);
+		man.setSpriteAnimation(3, 1);
 		castle.addSubject(man);
 		this._world.setBackground('sky');
 		this._setHud('Hud');
@@ -105,15 +105,18 @@ game.seizures.Hud = class Hud
 		
 		const text = new QQ.TextScaled({
 			app:       this._app,
-			text:      'A22445555',
+			text:      'A',
 			position:  new QQ.Point(-6, 3),
 			size:      new QQ.Size(5, 5),
 			anchor:    new QQ.Point(0.5, 0.5),
 			align:     'center',
-			valign:    'middle',
+			valign:    'top',
 			fontSize:  2,
 			fontSpace: 0
 		});
+		text.onClick = () => {
+			this._app.playSound('town');
+		};
 		this._world.addSubject(text);
 		this._world.addSubject(box);
 	}

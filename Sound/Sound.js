@@ -12,7 +12,6 @@ QQ.Sound = class Sound {
 	
 	play(strSound) {
 		const sound = this._sounds.get(strSound);
-		// const copy = new Audio(sound.src);
 		sound.currentTime = 0;
 		sound.play();
 	}

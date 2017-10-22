@@ -141,13 +141,15 @@ QQ.Container = class Container {
 	}
 	
 	forAllSubjects(fn) {
-		fn(this);
-		this.forChildren(fn);
+		this.forChildren((child) => {
+			fn(child);
+			child.forAllSubjects(fn);
+		});
 	}
 	
 	forChildren(fn) {
 		for ( const subject of this._subjects ) {
-			subject.forAllSubjects(fn);
+			fn(subject);
 		}
 	}
 	

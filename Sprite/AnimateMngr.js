@@ -2,16 +2,15 @@ QQ.Sprite.AnimateMngr = class Animate extends QQ.Sprite.Mngr {
 	
 	constructor(frames, fps, size, imgSize) {
 		super(size);
-		this._imgSize   = imgSize.clone();
-		this._fps       = fps;
-		this._tpf       = Math.round(1000 / fps);
-		this._frames    = frames;
-		this._startTime = Date.now();
+		this._imgSize    = imgSize.clone();
+		this._fps        = fps;
+		this._tpf        = (1 / fps);
+		this._frames     = frames;
+		this._passedTime = 0;
 	}
 	
 	draw(ctx, point, img) {
-		const diff         = Date.now() - this._startTime;
-		const passedFrames = Math.round(diff/this._tpf);
+		const passedFrames = Math.round(this._passedTime/this._tpf);
 		this._curFrame     = passedFrames % this._frames;
 		ctx.drawImage(
 			img,
@@ -20,6 +19,10 @@ QQ.Sprite.AnimateMngr = class Animate extends QQ.Sprite.Mngr {
 			point.x(), point.y(),
 			this._size.w(), this._size.h()
 		);
+	}
+	
+	tick(delta) {
+		this._passedTime += delta;
 	}
 	
 };
