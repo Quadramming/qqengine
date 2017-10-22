@@ -10,16 +10,29 @@ QQ.Seizures.Base = class Base {
 		this._input        = new QQ.WorldPointer();
 		this._hud          = new QQ.Seizures.FakeHud();
 		this._hudRedirect  = false;
+		const worldInput = {
+			app: this._app,
+			seizure: this
+		};
 		if ( QQ.default(input.physicsWorld, false) ) {
-			this._world    = new QQ.World.Physics({app: this._app});
+			this._world    = new QQ.World.Physics(worldInput);
 		} else {
-			this._world    = new QQ.World.Base({app: this._app});
+			this._world    = new QQ.World.Base(worldInput);
 		}
 		this._camera       = new QQ.Camera(
 			this._app.getHtmlCanvas(),
 			this._world
 		);
-		this._isScrollable = true;
+		this._isScrollable = QQ.default(input.scrolling, false);
+		this._epsilon      = QQ.default(input.epsilon, 1);
+		this._epsilon      = this._camera.widthPercentsToPx(this._epsilon);
+		this._scroll       = {
+			isActive:  false,
+			isClicked: false,
+			start:     new QQ.Point(NaN),
+			world:     new QQ.Point(NaN),
+			screen:    new QQ.Point(NaN)
+		};
 	}
 	
 	init() {
@@ -55,10 +68,11 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 
 	tick(delta) {
+		this._hud.tick(delta);
 		this._input.update();
 		this._camera.tick();
 		if ( this._isScrollable ) {
-			this._camera.tickScroll(this._input);
+			this.tickScroll(delta);
 		}
 		this._world.tick(delta);
 	}
@@ -66,6 +80,52 @@ QQ.Seizures.Base = class Base {
 	draw() {
 		this._camera.draw();
 		this._hud.draw();
+	}
+	
+	//================================================================
+	// Scroll
+	//================================================================
+	
+	isScrolling() {
+		return this._scroll.isActive;
+	}
+	
+	tickScroll() {
+		const scroll    = this._scroll;
+		const isClicked = this._input.isClicked();
+		const screen    = this._input.getScreenPoint();
+		const world     = this._input.getWorldPoint();
+		if ( screen ) {
+			if ( ! scroll.isClicked && isClicked ) {
+				scroll.isClicked = true;
+				scroll.isActive  = false;
+				scroll.start.copy(screen);
+				return;
+			}
+			if ( scroll.isClicked && ! isClicked ) {
+				scroll.isClicked = false;
+				scroll.isActive  = false;
+				return;
+			}
+			const isClose = screen.isNear(scroll.start, this._epsilon);
+			if ( isClicked && ! scroll.isActive && ! isClose ) {
+				scroll.isActive = true;
+				scroll.world.copy(world);
+				return;
+			}
+			if ( scroll.isActive ) {
+				const offset = new QQ.Point(
+					scroll.world.x() - world.x(),
+					scroll.world.y() - world.y()
+				);
+				this._camera.addPosition(offset);
+			}
+		} else {
+			scroll.isClicked = false;
+			scroll.isActive  = false;
+			scroll.screen.set(NaN);
+			scroll.world.set(NaN);
+		}
 	}
 	
 	//================================================================
@@ -114,13 +174,16 @@ QQ.Seizures.Base = class Base {
 	}
 	
 	clickUp(point) {
+		if ( this.isScrolling() ) {
+			return false;
+		}
 		return this._doWithSubjIfHits(point, (subj, p) => {
 			subj.onClickUp(p);
 		});
 	}
 	
 	click(point) {
-		if ( this._camera.isScrolling() ) {
+		if ( this.isScrolling() ) {
 			return false;
 		}
 		return this._doWithSubjIfHits(point, (subj, p) => {

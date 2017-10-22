@@ -135,7 +135,7 @@ QQ.Application = class Application {
 	//================================================================
 	// Get seizure stuff \\ Hide?
 	//================================================================
-	
+	/*.
 	getWorld() {
 		return this._seizures.forActive((sz) => {
 			return sz.getWorld();
@@ -153,7 +153,7 @@ QQ.Application = class Application {
 			return sz.getInput();
 		});
 	}
-	
+	*/
 	//================================================================
 	// Common
 	//================================================================

@@ -46,5 +46,6 @@ Actions/Disapear.js
 Actions/WaitFor.js
 Actions/Move.js
 Actions/MoveTo.js
+Actions/Patrol.js
 Actions/BallisticsMove.js
 GUI/Button.js

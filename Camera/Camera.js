@@ -5,11 +5,6 @@ QQ.Camera = class Camera {
 	//================================================================
 	
 	constructor(canvas, world) {
-		this._scroll = {
-			isActive: false,
-			prevM1:   false
-		};
-		this._epsilon        = 5;
 		this._canvas         = canvas;
 		this._ctx            = canvas.getContext('2d');
 		this._mainMatrix     = 0;
@@ -18,68 +13,14 @@ QQ.Camera = class Camera {
 		this._initViewSize   = new QQ.Size();
 		this._position       = new QQ.Point();
 		this._world          = world;
-		this._scroll         = {
-			isActive:  false,
-			isClicked: false,
-			start:     new QQ.Point(NaN),
-			world:     new QQ.Point(NaN),
-			screen:    new QQ.Point(NaN)
-		};
 	}
 	
-	init(viewSize, position, epsilon = 3) {
+	init(viewSize, position) {
 		this._viewSize.copy(viewSize);
 		this._initViewSize.copy(viewSize);
 		this._position.copy(position);
-		this._epsilon = this.widthPercent(epsilon);
 		this._calcMainMatrix();
 		window.addEventListener('resize', () => this._calcMainMatrix());
-	}
-	
-	//================================================================
-	// Scroll
-	//================================================================
-	
-	isScrolling() {
-		return this._scroll.isActive;
-	}
-	
-	tickScroll(pointer) {
-		const scroll    = this._scroll;
-		const isClicked = pointer.isClicked();
-		const screen    = pointer.getScreenPoint();
-		const world     = pointer.getWorldPoint();
-		if ( screen ) {
-			if ( ! scroll.isClicked && isClicked ) {
-				scroll.isClicked = true;
-				scroll.isActive  = false;
-				scroll.start.copy(screen);
-				return;
-			}
-			if ( scroll.isClicked && ! isClicked ) {
-				scroll.isClicked = false;
-				scroll.isActive  = false;
-				return;
-			}
-			const isClose = screen.isNear(scroll.start);
-			if ( isClicked && ! scroll.isActive && ! isClose ) {
-				scroll.isActive = true;
-				scroll.world.copy(world);
-				return;
-			}
-			if ( scroll.isActive ) {
-				const offset = new QQ.Point(
-					scroll.world.x() - world.x(),
-					scroll.world.y() - world.y()
-				);
-				this.addPosition(offset);
-			}
-		} else {
-			scroll.isClicked = false;
-			scroll.isActive  = false;
-			scroll.screen.set(NaN);
-			scroll.world.set(NaN);
-		}
 	}
 	
 	//================================================================
@@ -94,11 +35,11 @@ QQ.Camera = class Camera {
 		return y / (this._canvas.height/100);
 	}
 	
-	widthPercent(x) {
+	widthPercentsToPx(x) {
 		return this._canvas.width*x / 100;
 	}
 	
-	heightPercent(y) {
+	heightPercentsToPx(y) {
 		return this._canvas.height*y / 100;
 	}
 	
@@ -121,10 +62,6 @@ QQ.Camera = class Camera {
 	
 	getPosition() {
 		return this._position;
-	}
-	
-	getEpsilon() {
-		return this._epsilon;
 	}
 	
 	addPosition(offset) {

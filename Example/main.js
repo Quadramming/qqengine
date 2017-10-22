@@ -4,6 +4,7 @@
 		['castle', 'castle.png'],
 		['grass',  'grass.png'],
 		['sky',    'sky.png'],
+		['box',    'box.png'],
 		['man',    'man.png']
 	];
 	
@@ -29,8 +30,9 @@ game.seizures.Main = class Main
 	extends QQ.Seizures.Base
 {
 	
-	constructor(input) {
-		super(input);
+	constructor(options) {
+		options.scrolling = true;
+		super(options);
 	}
 	
 	init() {
@@ -47,7 +49,8 @@ game.seizures.Main = class Main
 			app:      this._app,
 			img:      'castle',
 			position: new QQ.Point(0, 2),
-			size:     new QQ.Point(10, 10)
+			size:     new QQ.Point(10, 10),
+			z:        1
 		});
 		grass.addSubject(castle);
 		
@@ -56,13 +59,13 @@ game.seizures.Main = class Main
 			img:      'man',
 			position: new QQ.Point(2, 2),
 			size:     new QQ.Point(5, 5),
-			anchor:   new QQ.Point(0.5, 0.5)
+			anchor:   new QQ.Point(0.5, 0.5),
+			z:        2
 		});
 		man.setSpriteAnimation(3, 5);
 		castle.addSubject(man);
 		this._world.setBackground('sky');
-		
-		//this.setGrass();
+		this._setHud('Hud');
 	}
 	
 	makeGrass() {
@@ -80,3 +83,41 @@ game.seizures.Main = class Main
 };
 
 QQ.Seizures.register.set('Main', game.seizures.Main);
+
+game.seizures.Hud = class Hud
+	extends QQ.Seizures.Base
+{
+	
+	init() {
+		super.init();
+		this._camera.init(
+			new QQ.Point(40, 30),
+			new QQ.Point( 0,  0)
+		);
+		
+		const box = new QQ.Subject.DnD({
+			app:      this._app,
+			img:      'box',
+			position: new QQ.Point(5, 5),
+			size:     new QQ.Point(5, 5)
+		});
+		//this._world.addSubject(box);
+		
+		const text = new QQ.TextScaled({
+			app:       this._app,
+			text:      'A22445555',
+			position:  new QQ.Point(-6, 3),
+			size:      new QQ.Size(5, 5),
+			anchor:    new QQ.Point(0.5, 0.5),
+			align:     'center',
+			valign:    'middle',
+			fontSize:  2,
+			fontSpace: 0
+		});
+		this._world.addSubject(text);
+		this._world.addSubject(box);
+	}
+	
+};
+
+QQ.Seizures.register.set('Hud', game.seizures.Hud);

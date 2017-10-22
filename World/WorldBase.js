@@ -2,8 +2,13 @@ QQ.World = {};
 
 QQ.World.Base = class Base {
 	
+	//================================================================
+	// Constructor
+	//================================================================
+	
 	constructor(settings) {
 		this._app        = settings.app;
+		this._seizure    = settings.seizure;
 		this._background = null;
 		this._deltaAccum = 0;
 		// Default
@@ -20,6 +25,10 @@ QQ.World.Base = class Base {
 		this._stage.setWorld(this);
 	}
 	
+	//================================================================
+	// Tick
+	//================================================================
+	
 	tick(delta) {
 		let ticksDone = 0;
 		this._deltaAccum += delta;
@@ -30,7 +39,7 @@ QQ.World.Base = class Base {
 			}
 			while ( this._deltaAccum > this._timeStep ) {
 				this._deltaAccum -= this._timeStep;
-				this._stage.tick(delta);
+				this._stage.tick(this._timeStep);
 				this.tickStep(this._timeStep);
 				ticksDone++;
 			}
@@ -46,6 +55,10 @@ QQ.World.Base = class Base {
 	tickStep(delta) {
 	}
 	
+	//================================================================
+	// Background
+	//================================================================
+	
 	setBackground(img) {
 		this._background = new QQ.Subject.Sprite({
 			app: this._app,
@@ -57,6 +70,10 @@ QQ.World.Base = class Base {
 		return this._background;
 	}
 	
+	//================================================================
+	// Subjects
+	//================================================================
+	
 	addSubject(subj) {
 		this._stage.addSubject(subj);
 	}
@@ -67,7 +84,7 @@ QQ.World.Base = class Base {
 	
 	getSubjectAtPoint(point) {
 		const subjs = this.getSubjects((subj) => {
-			return subj.isHit(point);
+			return subj instanceof QQ.Subject.Base && subj.isHit(point);
 		});
 		if ( subjs.length === 0 ) {
 			return null;
@@ -78,7 +95,7 @@ QQ.World.Base = class Base {
 	
 	getAllSubjectsAtPoint(point) {
 		return this.getSubjects((subj) => {
-			return subj.isHit(point);
+			return subj instanceof QQ.Subject.Base && subj.isHit(point);
 		});
 	}
 	
@@ -92,20 +109,16 @@ QQ.World.Base = class Base {
 		return subjs;
 	}
 	
+	//================================================================
+	// Common
+	//================================================================
+	
+	getInput() {
+		return this._seizure.getInput();
+	}
+	
 	setPauseable(v) {
 		this._pauseable = v;
 	}
-	
-	/*
-	_sortSubjectsByZ() {
-		const copy = this._subjects.slice();
-		this._subjects.sort((a, b) => {
-			if ( a.getZ() === b.getZ() ) {
-				return copy.indexOf(a) - copy.indexOf(b);
-			}
-			return b.getZ() - a.getZ();
-		});
-	}
-	*/
 	
 };

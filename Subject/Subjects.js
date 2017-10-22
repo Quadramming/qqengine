@@ -17,3 +17,8 @@ QQ.Subject.Sprite = class extends
 	QQ.mixins(QQ.Subject.SpriteMix, QQ.Subject.Base)
 {
 };
+
+QQ.Subject.DnD = class extends
+	QQ.mixins(QQ.Subject.DragAndDropMix, QQ.Subject.SpriteMix, QQ.Subject.Base)
+{
+};

@@ -1,5 +1,8 @@
 QQ.World.Physics = class Physics extends QQ.World.Base {
-	
+	//================================================================
+	// RECONSTRUCTION
+	//================================================================
+	/*
 	constructor(settings) {
 		super(settings);
 		this._collisions                 = [];
@@ -59,5 +62,5 @@ QQ.World.Physics = class Physics extends QQ.World.Base {
 		}
 		super.deleteSubject(subj);
 	}
-	
+	*/
 };

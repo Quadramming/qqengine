@@ -2,46 +2,48 @@ QQ.Subject.DragAndDropMix = base => class DragAndDropMix extends base {
 	
 	constructor(options) {
 		super(options);
-		this._sz         = app.getSz();
-		this._camera     = this._sz.getCamera();
-		this.dragAndDrop = {
+		this._input      = null;
+		this._dragAndDrop = {
 			isDraging: false,
-			x:         0,
-			y:         0
+			point:     new QQ.Point(NaN)
 		};
 	}
 	
-	onClickDown(x, y) {
-		super.onClickDown();
-		const subjPoint            = this.worldToLocalPoint(x, y);
-		this.dragAndDrop.isDraging = true;
-		this.dragAndDrop.x         = subjPoint.x;
-		this.dragAndDrop.y         = subjPoint.y;
+	setWorld(world) {
+		super.setWorld(world);
+		this._input = this._world.getInput();
 	}
 	
-	onClickUp() {
-		super.onClickUp();
+	onClickDown(point) {
+		super.onClickDown(point);
+		this._dragAndDrop.isDraging = true;
+		this._dragAndDrop.point.copy(
+			this.worldToLocalPoint(point)
+		);
+	}
+	
+	onClickUp(point) {
+		super.onClickUp(point);
 		this.onDrop();
-		this.dragAndDrop.isDraging = false;
+		this._dragAndDrop.isDraging = false;
 	}
 	
 	onDrop() {
 	}
 	
-	tick() {
-		// FIX ME
-		super.tick();
-		if ( this.dragAndDrop.isDraging ) {
-			if ( this._app.isMouseInCanvas() && this._sz.isClicked() ) {
-				let mouse    = this._app.getPointer();
-				let position = this._camera.getWorldPoint(mouse.x(), mouse.y());
-				let subjPos  = this.getPosition();
-				let deltaX   = position.x - subjPos.x - this.dragAndDrop.x;
-				let deltaY   = position.y - subjPos.y - this.dragAndDrop.y;
-				this.addPosition(deltaX, deltaY);
+	tick(delta) {
+		super.tick(delta);
+		if ( this._dragAndDrop.isDraging ) {
+			if ( this._input.isClicked() ) {
+				const DnD   = this._dragAndDrop;
+				const point = this._input.getWorldPoint();
+				this.setPosition( new QQ.Point(
+					point.x() - DnD.point.x(),
+					point.y() - DnD.point.y(),
+				));
 			} else {
 				this.onClickUp();
-				this.dragAndDrop.isDraging = false;
+				this._dragAndDrop.isDraging = false;
 			}
 		}
 	}

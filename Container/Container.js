@@ -22,8 +22,8 @@ QQ.Container = class Container {
 		if ( options.anchor ) {
 			this._anchor.copy(options.anchor);
 		}
-		this._angle       = QQ.default(options.angle, 0);
 		this._subjects    = [];
+		this._angle       = QQ.default(options.angle, 0);
 		this._parent      = QQ.default(options.parent, null);
 		this._isClickable = QQ.default(options.isClickable, true);
 		this._z           = QQ.default(options.z, 0);
@@ -36,7 +36,6 @@ QQ.Container = class Container {
 	
 	onClickDown(worldPoint) {
 		const local = this.worldToLocalPoint(worldPoint);
-		//c(local);
 	}
 	
 	onClickUp(worldPoint) {
@@ -98,12 +97,13 @@ QQ.Container = class Container {
 	//================================================================
 	
 	tick(delta) {
+		this._sortSubjectsByZ();
 		this.forChildren( (subj) => subj.tick(delta) );
 	}
 	
 	draw(ctx) {
 		ctx.transform(this.getMatrix());
-		//this._drawLocalBorder(ctx);
+		this._drawLocalBorder(ctx);
 		this.forChildren( (subj) => subj.draw(ctx) );
 	}
 	
@@ -169,6 +169,9 @@ QQ.Container = class Container {
 	}
 	
 	isHit(worldPoint) {
+		if ( ! this._isClickable ) {
+			return false;
+		}
 		const local = this.worldToLocalPoint(worldPoint);
 		const rect  = this._getLocalRect();
 		return rect.isContains(local);
@@ -209,7 +212,10 @@ QQ.Container = class Container {
 	//================================================================
 	
 	addPosition(offset) {
-		this._position.add(offset);
+		this.setPosition( new QQ.Point(
+			this._position.x() + offset.x(),
+			this._position.y() + offset.y(),
+		));
 	}
 	
 	movePosition(offset) {
@@ -245,6 +251,16 @@ QQ.Container = class Container {
 	//================================================================
 	// Private
 	//================================================================
+	
+	_sortSubjectsByZ() {
+		const copy = this._subjects.slice();
+		this._subjects.sort((a, b) => {
+			if ( a.getZ() === b.getZ() ) {
+				return copy.indexOf(a) - copy.indexOf(b);
+			}
+			return b.getZ() - a.getZ();
+		});
+	}
 	
 	_getLocalRect() {
 		return new QQ.Rect(
