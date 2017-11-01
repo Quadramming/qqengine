@@ -84,8 +84,8 @@ QQ.Sprite = class Sprite {
 	// Clip manager
 	//================================================================
 	
-	setClip(rect) {
-		this._manager = new Sprite.ClipMngr(rect);
+	setClip(rect, size) {
+		this._manager = new Sprite.ClipMngr(rect, size);
 	}
 	
 	//================================================================

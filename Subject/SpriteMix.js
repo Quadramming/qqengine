@@ -35,6 +35,10 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		this._sprite.setAnimation(...args);
 	}
 	
+	setClip(rect) {
+		this._sprite.setClip(rect, this._size);
+	}
+	
 	setAlpha(a) {
 		this._alpha = a;
 		this._sprite.setAlpha(a);

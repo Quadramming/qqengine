@@ -4,8 +4,8 @@ QQ.Container = class Container {
 	// Constructor
 	//================================================================
 	
-	constructor(options) {
-		this._app         = options.app;
+	constructor(options = {}) {
+		this._app         = QQ.default(options.app, null);
 		this._position    = new QQ.Point(0, 0);
 		if ( options.position ) {
 			this._position.copy(options.position);
@@ -28,6 +28,12 @@ QQ.Container = class Container {
 		this._isClickable = QQ.default(options.isClickable, true);
 		this._z           = QQ.default(options.z, 0);
 		this._world       = QQ.default(options.world, null);
+		this._matrix      = {
+			cached:   null,
+			position: new QQ.Point(),
+			scale:    new QQ.Scale(),
+			angle:    null
+		};
 	}
 	
 	//================================================================
@@ -48,13 +54,34 @@ QQ.Container = class Container {
 	// Matrix and convertations
 	//================================================================
 	
+	calcMatrix() {
+		let M;
+		M = QQ.Matrix.getScale(this._scale);
+		M = QQ.Matrix.mul(QQ.Matrix.getRotate(this._angle), M);
+		M = QQ.Matrix.mul(QQ.Matrix.getMove(this._position), M);
+		this._matrix.cached = M;
+		this._matrix.position.copy(this._position);
+		this._matrix.scale.copy(this._scale);
+		this._matrix.angle = this._angle;
+		return M;
+	}
+	
 	getMatrix(withParent = true) {
-		let M = QQ.Matrix.getScale(this._scale);
-			M = QQ.Matrix.mul(QQ.Matrix.getRotate(this._angle), M);
-			M = QQ.Matrix.mul(QQ.Matrix.getMove(this._position), M);
-			if ( this._parent && withParent ) {
-				M = QQ.Matrix.mul(this._parent.getMatrix(), M);
+		let M = null;
+		if ( this._matrix.cached ) {
+			const position = this._matrix.position.isEquals(this._position);
+			const angle    = this._matrix.angle === this._angle;
+			const scale    = this._matrix.scale.isEquals(this._scale);
+			if ( position && angle && scale ) {
+				M = this._matrix.cached;
 			}
+		}
+		if ( M === null ) {
+			M = this.calcMatrix();
+		}
+		if ( withParent && this._parent ) {
+			M = QQ.Matrix.mul(this._parent.getMatrix(), M);
+		}
 		return M;
 	}
 	
@@ -97,13 +124,13 @@ QQ.Container = class Container {
 	//================================================================
 	
 	tick(delta) {
-		this._sortSubjectsByZ();
 		this.forChildren( (subj) => subj.tick(delta) );
+		this._sortSubjectsByZ();
 	}
 	
 	draw(ctx) {
 		ctx.transform(this.getMatrix());
-		this._drawLocalBorder(ctx);
+		//this._drawLocalBorder(ctx);
 		this.forChildren( (subj) => subj.draw(ctx) );
 	}
 	
@@ -114,6 +141,7 @@ QQ.Container = class Container {
 	addSubject(subj) {
 		subj.setWorld(this._world);
 		subj.setParent(this);
+		subj.setApp(this._app);
 		this._subjects.push(subj);
 	}
 	
@@ -162,6 +190,11 @@ QQ.Container = class Container {
 		this.forChildren( (subj) => subj.setWorld(world) );
 	}
 	
+	setApp(app) {
+		this._app = app;
+		this.forChildren( (subj) => subj.setApp(app) );
+	}
+	
 	//================================================================
 	// Gets
 	//================================================================
@@ -197,6 +230,14 @@ QQ.Container = class Container {
 	
 	getZ() {
 		return this._z;
+	}
+	
+	getAnchor() {
+		return this._anchor;
+	}
+	
+	getApp() {
+		return this._app;
 	}
 	
 	getBounds() {
@@ -260,7 +301,7 @@ QQ.Container = class Container {
 			if ( a.getZ() === b.getZ() ) {
 				return copy.indexOf(a) - copy.indexOf(b);
 			}
-			return b.getZ() - a.getZ();
+			return a.getZ() - b.getZ();
 		});
 	}
 	

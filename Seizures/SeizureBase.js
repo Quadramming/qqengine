@@ -9,6 +9,7 @@ QQ.Seizures.Base = class Base {
 		this._szManager    = input.szManager;
 		this._input        = new QQ.WorldPointer();
 		this._hud          = new QQ.Seizures.FakeHud();
+		this._parent       = QQ.default(input.parent, null);
 		this._hudRedirect  = false;
 		const worldInput = {
 			app: this._app,
@@ -48,7 +49,7 @@ QQ.Seizures.Base = class Base {
 	}
 	
 	//================================================================
-	// Gets
+	// Gets / Sets
 	//================================================================
 	
 	getInput() {
@@ -66,7 +67,7 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 	// Ticks & draw
 	//================================================================
-
+	
 	tick(delta) {
 		this._hud.tick(delta);
 		this._input.update();
@@ -217,6 +218,7 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 	
 	_setHud(sz, input) {
+		input.parent = this;
 		this._hud = this._szManager.create(sz, input, false);
 	}
 	

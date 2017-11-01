@@ -6,6 +6,9 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 			this._app.getImg(options.img)
 		);
 		this._tileSize = new QQ.Point(1, 1);
+		if ( options.tileSize ) {
+			this._tileSize.copy(options.tileSize);
+		}
 		this._tileSprite.setSize(this._size);
 		this._tileSprite.setAnchor(this._anchor);
 		this._calcTileSize();

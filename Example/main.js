@@ -52,6 +52,10 @@ game.seizures.Main = class Main
 			size:     new QQ.Point(10, 10),
 			z:        1
 		});
+		castle.setClip( new QQ.Rect(
+			40, 110,
+			630, 260
+		));
 		grass.addSubject(castle);
 		
 		const man = new QQ.Subject.Sprite({
@@ -74,7 +78,7 @@ game.seizures.Main = class Main
 			tiled: true,
 			img:   'grass',
 			anchor: new QQ.Point(0.5, 0),
-			size: new QQ.Size(30, 20)
+			size:   new QQ.Size(30, 20)
 		});
 		grass.setTileSize(new QQ.Point(4, 4));
 		return grass;

@@ -1,7 +1,7 @@
 QQ.Sprite.ClipMngr = class Clip extends QQ.Sprite.Mngr {
 	
-	constructor(rect) {
-		super( new QQ.Size(rect.w(), rect.h()) );
+	constructor(rect, size) {
+		super(size);
 		this._clip = rect;
 	}
 	

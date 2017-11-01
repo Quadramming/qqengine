@@ -135,7 +135,7 @@ QQ.Application = class Application {
 	//================================================================
 	// Get seizure stuff \\ Hide?
 	//================================================================
-	/*.
+	/*
 	getWorld() {
 		return this._seizures.forActive((sz) => {
 			return sz.getWorld();
@@ -153,6 +153,11 @@ QQ.Application = class Application {
 			return sz.getInput();
 		});
 	}
+	
+	getTime() { // hide?
+		c('Am I need? getTime');
+		return this._time;
+	}
 	*/
 	//================================================================
 	// Common
@@ -164,11 +169,6 @@ QQ.Application = class Application {
 	
 	getHtmlContext() {
 		return this._canvas.getContext();
-	}
-	
-	getTime() { // hide?
-		c('Am I need? getTime');
-		return this._time;
 	}
 	
 	//================================================================
@@ -198,7 +198,7 @@ QQ.Application = class Application {
 	
 	_draw() {
 		this._seizures.draw();
-		this._canvas.drawBorder();
+		//this._canvas.drawBorder();
 		this._fpsCounter.show(this._canvas.getContext());
 	}
 	

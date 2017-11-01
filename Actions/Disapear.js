@@ -5,4 +5,8 @@ QQ.Actions.Disapear = class Disapear extends QQ.Actions.Base {
 		this._subj.setAlpha(1 - this._progress);
 	}
 	
+	onEnd() {
+		this._subj.deleteMe();
+	}
+	
 };

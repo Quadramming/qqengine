@@ -113,7 +113,7 @@ QQ.Camera = class Camera {
 		}	
 		this._world.getStage().draw(ctxObj);
 		//this.drawRect(subj.getBounds());
-		this._drawAxis();
+		//this._drawAxis();
 	}
 	
 	tick() {

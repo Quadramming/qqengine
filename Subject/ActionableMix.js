@@ -2,7 +2,7 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	
 	constructor(options) {
 		super(options);
-		this._idle = new QQ.Actions.Base(this._app, {subj: this});
+		this._idle = new QQ.Actions.Base();
 		this.forceIdleAction();
 	}
 	
@@ -22,6 +22,9 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	
 	forceAction(action) {
 		this._action = action;
+		this._action.setApp(this._app);
+		this._action.setSubject(this);
+		this._action.onStart();
 	}
 	
 	setAction(action) {

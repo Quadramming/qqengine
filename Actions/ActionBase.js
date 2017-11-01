@@ -2,26 +2,26 @@ QQ.Actions = {};
 
 QQ.Actions.Base = class Base {
 	
-	constructor(input) {
-		if ( ! QQ.isObject(input.app) ) {
-			alert('Not an app in Action');
-		}
-		if ( ! QQ.isObject(input.subj) ) {
-			alert('Not an object in Action');
-		}
-		this._app           = app;
-		this._time          = app.getTime();
-		this._subj          = input.subj;
+	constructor(input = {}) {
+		this._app           = QQ.default(input.app, null);
+		this._subj          = QQ.default(input.subj, null);
 		this._toRestore     = null;
 		this._lasting       = 0;
 		this._progress      = 0;
 		this._duration      = QQ.default(input.duration, null);
 		this._isAbortable   = QQ.default(input.isAbortable, true);
 		this.onEnd          = QQ.default(input.onEnd, this.onEnd);
-		this.onStart();
 		if ( input.isRestoreOnFinish ) {
 			this._toRestore = this._subj.getAction();
 		}
+	}
+	
+	setApp(app) {
+		this._app = app;
+	}
+	
+	setSubject(subj) {
+		this._subj = subj;
 	}
 	
 	setAbortable(value) {
@@ -55,7 +55,7 @@ QQ.Actions.Base = class Base {
 	}
 	
 	tick(delta) {
-		this._lasting += delta * 1000;
+		this._lasting += delta;
 		if ( this._duration !== null ) {
 			this._progress = this._lasting / this._duration;
 			if ( this._progress > 1 ) {
