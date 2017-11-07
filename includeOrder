@@ -42,7 +42,7 @@ Value/Value.js
 World/WorldBase.js
 World/Physics.js
 Actions/ActionBase.js
-Actions/Disapear.js
+Actions/Disappear.js
 Actions/WaitFor.js
 Actions/Move.js
 Actions/MoveTo.js

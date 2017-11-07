@@ -28,6 +28,7 @@ QQ.Actions.BallisticsMove = class BallisticsMove extends QQ.Actions.Base {
 	
 	finishAction() {
 		this._subj.setSize(this._size);
+		this._subj.setPosition(this._to);
 		super.finishAction();
 	}
 	

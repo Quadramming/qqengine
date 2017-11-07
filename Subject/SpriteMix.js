@@ -9,6 +9,9 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		);
 		this._sprite.setSize(this._size);
 		this._sprite.setAnchor(this._anchor);
+		if ( options.alpha !== undefined ) {
+			this.setAlpha(options.alpha);
+		}
 	}
 	
 	getImg() {

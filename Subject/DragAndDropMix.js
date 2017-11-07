@@ -2,11 +2,12 @@ QQ.Subject.DragAndDropMix = base => class DragAndDropMix extends base {
 	
 	constructor(options) {
 		super(options);
-		this._input      = null;
+		this._input = null;
 		this._dragAndDrop = {
 			isDraging: false,
 			point:     new QQ.Point(NaN)
 		};
+		this._clip = QQ.default(options.clip, null);
 	}
 	
 	setWorld(world) {
@@ -44,6 +45,32 @@ QQ.Subject.DragAndDropMix = base => class DragAndDropMix extends base {
 			} else {
 				this.onClickUp();
 				this._dragAndDrop.isDraging = false;
+			}
+		}
+	}
+	
+	setClip(rect) {
+		this._clip.copy(rect);
+	}
+	
+	setPosition(point) {
+		super.setPosition(point);
+		this._fixClip();
+	}
+	
+	_fixClip() {
+		if ( this._clip !== null ) {
+			if ( this._position.x() > this._clip.right() ) {
+				this._position.x( this._clip.right() );
+			}
+			if ( this._position.x() < this._clip.left() ) {
+				this._position.x( this._clip.left() );
+			}
+			if ( this._position.y() < this._clip.top() ) {
+				this._position.y( this._clip.top() );
+			}
+			if ( this._position.y() > this._clip.bottom() ) {
+				this._position.y( this._clip.bottom() );
 			}
 		}
 	}

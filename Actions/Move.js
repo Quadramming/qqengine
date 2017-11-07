@@ -3,7 +3,7 @@ QQ.Actions.Move = class Move extends QQ.Actions.Base {
 	constructor(options) {
 		super(options);
 		this._from = options.from;
-		this._to   = options.to;
+		this._to = options.to;
 	}
 	
 	tick(delta) {

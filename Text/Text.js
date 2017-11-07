@@ -1,19 +1,23 @@
-QQ.TextScaled = class Text extends QQ.Subject.Base {
+QQ.Text = class Text extends QQ.Subject.Base {
 
 	constructor(options) {
 		super(options);
 		this._strings      = String(options.text).split('\n');
 		this._lines        = this._strings.length;
 		this._isNeedRecalc = true;
-		this._align        = QQ.default(options.align,  'center');
+		this._align        = QQ.default(options.align, 'center');
 		this._valign       = QQ.default(options.valign, 'middle');
-		this._font         = 'Arial';
-		this._fontSize     = QQ.default(options.fontSize,  1);
+		this._font         = QQ.default(options.font, 'Arial');
+		this._fontSize     = QQ.default(options.fontSize, 1);
 		this._spaceSize    = QQ.default(options.fontSpace, 1);
 		this._textScale    = new QQ.Scale();
 	}
 	
 	draw(ctx) {
+		ctx.transform(this.getMatrix());
+		//this._drawLocalBorder(ctx);
+		super.draw(ctx);
+		
 		const context = ctx.get();
 		this._setupContext(context);
 		if ( this._isNeedRecalc ) {
@@ -64,9 +68,12 @@ QQ.TextScaled = class Text extends QQ.Subject.Base {
 			context.fillText(str, x, y);
 			++i;
 		}
-		ctx.transform(this.getMatrix());
-		this._drawLocalBorder(ctx);
-		super.draw(ctx);
+	}
+	
+	setText(text) {
+		this._strings = String(text).split('\n');
+		this._lines = this._strings.length;
+		this.recalc();
 	}
 	
 	recalc() {

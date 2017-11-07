@@ -66,3 +66,28 @@ QQ.setTransform = function(ctx, M) {
 QQ.cleanTransform = function(ctx) {
 	ctx.setTransform(1,0,0,1,0,0);
 };
+
+
+QQ.getPixel = function(data, size, point) {
+	if ( point.x() >= size.x() || point.y() >= size.y() ) {
+		return null;
+	}
+	const index = (point.y()*size.x() + point.x())*4;
+	return {
+		r: data[index],
+		g: data[index+1],
+		b: data[index+2],
+		a: data[index+3]
+	};
+};
+
+QQ.makeCanvas = function(size) {
+		const cvs = document.createElement('canvas');
+		cvs.width  = size.w();
+		cvs.height = size.h(); 
+		const ctx = cvs.getContext('2d');
+		const getPixels = () => 
+			ctx.getImageData(0, 0, size.w(), size.h()).data
+		;
+		return {cvs, size, ctx, getPixels};
+};

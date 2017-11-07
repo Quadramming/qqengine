@@ -240,6 +240,10 @@ QQ.Container = class Container {
 		return this._app;
 	}
 	
+	getWorld() {
+		return this._world;
+	}
+	
 	getBounds() {
 		const rect = this._getLocalRect();
 		return QQ.Rect.fromPoints([

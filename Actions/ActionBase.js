@@ -14,6 +14,9 @@ QQ.Actions.Base = class Base {
 		if ( input.isRestoreOnFinish ) {
 			this._toRestore = this._subj.getAction();
 		}
+		if ( input.next ) {
+			this._next = input.next;
+		}
 	}
 	
 	setApp(app) {
@@ -46,7 +49,9 @@ QQ.Actions.Base = class Base {
 	}
 	
 	finishAction() {
-		if ( this._toRestore ) {
+		if ( this._next ) { 
+			this._subj.forceAction(this._next);
+		} else if ( this._toRestore ) {
 			this._subj.forceAction(this._toRestore);
 		} else {
 			this._subj.forceIdleAction();

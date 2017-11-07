@@ -11,9 +11,11 @@ QQ.Seizures.Base = class Base {
 		this._hud          = new QQ.Seizures.FakeHud();
 		this._parent       = QQ.default(input.parent, null);
 		this._hudRedirect  = false;
+		input.isPauseable     = QQ.default(input.isPauseable, false);
 		const worldInput = {
 			app: this._app,
-			seizure: this
+			seizure: this,
+			isPauseable: input.isPauseable
 		};
 		if ( QQ.default(input.physicsWorld, false) ) {
 			this._world    = new QQ.World.Physics(worldInput);

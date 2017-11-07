@@ -20,6 +20,7 @@ QQ.Application = class Application {
 		this._imgs       = new Map(config.imgs);
 		this._sound.set(config.sounds);
 		this._loadResources(this._init);
+		this._canvases   = new Map();
 	}
 	
 	_init() {
@@ -112,6 +113,10 @@ QQ.Application = class Application {
 		this._seizures.popUp('Pause');
 	}
 	
+	closePopUp() {
+		this._seizures.closePopUp();
+	}
+	
 	//================================================================
 	// Graphics
 	//================================================================
@@ -132,33 +137,18 @@ QQ.Application = class Application {
 		return new QQ.Sprite( this.getImg(img) );
 	}
 	
-	//================================================================
-	// Get seizure stuff \\ Hide?
-	//================================================================
-	/*
-	getWorld() {
-		return this._seizures.forActive((sz) => {
-			return sz.getWorld();
-		});
+	getImgCanvas(image) {
+		image = this.getImg(image);
+		const map = this._canvases;
+		if ( ! map.get(image.src) ) {
+			const imgSize = new QQ.Size(image.width, image.height);
+			const canvas = QQ.makeCanvas(imgSize);
+			canvas.ctx.drawImage(image, 0, 0);
+			map.set(image.src, canvas);
+		}
+		return map.get(image.src);
 	}
 	
-	getCamera() {
-		return this._seizures.forActive((sz) => {
-			return sz.getCamera();
-		});
-	}
-	
-	getInput() {
-		return this._seizures.forActive((sz) => {
-			return sz.getInput();
-		});
-	}
-	
-	getTime() { // hide?
-		c('Am I need? getTime');
-		return this._time;
-	}
-	*/
 	//================================================================
 	// Common
 	//================================================================

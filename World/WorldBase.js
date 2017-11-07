@@ -15,7 +15,7 @@ QQ.World.Base = class Base {
 		this._maxTicks   = QQ.default(settings.maxTicks,  1);
 		this._timeStep   = QQ.default(settings.timeStep,  0.0166);
 		this._pauseTime  = QQ.default(settings.pauseTime, 0.5);
-		this._pauseable  = QQ.default(settings.pauseable, false);
+		this._isPauseable  = QQ.default(settings.isPauseable, false);
 		this._stage      = new QQ.Container({
 			app:    this._app,
 			size:   new QQ.Point(10, 10),
@@ -49,7 +49,7 @@ QQ.World.Base = class Base {
 			}
 		} else {
 			this._deltaAccum = 0;
-			if ( this._pauseable ) {
+			if ( this._isPauseable ) {
 				this._app.pause();
 			}
 		}
@@ -122,7 +122,7 @@ QQ.World.Base = class Base {
 	}
 	
 	setPauseable(v) {
-		this._pauseable = v;
+		this._isPauseable = v;
 	}
 	
 };
