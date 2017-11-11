@@ -1,6 +1,6 @@
 QQ.Button = class Button extends QQ.Subject.Sprite {
 	
-	constructor(options = {}) {
+	constructor(options) {
 		super(options);
 		this.onBtnClickDown = QQ.default(options.onBtnClickDown, () => {});
 		this.onBtnClick     = QQ.default(options.onBtnClick,     () => {});

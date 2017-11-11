@@ -43,6 +43,7 @@ World/WorldBase.js
 World/Physics.js
 Actions/ActionBase.js
 Actions/Disappear.js
+Actions/Appear.js
 Actions/WaitFor.js
 Actions/Move.js
 Actions/MoveTo.js

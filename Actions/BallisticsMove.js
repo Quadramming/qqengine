@@ -18,7 +18,7 @@ QQ.Actions.BallisticsMove = class BallisticsMove extends QQ.Actions.Base {
 			this._from.y() + this._progress * dist.y()
 		);
 		this._subj.setPosition(point);
-		const value = (0.5 - Math.abs(this._progress-0.5))*2;
+		const value = (0.5 - Math.abs(this._progress-0.5))*1.5;
 		const size = new QQ.Size(
 			this._size.w() + value * this._size.w()*2,
 			this._size.h() + value * this._size.h()*2

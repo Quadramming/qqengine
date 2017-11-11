@@ -7,6 +7,7 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		this._isNeedRecalc = true;
 		this._align        = QQ.default(options.align, 'center');
 		this._valign       = QQ.default(options.valign, 'middle');
+		this._baseLine     = QQ.default(options.baseLine, 'middle');
 		this._font         = QQ.default(options.font, 'Arial');
 		this._fontSize     = QQ.default(options.fontSize, 1);
 		this._spaceSize    = QQ.default(options.fontSpace, 1);
@@ -86,7 +87,7 @@ QQ.Text = class Text extends QQ.Subject.Base {
 	
 	_setupContext(ctx) {
 		ctx.font         = this._fontSize + 'px ' + this._font;
-		ctx.textBaseline = this._valign;
+		ctx.textBaseline = this._baseLine;
 		ctx.textAlign    = this._align;
 		ctx.fillStyle    = '#878787';
 	}
