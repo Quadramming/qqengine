@@ -216,6 +216,10 @@ QQ.Container = class Container {
 		return this._position;
 	}
 	
+	getWorldPosition() {
+		return this.localToWorldPoint(new QQ.Point(0, 0));
+	}
+	
 	getAngle() {
 		return this._angle;
 	}
