@@ -140,6 +140,11 @@ QQ.Seizures.Base = class Base {
 		this._hud.blockInput(value);
 	}
 	
+	resetInput() {
+		this._input.reset();
+		this._hud.resetInput();
+	}
+	
 	pointerDown(point) {
 		this._hudRedirect = this._hud.isHitSomething(point);
 		if ( this._hudRedirect ) {

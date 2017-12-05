@@ -21,6 +21,7 @@ QQ.Application = class Application {
 		this._sound.set(config.sounds);
 		this._loadResources(this._init);
 		this._canvases   = new Map();
+		game.setApp(this);
 	}
 	
 	_init() {
@@ -111,6 +112,10 @@ QQ.Application = class Application {
 	
 	pause() {
 		this._seizures.popUp('Pause');
+	}
+	
+	popUp(sz, input) {
+		this._seizures.set(sz, input, true);
 	}
 	
 	closePopUp() {

@@ -50,6 +50,7 @@ QQ.Seizures.Manager = class Manager {
 	}
 	
 	set(sz, input, popup = false) {
+		this.forAll( (sz) => { sz.resetInput(); });
 		if ( popup === false ) {
 			this._closeActive();
 			this._reset = () => this.set(sz, input);
@@ -75,6 +76,12 @@ QQ.Seizures.Manager = class Manager {
 	forActive(fn) {
 		const active = this.getActive();
 		return fn(active);
+	}
+	
+	forAll(fn) {
+		for ( const sz of this._actives ) {
+			fn(sz);
+		}
 	}
 	
 	_closeActive() {

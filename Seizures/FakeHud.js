@@ -6,6 +6,9 @@ QQ.Seizures.FakeHud = class FakeHud {
 	blockInput() {
 	}
 	
+	resetInput() {
+	}
+	
 	isHitSomething() {
 		return false;
 	}

@@ -143,9 +143,16 @@ QQ.Container = class Container {
 		subj.setParent(this);
 		subj.setApp(this._app);
 		this._subjects.push(subj);
+		this._sortSubjectsByZ();
 	}
 	
-	deleteSubject(subj) {
+	deleteSubjects() {
+		this.forChildren( (subj) => {
+			subj.deleteMe();
+		});
+	}
+	
+	spliceSubject(subj) {
 		const i = this._subjects.indexOf(subj);
 		if ( i >= 0 ) {
 			this._subjects.splice(i, 1);
@@ -163,7 +170,7 @@ QQ.Container = class Container {
 	
 	deleteMe() {
 		if ( this._parent ) {
-			this._parent.deleteSubject(this);
+			this._parent.spliceSubject(this);
 			this.cleanRelationships();
 		}
 	}
@@ -176,7 +183,8 @@ QQ.Container = class Container {
 	}
 	
 	forChildren(fn) {
-		for ( const subject of this._subjects ) {
+		// deleteMe() in fn can change _subjects
+		for ( const subject of [...this._subjects] ) {
 			fn(subject);
 		}
 	}

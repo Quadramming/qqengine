@@ -78,6 +78,10 @@ QQ.World.Base = class Base {
 	// Subjects
 	//================================================================
 	
+	clearStage() {
+		this._stage.deleteSubjects();
+	}
+	
 	addSubject(subj) {
 		this._stage.addSubject(subj);
 	}

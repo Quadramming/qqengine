@@ -7,6 +7,13 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		this._sprite = new QQ.Sprite(
 			this._app.getImg(this._img)
 		);
+		if ( Number.isNaN(this._size.x()) && Number.isNaN(this._size.y()) ) {
+			this._size = this._sprite.getSize();
+		} else if ( Number.isNaN(this._size.x()) ) {
+			this._size.x( this._size.y() * this._sprite.getSize().getRatio() );
+		} else if ( Number.isNaN(this._size.y()) ) {
+			this._size.y( this._size.x() / this._sprite.getSize().getRatio() );
+		}
 		this._sprite.setSize(this._size);
 		this._sprite.setAnchor(this._anchor);
 		if ( options.alpha !== undefined ) {

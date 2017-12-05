@@ -12,6 +12,7 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		this._fontSize     = QQ.default(options.fontSize, 1);
 		this._spaceSize    = QQ.default(options.fontSpace, 1);
 		this._textScale    = new QQ.Scale();
+		this._color        = QQ.default(options.color, '#000000');
 	}
 	
 	draw(ctx) {
@@ -89,7 +90,7 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		ctx.font         = this._fontSize + 'px ' + this._font;
 		ctx.textBaseline = this._baseLine;
 		ctx.textAlign    = this._align;
-		ctx.fillStyle    = '#878787';
+		ctx.fillStyle    = this._color;
 	}
 	
 	_measureText(ctx) {
