@@ -22,18 +22,22 @@ QQ.Container = class Container {
 		if ( options.anchor ) {
 			this._anchor.copy(options.anchor);
 		}
-		this._subjects    = [];
-		this._angle       = QQ.default(options.angle, 0);
-		this._parent      = QQ.default(options.parent, null);
-		this._isClickable = QQ.default(options.isClickable, true);
-		this._z           = QQ.default(options.z, 0);
-		this._world       = QQ.default(options.world, null);
-		this._matrix      = {
+		this._subjects     = [];
+		this._angle        = QQ.default(options.angle, 0);
+		this._parent       = QQ.default(options.parent, null);
+		this._isClickable  = QQ.default(options.isClickable, true);
+		this._z            = QQ.default(options.z, 0);
+		this._world        = QQ.default(options.world, null);
+		this._updateOnTick = QQ.default(options.updateOnTick, null);
+		this._matrix       = {
 			cached:   null,
 			position: new QQ.Point(),
 			scale:    new QQ.Scale(),
 			angle:    null
 		};
+		if ( options.onClick ) {
+			this.onClick = options.onClick;
+		}
 	}
 	
 	//================================================================
@@ -124,6 +128,9 @@ QQ.Container = class Container {
 	//================================================================
 	
 	tick(delta) {
+		if ( this._updateOnTick ) {
+			this._updateOnTick();
+		}
 		this.forChildren( (subj) => subj.tick(delta) );
 		this._sortSubjectsByZ();
 	}

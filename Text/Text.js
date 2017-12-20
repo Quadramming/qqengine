@@ -13,13 +13,30 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		this._spaceSize    = QQ.default(options.fontSpace, 1);
 		this._textScale    = new QQ.Scale();
 		this._color        = QQ.default(options.color, '#000000');
+		this._alpha        = QQ.default(options.alpha, 1);
+		this._hide         = false;
+	}
+	
+	show() {
+		this._hide = false;
+	}
+	
+	hide() {
+		this._hide = true;
+	}
+	
+	setAlpha(a) {
+		this._alpha = a;
 	}
 	
 	draw(ctx) {
+		if ( this._hide ) {
+			return;
+		}
 		ctx.transform(this.getMatrix());
 		//this._drawLocalBorder(ctx);
 		super.draw(ctx);
-		
+		const changeAlpha = (this._alpha !== 1);
 		const context = ctx.get();
 		this._setupContext(context);
 		if ( this._isNeedRecalc ) {
@@ -67,14 +84,24 @@ QQ.Text = class Text extends QQ.Subject.Base {
 					)
 					+ yOffset;
 			}
+			if ( changeAlpha ) {
+				context.globalAlpha = this._alpha;
+			}
 			context.fillText(str, x, y);
+			if ( changeAlpha ) {
+				context.globalAlpha = 1;
+			}
 			++i;
 		}
 	}
 	
 	setText(text) {
-		this._strings = String(text).split('\n');
-		this._lines = this._strings.length;
+		const newText = String(text).split('\n');
+		if ( this._strings === newText ) {
+			return;
+		}
+		this._strings = newText;
+		this._lines = newText.length;
 		this.recalc();
 	}
 	

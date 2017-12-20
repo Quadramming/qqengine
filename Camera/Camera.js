@@ -104,7 +104,7 @@ QQ.Camera = class Camera {
 	draw() {
 		const ctxObj = {
 			get: () => this._ctx,
-			transform: this._setTransform.bind(this)
+			transform: this.setTransform.bind(this)
 		};
 		const bg = this._world.getBackground();
 		if ( bg ) {
@@ -133,8 +133,13 @@ QQ.Camera = class Camera {
 		this._ctx.stroke();
 	}
 	
-	cleanTransform() {
-		QQ.setTransform(this._ctx, QQ.Matrix.getIdentity());
+	cleanTransform(ctx = this._ctx) {
+		QQ.setTransform(ctx, QQ.Matrix.getIdentity());
+	}
+	
+	setTransform(matrix, ctx = this._ctx) {
+		const M = QQ.Matrix.mul(this._mainMatrix, matrix);
+		QQ.setTransform(ctx, M);
 	}
 	
 	//================================================================
@@ -155,11 +160,6 @@ QQ.Camera = class Camera {
 				this._canvas.height / 2
 			)), M);
 		return M;
-	}
-	
-	_setTransform(matrix) {
-		const M = QQ.Matrix.mul(this._mainMatrix, matrix);
-		QQ.setTransform(this._ctx, M);
 	}
 	
 	_fixClip() {

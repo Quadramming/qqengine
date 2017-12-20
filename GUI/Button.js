@@ -8,12 +8,12 @@ QQ.Button = class Button extends QQ.Subject.Sprite {
 	
 	onClickDown(worldPoint) {
 		super.onClickDown(worldPoint);
-		this.onBtnClickDown();
+		this.onBtnClickDown(worldPoint);
 	}
 	
 	onClick(worldPoint) {
 		super.onClick(worldPoint);
-		this.onBtnClick();
+		this.onBtnClick(worldPoint);
 	}
 	
 };

@@ -21,6 +21,10 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		}
 	}
 	
+	getSprite() {
+		return this._sprite;
+	}
+	
 	getImg() {
 		return this._img;
 	}

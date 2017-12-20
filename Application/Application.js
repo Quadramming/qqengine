@@ -126,6 +126,10 @@ QQ.Application = class Application {
 	// Graphics
 	//================================================================
 	
+	getResolution() {
+		return new QQ.Point(this._canvas.getWidth(), this._canvas.getHeight());
+	}
+	
 	getImgByUrl(imgSrc) {
 		return this._imgManager.get(imgSrc);
 	}
