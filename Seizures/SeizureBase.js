@@ -14,6 +14,8 @@ QQ.Seizures.Base = class Base {
 		input.isPauseable     = QQ.default(input.isPauseable, false);
 		const worldInput = {
 			app: this._app,
+			maxTicks: input.maxTicks,
+			timeStep: input.timeStep,
 			seizure: this,
 			isPauseable: input.isPauseable
 		};

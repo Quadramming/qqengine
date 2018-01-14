@@ -67,7 +67,6 @@ QQ.cleanTransform = function(ctx) {
 	ctx.setTransform(1,0,0,1,0,0);
 };
 
-
 QQ.getPixel = function(data, size, point) {
 	if ( point.x() >= size.x() || point.y() >= size.y() ) {
 		return null;

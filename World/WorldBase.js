@@ -12,6 +12,7 @@ QQ.World.Base = class Base {
 		this._background = null;
 		this._deltaAccum = 0;
 		// Default
+		//c(settings.maxTicks);
 		this._maxTicks   = QQ.default(settings.maxTicks,  1);
 		this._timeStep   = QQ.default(settings.timeStep,  0.0166);
 		this._pauseTime  = QQ.default(settings.pauseTime, 0.5);
@@ -53,7 +54,9 @@ QQ.World.Base = class Base {
 				this._app.pause();
 			}
 		}
-		//c(ticksDone);
+		if ( ticksDone > 1 ) {
+			//c(ticksDone);
+		}
 	}
 	
 	tickStep(delta) {

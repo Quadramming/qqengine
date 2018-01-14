@@ -108,6 +108,14 @@ QQ.Rect = class Rect {
 		return this._height;
 	}
 	
+	size() {
+			return new QQ.Size(this._width, this._height);
+	}
+	
+	center() {
+			return new QQ.Size(this._x+this._width/2, this._y+this._height/2);
+	}
+	
 	//================================================================
 	// Debug
 	//================================================================

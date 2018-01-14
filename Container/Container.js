@@ -136,7 +136,7 @@ QQ.Container = class Container {
 	}
 	
 	draw(ctx) {
-		ctx.transform(this.getMatrix());
+		//ctx.transform(this.getMatrix());
 		//this._drawLocalBorder(ctx);
 		this.forChildren( (subj) => subj.draw(ctx) );
 	}
@@ -282,6 +282,10 @@ QQ.Container = class Container {
 			this._position.x() + offset.x(),
 			this._position.y() + offset.y(),
 		));
+	}
+	
+	setAnchor(point) {
+			this._anchor.copy(point);
 	}
 	
 	movePosition(offset) {

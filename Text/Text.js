@@ -15,6 +15,7 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		this._color        = QQ.default(options.color, '#000000');
 		this._alpha        = QQ.default(options.alpha, 1);
 		this._hide         = false;
+		this._border       = QQ.default(options.border, false);
 	}
 	
 	show() {
@@ -34,7 +35,9 @@ QQ.Text = class Text extends QQ.Subject.Base {
 			return;
 		}
 		ctx.transform(this.getMatrix());
-		//this._drawLocalBorder(ctx);
+		if ( this._border ) {
+			this._drawLocalBorder(ctx);
+		}
 		super.draw(ctx);
 		const changeAlpha = (this._alpha !== 1);
 		const context = ctx.get();

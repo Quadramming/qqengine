@@ -1,5 +1,6 @@
 Main/Main.js
 Point/Point.js
+Anchor/Anchor.js
 Size/Size.js
 Scale/Scale.js
 Rect/Rect.js
@@ -35,6 +36,7 @@ Subject/DragAndDropMix.js
 Subject/SubjectBase.js
 Subject/Subjects.js
 Text/Text.js
+Text/BubbleText.js
 Time/Time.js
 Sound/Sound.js
 Touch/Touch.js

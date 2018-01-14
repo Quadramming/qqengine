@@ -14,6 +14,10 @@ QQ.Subject.TileSpriteMix = base => class TileSpriteMix extends base {
 		this._calcTileSize();
 	}
 	
+	getSprite() {
+		return this._tileSprite;
+	}
+	
 	draw(ctx) {
 		ctx.transform(this.getMatrix());
 		this._tileSprite.draw(ctx.get());
