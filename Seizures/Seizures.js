@@ -45,7 +45,7 @@ QQ.Seizures.Manager = class Manager {
 		if ( activate ) {
 			this._actives.push(newSz);
 		}
-		newSz.init();
+		newSz.init(input);
 		return newSz;
 	}
 	

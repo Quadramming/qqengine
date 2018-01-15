@@ -49,6 +49,9 @@ QQ.default = function(value, byDefault) {
 	return value;
 };
 
+QQ.merge = function(...objs) {
+		return Object.assign({}, ...objs);
+};
 
 QQ.isNumbers = function(...args) {
 	for ( const arg of args ) {
