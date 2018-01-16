@@ -42,6 +42,10 @@ QQ.changeBasePrototype = function(obj, target) {
 	}
 };
 
+QQ.clone = function(obj) {
+	return Object.assign({}, obj);
+};
+
 QQ.default = function(value, byDefault) {
 	if ( value === undefined ) {
 		return byDefault;

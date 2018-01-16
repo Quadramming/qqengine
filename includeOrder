@@ -54,3 +54,4 @@ Actions/Patrol.js
 Actions/BallisticsMove.js
 GUI/Button.js
 GUI/Bar.js
+Style/Style.js
