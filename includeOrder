@@ -37,6 +37,7 @@ Subject/SubjectBase.js
 Subject/Subjects.js
 Text/Text.js
 Text/BubbleText.js
+Text/StyledText.js
 Time/Time.js
 Sound/Sound.js
 Touch/Touch.js

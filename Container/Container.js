@@ -38,6 +38,9 @@ QQ.Container = class Container {
 		if ( options.onClick ) {
 			this.onClick = options.onClick;
 		}
+		if ( options.init ) {
+			options.init.call(this);
+		}
 	}
 	
 	//================================================================
@@ -129,7 +132,7 @@ QQ.Container = class Container {
 	
 	tick(delta) {
 		if ( this._updateOnTick ) {
-			this._updateOnTick();
+			this._updateOnTick(delta);
 		}
 		this.forChildren( (subj) => subj.tick(delta) );
 		this._sortSubjectsByZ();

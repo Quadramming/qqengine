@@ -39,12 +39,4 @@ class Bar extends QQ.Subject.Sprite {
 		super.setSize(new QQ.Point(width, 2));
 	}
 	
-	tick(delta) {
-		super.tick(delta);
-	}
-	
-	draw(ctx) {
-		super.draw(ctx);
-	}
-	
 };
