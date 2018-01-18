@@ -38,9 +38,33 @@ QQ.Sound = class Sound {
 			sound.play();
 		} else if ( this._type === 'plugin-nativeAudio' ) {
 			window.plugins.NativeAudio.play(strSound);
-		} else if ( this._type ==='plugin-media' ) {
+		} else if ( this._type === 'plugin-media' ) {
 			const sound = this._sounds.get(strSound);
 			sound.play();
+		}
+	}
+	
+	control(strSound, options = {}) {
+		if ( this._type === 'html5' ) {
+			const sound = this._sounds.get(strSound);
+			if ( options.loop !== undefined ) {
+				sound.loop = options.loop;
+			}
+			if ( options.pause ) {
+				sound.pause();
+			}
+			if ( options.play ) {
+				this.play(strSound);
+			}
+		} else if ( this._type === 'plugin-nativeAudio' ) {
+			if ( options.loop !== undefined ) {
+				window.plugins.NativeAudio.loop(strSound);
+			}
+			if ( options.pause ) {
+				window.plugins.NativeAudio.stop(strSound);
+			}
+		} else if ( this._type === 'plugin-media' ) {
+			// TODO
 		}
 	}
 	

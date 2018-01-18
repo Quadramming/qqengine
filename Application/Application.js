@@ -174,8 +174,12 @@ QQ.Application = class Application {
 	// Sound
 	//================================================================
 	
-	playSound(str) {
+	playSound(str, options) {
 		this._sound.play(str);
+	}
+
+	controlSound(str, options) {
+		this._sound.control(str, options);
 	}
 	
 	//================================================================

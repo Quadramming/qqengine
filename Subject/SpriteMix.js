@@ -21,6 +21,10 @@ QQ.Subject.SpriteMix = base => class SpriteMix extends base {
 		}
 	}
 	
+	setSprite(img) {
+		this._sprite.setImg(this._app.getImg(img));
+	}
+	
 	getSprite() {
 		return this._sprite;
 	}

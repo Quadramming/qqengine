@@ -5,14 +5,13 @@ QQ.Sprite = class Sprite {
 	//================================================================
 	
 	constructor(readyImg) {
-		if ( readyImg.complete === false ) {
-			alert('QQ.Sprite: img must be completed');
-		}
+
 		this._isDisabled = false;
 		this._anchor     = new QQ.Point(0, 0);
 		this._alpha      = 1;
-		this._img        = readyImg;
+		this._img        = null;
 		this._manager    = null;
+		this.setImg(readyImg);
 		this.setStatic();
 	}
 	
@@ -22,6 +21,13 @@ QQ.Sprite = class Sprite {
 	
 	isDisabled() {
 		return this._isDisabled;
+	}
+	
+	setImg(readyImg) {
+		if ( readyImg.complete === false ) {
+			alert('QQ.Sprite: img must be completed');
+		}
+		this._img = readyImg;
 	}
 	
 	setAlpha(a) {
