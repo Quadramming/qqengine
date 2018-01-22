@@ -7,21 +7,20 @@ QQ.World.Base = class Base {
 	//================================================================
 	
 	constructor(settings) {
-		this._app        = settings.app;
-		this._seizure    = settings.seizure;
+		this._app = settings.app;
+		this._seizure = settings.seizure;
 		this._background = null;
 		this._deltaAccum = 0;
-		// Default
-		//c(settings.maxTicks);
-		this._maxTicks   = QQ.default(settings.maxTicks,  1);
-		this._timeStep   = QQ.default(settings.timeStep,  0.0166);
-		this._pauseTime  = QQ.default(settings.pauseTime, 0.5);
-		this._isPauseable  = QQ.default(settings.isPauseable, false);
-		this._stage      = new QQ.Container({
-			app:    this._app,
-			size:   new QQ.Point(10, 10),
+		this._maxTicks = QQ.default(settings.maxTicks, 1);
+		this._timeStep = QQ.default(settings.timeStep, 0.0166);
+		this._pauseTime = QQ.default(settings.pauseTime, 0.5);
+		this._isPauseable = QQ.default(settings.isPauseable, false);
+		this._tickType = QQ.default(settings.isPauseable, 'variable');
+		this._stage = new QQ.Container({
+			app: this._app,
+			size: new QQ.Point(10, 10),
 			anchor: new QQ.Point(0.5, 0.5),
-			angle:  0
+			angle: 0
 		});
 		this._stage.setWorld(this);
 	}
@@ -29,33 +28,45 @@ QQ.World.Base = class Base {
 	//================================================================
 	// Tick
 	//================================================================
-	
+
 	tick(delta) {
+		if ( this._tickType === 'var' ) {
+			this.tickVariableStep(delta);
+		} else { // const
+			this.tickConstantStep(delta);
+		}
+	}
+
+	tickVariableStep(delta) {
+		if ( delta < this._pauseTime ) {
+				this._stage.tick(delta);
+				this.tickStep(delta);
+		} else {
+			if ( this._isPauseable ) {
+				this._app.pause();
+			}
+		}
+	}
+	
+	tickConstantStep(delta) {
 		let ticksDone = 0;
 		this._deltaAccum += delta;
-		if ( !this._ddd ) {
-			this._ddd = 0;
-		}
-		this._ddd += delta;
 		if ( this._deltaAccum < this._pauseTime ) {
-			if ( this._deltaAccum > (this._maxTicks+1)*this._timeStep ) {
-				this._deltaAccum = this._maxTicks * this._timeStep +
-					this._deltaAccum % this._timeStep;
-			}
-			while ( this._deltaAccum > this._timeStep ) {
-				this._deltaAccum -= this._timeStep;
-				this._stage.tick(this._timeStep);
-				this.tickStep(this._timeStep);
-				ticksDone++;
+			while ( this._deltaAccum > this._timeStep) {
+					if ( ticksDone >= this._maxTicks ) {
+						this._deltaAccum = 0;
+						break;
+					}
+					this._stage.tick(this._timeStep);
+					this.tickStep(this._timeStep);
+					this._deltaAccum -= this._timeStep;
+					ticksDone++;
 			}
 		} else {
 			this._deltaAccum = 0;
 			if ( this._isPauseable ) {
 				this._app.pause();
 			}
-		}
-		if ( ticksDone > 1 ) {
-			//c(ticksDone);
 		}
 	}
 	
@@ -132,6 +143,14 @@ QQ.World.Base = class Base {
 	
 	setPauseable(v) {
 		this._isPauseable = v;
+	}
+	
+	setTickType(type) {
+		this._tickType = type;
+	}
+	
+	setTickTimeStep(time) {
+		this._timeStep = time;
 	}
 	
 };

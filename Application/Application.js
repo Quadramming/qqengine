@@ -170,6 +170,10 @@ QQ.Application = class Application {
 		return this._canvas.getContext();
 	}
 	
+	showFpsDetails() {
+		this._fpsCounter.showDetails();
+	}
+	
 	//================================================================
 	// Sound
 	//================================================================

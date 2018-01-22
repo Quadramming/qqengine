@@ -36,20 +36,14 @@ QQ.BubbleText = class BubbleText extends
 	}
 	
 	static make(options) {
-		const bubble = new BubbleText({
-			align: 'center',
-			valign: 'middle',
-			position: options.position,
-			anchor: new QQ.Point(0.5, 0.5),
-			size: new QQ.Size(30, 1.5),
-			baseLine: 'middle',
-			fontSize: 5,
-			font: 'KenFuture',
-			text: options.text,
-			isClickable: false,
-			color: QQ.default(options.color, '#FF0000'),
-			z: 20
-		});
+		const bubble = new BubbleText(
+			QQ.Style.use('bubbles', {
+				text: options.text,
+				position: options.position,
+				color: QQ.default(options.color, '#FF0000')
+			})
+		);
+
 		if ( options.world ) {
 			options.world.addSubject(bubble);
 		}

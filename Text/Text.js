@@ -117,7 +117,7 @@ QQ.Text = class Text extends QQ.Subject.Base {
 	}
 	
 	_setupContext(ctx) {
-		ctx.font         = this._fontSize + 'px ' + this._font;
+		ctx.font         = 'normal ' + this._fontSize + 'px ' + this._font;
 		ctx.textBaseline = this._baseLine;
 		ctx.textAlign    = this._align;
 		ctx.fillStyle    = this._color;

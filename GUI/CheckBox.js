@@ -5,7 +5,7 @@ QQ.CheckBox = class CheckBox extends QQ.Subject.Sprite {
 		super(options);
 		this._onChange = QQ.default(options.onChange, () => {});
 		this._isChecked = QQ.default(options.isChecked, false);
-		this._isTouch = QQ.default(options.isTouch, false);
+		this._isByTouch = QQ.default(options.isTouch, false);
 		this.refreshImg();
 	}
 	
@@ -25,14 +25,14 @@ QQ.CheckBox = class CheckBox extends QQ.Subject.Sprite {
 	
 	onClickDown(worldPoint) {
 		super.onClickDown(worldPoint);
-		if ( this._isTouch ) {
+		if ( this._isByTouch ) {
 			this.change();
 		}
 	}
 	
 	onClick(worldPoint) {
 		super.onClick(worldPoint);
-		if ( ! this._isTouch ) {
+		if ( ! this._isByTouch ) {
 			this.change();
 		}
 	}
