@@ -11,7 +11,7 @@ QQ.World.Base = class Base {
 		this._seizure = settings.seizure;
 		this._background = null;
 		this._deltaAccum = 0;
-		this._maxTicks = QQ.default(settings.maxTicks, 1);
+		this._maxTicks = QQ.default(settings.maxTicks, 7);
 		this._timeStep = QQ.default(settings.timeStep, 0.0166);
 		this._pauseTime = QQ.default(settings.pauseTime, 0.5);
 		this._isPauseable = QQ.default(settings.isPauseable, false);
@@ -32,7 +32,7 @@ QQ.World.Base = class Base {
 	tick(delta) {
 		if ( this._tickType === 'var' ) {
 			this.tickVariableStep(delta);
-		} else { // const
+		} else { // 'const'
 			this.tickConstantStep(delta);
 		}
 	}

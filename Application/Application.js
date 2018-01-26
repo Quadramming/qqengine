@@ -28,7 +28,7 @@ QQ.Application = class Application {
 		this._seizures.init();
 		this._seizures.set('Main');
 		this.initMouseEvents();
-		this._fpsCounter.showDetails();
+		//this._fpsCounter.showDetails();
 		this._gameLoop();
 	}
 	
