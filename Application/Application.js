@@ -5,30 +5,33 @@ QQ.Application = class Application {
 	//================================================================
 	
 	constructor(config) {
-		this._canvas     = new QQ.Canvas('QQApplicationCanvas',
+		this._canvas = new QQ.Canvas('QQApplicationCanvas',
 			config.size,
 			config.maximize
 		);
 		this._fpsCounter = new QQ.FpsCounter();
-		this._time       = new QQ.Time();
-		this._mouse      = new QQ.Mouse();
-		this._touch      = new QQ.Touch(this._mouse);
-		this._storage    = new QQ.Storage();
+		this._time = new QQ.Time();
+		this._mouse = new QQ.Mouse();
+		this._touch = new QQ.Touch(this._mouse);
+		this._storage = new QQ.Storage();
 		this._imgManager = new QQ.ImgManager();
-		this._sound      = new QQ.Sound();
-		this._seizures   = new QQ.Seizures.Manager(this);
-		this._imgs       = new Map(config.imgs);
+		this._seizures = new QQ.Seizures.Manager(this);
+		this._imgs = new Map(config.imgs);
+		this._canvases = new Map();
+		this._sound = new QQ.Sound();
 		this._sound.set(config.sounds);
+		if ( config.showFps ) {
+			this._fpsCounter.showDetails();
+		}
 		this._loadResources(this._init);
-		this._canvases   = new Map();
-		game.setApp(this);
+		game.init(this);
+		window.document.addEventListener('backbutton', this.onBackButton, false);
 	}
 	
 	_init() {
 		this._seizures.init();
 		this._seizures.set('Main');
 		this.initMouseEvents();
-		//this._fpsCounter.showDetails();
 		this._gameLoop();
 	}
 	
@@ -174,6 +177,13 @@ QQ.Application = class Application {
 		this._fpsCounter.showDetails();
 	}
 	
+	onBackButton() {
+		if ( this._seizures.countActives() > 0 ) {
+			const sz = this._seizures.getActive();
+			sz.onBackButton();
+		}
+	}
+	
 	//================================================================
 	// Sound
 	//================================================================
@@ -181,7 +191,7 @@ QQ.Application = class Application {
 	playSound(str, options) {
 		this._sound.play(str);
 	}
-
+	
 	controlSound(str, options) {
 		this._sound.control(str, options);
 	}

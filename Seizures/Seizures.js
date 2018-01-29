@@ -66,6 +66,10 @@ QQ.Seizures.Manager = class Manager {
 		this._reset();
 	}
 	
+	countActives() {
+		return this._actives.length;
+	}
+	
 	getActive() {
 		if ( this._actives.length > 0 ) {
 			return this._actives[this._actives.length-1];

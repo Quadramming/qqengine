@@ -5,13 +5,13 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 	
 	constructor(input) {
-		this._app          = input.app;
-		this._szManager    = input.szManager;
-		this._input        = new QQ.WorldPointer();
-		this._hud          = new QQ.Seizures.FakeHud();
-		this._parent       = QQ.default(input.parent, null);
-		this._hudRedirect  = false;
-		input.isPauseable     = QQ.default(input.isPauseable, false);
+		this._app = input.app;
+		this._szManager = input.szManager;
+		this._input = new QQ.WorldPointer();
+		this._hud = new QQ.Seizures.FakeHud();
+		this._parent = QQ.default(input.parent, null);
+		this._hudRedirect = false;
+		input.isPauseable = QQ.default(input.isPauseable, false);
 		const worldInput = {
 			app: this._app,
 			maxTicks: input.maxTicks,
@@ -20,23 +20,23 @@ QQ.Seizures.Base = class Base {
 			isPauseable: input.isPauseable
 		};
 		if ( QQ.default(input.physicsWorld, false) ) {
-			this._world    = new QQ.World.Physics(worldInput);
+			this._world = new QQ.World.Physics(worldInput);
 		} else {
-			this._world    = new QQ.World.Base(worldInput);
+			this._world = new QQ.World.Base(worldInput);
 		}
-		this._camera       = new QQ.Camera(
+		this._camera = new QQ.Camera(
 			this._app.getHtmlCanvas(),
 			this._world
 		);
 		this._isScrollable = QQ.default(input.scrolling, false);
-		this._epsilon      = QQ.default(input.epsilon, 1);
-		this._epsilon      = this._camera.widthPercentsToPx(this._epsilon);
-		this._scroll       = {
-			isActive:  false,
+		this._epsilon = QQ.default(input.epsilon, 1);
+		this._epsilon = this._camera.widthPercentsToPx(this._epsilon);
+		this._scroll = {
+			isActive: false,
 			isClicked: false,
-			start:     new QQ.Point(NaN),
-			world:     new QQ.Point(NaN),
-			screen:    new QQ.Point(NaN)
+			start: new QQ.Point(NaN),
+			world: new QQ.Point(NaN),
+			screen: new QQ.Point(NaN)
 		};
 	}
 	
@@ -204,6 +204,9 @@ QQ.Seizures.Base = class Base {
 	//================================================================
 	// Common
 	//================================================================
+	
+	onBackButton() {
+	}
 	
 	isHitSomething(point) {
 		if ( point === false ) {
