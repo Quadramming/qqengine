@@ -24,7 +24,9 @@ QQ.Application = class Application {
 			this._fpsCounter.showDetails();
 		}
 		this._loadResources(this._init);
-		game.init(this);
+		if ( config.game ) {
+			config.game.init(this);
+		}
 		window.document.addEventListener('backbutton', this.onBackButton, false);
 	}
 	
