@@ -1,6 +1,7 @@
 QQ.BubbleText = class BubbleText extends
 	QQ.mixins(QQ.Subject.ActionableMix, QQ.Text)
 {
+	
 	constructor(options) {
 		super(options);
 		this._alpha = 1;
