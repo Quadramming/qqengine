@@ -24,14 +24,13 @@ QQ.Application = class Application {
 			this._fpsCounter.showDetails();
 		}
 		this._loadResources(this._init);
-		if ( config.game ) {
-			config.game.init(this);
-		}
-		window.document.addEventListener('backbutton', this.onBackButton, false);
 	}
 	
 	_init() {
-		this._seizures.init();
+		window.document.addEventListener('backbutton', this.onBackButton, false);
+		if ( config.game ) {
+			config.game.init(this);
+		}		this._seizures.init();
 		this._seizures.set('Main');
 		this.initMouseEvents();
 		this._gameLoop();

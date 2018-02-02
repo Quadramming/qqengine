@@ -1,12 +1,5 @@
 const QQ = {};
 
-QQ.initApp = function(cfg) {
-	while ( document.body.firstChild ) {
-		document.body.removeChild( document.body.firstChild );
-	}
-	new QQ.Application(cfg);
-};
-
 QQ.start = function(cfg) {
 	window.addEventListener('load', () => {
 		if ( window.cordova ) {
@@ -17,6 +10,13 @@ QQ.start = function(cfg) {
 			QQ.initApp(cfg);
 		}
 	});
+};
+
+QQ.initApp = function(cfg) {
+	while ( document.body.firstChild ) {
+		document.body.removeChild( document.body.firstChild );
+	}
+	new QQ.Application(cfg);
 };
 
 QQ.isObject = function(obj) {
