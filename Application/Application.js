@@ -1,3 +1,15 @@
+QQ.ObjectPool = class ObjectPool {
+	
+		constructor(obj, amount) {
+			this._pool = [];
+			for ( let i = 0; i < amount; ++i ) {
+				this._pool.push(new obj);
+			}
+			c(this._pool);
+		}
+	
+};
+
 QQ.Application = class Application {
 	  
 	//================================================================
@@ -5,6 +17,9 @@ QQ.Application = class Application {
 	//================================================================
 	
 	constructor(config) {
+		
+		const p = new QQ.ObjectPool(QQ.Point, 5);
+		
 		this._canvas = new QQ.Canvas('QQApplicationCanvas',
 			config.size,
 			config.maximize
@@ -23,14 +38,19 @@ QQ.Application = class Application {
 		if ( config.showFps ) {
 			this._fpsCounter.showDetails();
 		}
+		if ( config.game ) {
+			config.game.init(this);
+		}
 		this._loadResources(this._init);
 	}
 	
 	_init() {
-		window.document.addEventListener('backbutton', this.onBackButton, false);
-		if ( config.game ) {
-			config.game.init(this);
-		}		this._seizures.init();
+		window.document.addEventListener(
+			'backbutton',
+			this.onBackButton.bind(this),
+			false
+		);
+		this._seizures.init();
 		this._seizures.set('Main');
 		this.initMouseEvents();
 		this._gameLoop();

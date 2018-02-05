@@ -1,15 +1,12 @@
 const QQ = {};
 
 QQ.start = function(cfg) {
-	window.addEventListener('load', () => {
-		if ( window.cordova ) {
-			document.addEventListener('deviceready', () => {
-				QQ.initApp(cfg);
-			}, false);
-		} else {
-			QQ.initApp(cfg);
-		}
-	});
+	const start = () => {QQ.initApp(cfg);};
+	if ( window.cordova ) {
+		document.addEventListener('deviceready', start, false);
+	} else {
+		window.addEventListener('load', start);
+	}
 };
 
 QQ.initApp = function(cfg) {

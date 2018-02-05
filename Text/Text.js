@@ -2,8 +2,9 @@ QQ.Text = class Text extends QQ.Subject.Base {
 
 	constructor(options) {
 		super(options);
-		this._strings      = String(options.text).split('\n');
-		this._lines        = this._strings.length;
+		this._primalStr    = '';
+		this._strings      = '';
+		this._lines        = 0;
 		this._isNeedRecalc = true;
 		this._align        = QQ.default(options.align, 'center');
 		this._valign       = QQ.default(options.valign, 'middle');
@@ -16,6 +17,13 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		this._alpha        = QQ.default(options.alpha, 1);
 		this._hide         = false;
 		this._border       = QQ.default(options.border, false);
+		this.applyText(options.text);
+	}
+	
+	applyText(text) {
+		this._primalStr    = text;
+		this._strings      = String(text).split('\n');
+		this._lines        = this._strings.length;
 	}
 	
 	show() {
@@ -99,12 +107,10 @@ QQ.Text = class Text extends QQ.Subject.Base {
 	}
 	
 	setText(text) {
-		const newText = String(text).split('\n');
-		if ( this._strings === newText ) {
+		if ( this._primalStr === text ) {
 			return;
 		}
-		this._strings = newText;
-		this._lines = newText.length;
+		this.applyText(text);
 		this.recalc();
 	}
 	

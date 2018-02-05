@@ -5,7 +5,7 @@ QQ.Sprite.Mngr = class Mngr {
 	}
 	
 	setSize(size) {
-		this._size = size.clone();
+		this._size.copy(size);
 	}
 	
 	getSize() {
