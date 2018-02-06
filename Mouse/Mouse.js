@@ -1,10 +1,12 @@
 QQ.Mouse = class Mouse {
 	
 	constructor() {
+		const tmpPoint = new QQ.Point();
 		
 		window.addEventListener('mousemove', (e) => {
 			if ( QQ.isNumbers(e.clientX, e.clientY, e.buttons) ) {
-				this._process(event.clientX, event.clientY, e.buttons === 1);
+				tmpPoint.set(e.clientX, e.clientY);
+				this._process(tmpPoint, e.buttons === 1);
 			}
 			e.preventDefault();
 			return false;
@@ -12,7 +14,8 @@ QQ.Mouse = class Mouse {
 		
 		window.addEventListener('mousedown', (e) => {
 			if ( QQ.isNumbers(e.clientX, e.clientY) ) {
-				this._process(event.clientX, event.clientY, true);
+				tmpPoint.set(e.clientX, e.clientY);
+				this._process(tmpPoint, true);
 			}
 			e.preventDefault();
 			return false;
@@ -20,7 +23,8 @@ QQ.Mouse = class Mouse {
 		
 		window.addEventListener('mouseup', (e) => {
 			if ( QQ.isNumbers(e.clientX, e.clientY) ) {
-				this._process(event.clientX, event.clientY, false);
+				tmpPoint.set(e.clientX, e.clientY);
+				this._process(tmpPoint, false);
 			}
 			e.preventDefault();
 			return false;
@@ -58,11 +62,11 @@ QQ.Mouse = class Mouse {
 	}
 	
 	emulate(point, m) {
-		this._process(point.x(), point.y(), m);
+		this._process(point, m);
 	}
 	
-	_process(x, y, m1) {
-		this._point.set(x, y);
+	_process(point, m1) {
+		this._point.copy(point);
 		if ( m1 === true && this._m1 === false ) {
 			this._m1 = true;
 			this._m1DownCb();
