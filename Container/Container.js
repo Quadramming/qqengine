@@ -175,14 +175,14 @@ QQ.Container = class Container {
 		this.forChildren((subj) => {
 			subj.cleanRelationships();
 		});
-		this._subjects = [];
+		this._subjects.length = 0; // Clean array
 	}
 	
 	deleteMe() {
 		if ( this._parent ) {
 			this._parent.spliceSubject(this);
-			this.cleanRelationships();
 		}
+		this.cleanRelationships();
 	}
 	
 	forAllSubjects(fn) {
@@ -231,7 +231,7 @@ QQ.Container = class Container {
 	}
 	
 	getPosition() {
-		return this._position;
+		return this._position.clone();
 	}
 	
 	getWorldPosition() {
@@ -296,7 +296,7 @@ QQ.Container = class Container {
 	}
 	
 	setPosition(point) {
-		this._position = point;
+		this._position.copy(point);
 	}
 	
 	setAngle(a) {

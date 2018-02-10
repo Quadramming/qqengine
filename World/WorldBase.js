@@ -25,6 +25,11 @@ QQ.World.Base = class Base {
 		this._stage.setWorld(this);
 	}
 	
+	release() {
+		this._seizure = null;
+		this._stage.deleteMe();
+	}
+	
 	//================================================================
 	// Tick
 	//================================================================

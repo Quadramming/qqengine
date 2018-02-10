@@ -5,35 +5,36 @@ QQ.WorldPointer = class WorldPointer {
 	//================================================================
 	
 	constructor() {
-		this._onDown             = () => {};
-		this._onUp               = () => {};
-		this._onClick            = () => {};
-		this._getWorldFromScreen = () => {};
-		this._isBlocked          = false;
-		this._position           = this._processPoint();
-		this._startPoint         = this._processPoint();
-		this._isClicked          = false;
-		this._isNearStart        = false;
+		this._onDown = () => {};
+		this._onUp = () => {};
+		this._onClick = () => {};
+		this._convertToWorldFromScreen = () => {};
+		this._isBlocked = false;
+		this._position = {};
+		this._startPosition = {};
+		this._isClicked = false;
+		this._isNearStart = false;
+		this.reset();
 	}
 	
 	//================================================================
 	// Set functions
 	//================================================================
 	
-	setWorldFromScreen(fn) {
-		this._getWorldFromScreen = fn;
+	setConverterToWorldFromScreen(fn) {
+		this._convertToWorldFromScreen = fn;
 	}
 	
 	setActions(down, up, click) {
-		this._onDown      = down;
-		this._onUp        = up;
-		this._onClick     = click;
+		this._onDown = down;
+		this._onUp = up;
+		this._onClick = click;
 	}
 	
 	reset() {
-		this._position    = this._processPoint();
-		this._startPoint  = this._processPoint();
-		this._isClicked   = false;
+		this._process(this._position, null);
+		this._process(this._startPosition, null);
+		this._isClicked = false;
 		this._isNearStart = false;
 	}
 	
@@ -71,10 +72,10 @@ QQ.WorldPointer = class WorldPointer {
 			return;
 		}
 		if ( point ) {
-			this._isClicked   = true;
+			this._isClicked = true;
 			this._isNearStart = true;
-			this._startPoint  = this._processPoint(point);
-			this._position    = this._processPoint(point);
+			this._process(this._startPosition, point);
+			this._process(this._position, point);
 			this._onDown(this._position.world);
 		} else {
 			this.reset();
@@ -86,7 +87,7 @@ QQ.WorldPointer = class WorldPointer {
 			return;
 		}
 		if ( point ) {
-			this._position = this._processPoint(point);
+			this._process(this._position, point);
 		}
 		if ( this._isClicked ) {
 			this._onUp(this._position.world);
@@ -95,9 +96,9 @@ QQ.WorldPointer = class WorldPointer {
 			}
 		}
 		if ( point === false ) {
-			this._position = this._processPoint();
+			this._process(this._position, null);
 		}
-		this._startPoint  = this._processPoint();
+		this._process(this._startPosition, null);
 		this._isClicked   = false;
 		this._isNearStart = false;
 	}
@@ -107,10 +108,10 @@ QQ.WorldPointer = class WorldPointer {
 			return;
 		}
 		if ( point ) {
-			this._position = this._processPoint(point);
+			this._process(this._position, point);
 			if ( this._isClicked && this._isNearStart ) {
 				const isFar = ! this._position.screen.isNear(
-					this._startPoint.screen, 10
+					this._startPosition.screen, 10
 				);
 				if ( isFar ) {
 					this._isNearStart = false;
@@ -126,26 +127,29 @@ QQ.WorldPointer = class WorldPointer {
 	}
 	
 	update() {
-		this._position = this._processPoint(
-			this._position.screen
-		);
+		this._process(this._position, this._position.screen);
 	}
 	
 	//================================================================
 	// Process point
 	//================================================================
 	
-	_processPoint(point) {
+	_process(position, point) {
 		if ( point ) {
-			return {
-				screen: point.clone(),
-				world:  this._getWorldFromScreen(point)
-			};
+			position.screen.copy(point);
+			position.world.copy(point);
+			this._convertToWorldFromScreen(position.world);
 		} else {
-			return {
-				screen: false,
-				world:  false
-			};
+			if ( position.screen ) {
+				position.screen.set(NaN);
+			} else {
+				position.screen = new QQ.Point(NaN);
+			}
+			if ( position.world ) {
+				position.world.set(NaN);
+			} else {
+				position.world = new QQ.Point(NaN);
+			}
 		}
 	}
 	

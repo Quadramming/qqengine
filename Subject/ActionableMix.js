@@ -2,7 +2,8 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	
 	constructor(options) {
 		super(options);
-		this._idle = new QQ.Actions.Base();
+		this._action = null;
+		this._idleAction = new QQ.Actions.Base();
 		this.forceIdleAction();
 	}
 	
@@ -37,7 +38,7 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	}
 	
 	setActionOnEnd(fn) {
-		if ( this._action === this._idle ) {
+		if ( this._action === this._idleAction ) {
 			alert('Do not redefine idle onEnd method');
 		} else {
 			this._action.setOnEnd(fn);
@@ -45,11 +46,11 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	}
 	
 	setIdleAction() {
-		this.setAction(this._idle);
+		this.setAction(this._idleAction);
 	}
 	
 	forceIdleAction() {
-		this.forceAction(this._idle);
+		this.forceAction(this._idleAction);
 	}
 	
 };

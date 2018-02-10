@@ -20,7 +20,13 @@ QQ.Camera = class Camera {
 		this._initViewSize.copy(viewSize);
 		this._position.copy(position);
 		this._calcMainMatrix();
-		window.addEventListener('resize', () => this._calcMainMatrix());
+		this._onResize = this._calcMainMatrix.bind(this);
+		window.addEventListener('resize', this._onResize);
+	}
+	
+	release() {
+		this._world = null;
+		window.removeEventListener('resize', this._onResize);
 	}
 	
 	//================================================================
@@ -94,11 +100,17 @@ QQ.Camera = class Camera {
 	//================================================================
 	
 	getWorldFromScreen(point) {
+		const world = point.clone();
+		this.convertToWorldFromScreen(world);
+		return world;
+	}
+	
+	convertToWorldFromScreen(point) {
 		const M = QQ.Matrix.mul(
 			QQ.Matrix.inverse(this._mainMatrix),
 			[[point.x()],[point.y()],[1]]
 		);
-		return new QQ.Point(M[0][0], M[1][0]);
+		point.set(M[0][0], M[1][0]);
 	}
 	
 	draw() {

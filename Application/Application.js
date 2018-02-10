@@ -1,25 +1,10 @@
-QQ.ObjectPool = class ObjectPool {
-	
-		constructor(obj, amount) {
-			this._pool = [];
-			for ( let i = 0; i < amount; ++i ) {
-				this._pool.push(new obj);
-			}
-			c(this._pool);
-		}
-	
-};
-
 QQ.Application = class Application {
 	  
 	//================================================================
 	// Constructor
 	//================================================================
 	
-	constructor(config) {
-		
-		const p = new QQ.ObjectPool(QQ.Point, 5);
-		
+	constructor(config) {		
 		this._canvas = new QQ.Canvas('QQApplicationCanvas',
 			config.size,
 			config.maximize
@@ -45,6 +30,12 @@ QQ.Application = class Application {
 	}
 	
 	_init() {
+		this.pool = new QQ.ObjectPool(
+			() => {
+				return new Arrow({app: this});
+			},
+			3, 3
+		);
 		window.document.addEventListener(
 			'backbutton',
 			this.onBackButton.bind(this),

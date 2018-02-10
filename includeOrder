@@ -51,6 +51,7 @@ Actions/Appear.js
 Actions/WaitFor.js
 Actions/Move.js
 Actions/MoveTo.js
+Actions/Shake.js
 Actions/WalkTo.js
 Actions/Patrol.js
 Actions/BallisticsMove.js
@@ -58,3 +59,4 @@ GUI/Button.js
 GUI/Bar.js
 GUI/CheckBox.js
 Style/Style.js
+ObjectPool/ObjectPool.js

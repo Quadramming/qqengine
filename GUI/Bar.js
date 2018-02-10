@@ -6,11 +6,12 @@ class Bar extends QQ.Subject.Sprite {
 		super(input);
 		this._percent = 0;
 		this._maxSize = QQ.default(input.maxSize, 10);
+		// TODO: To styles
 		this._text = new QQ.Text({
 			position: new QQ.Point(0, 0),
 			anchor: new QQ.Point(0.5, 0.5),
 			size: new QQ.Size(30, 1),
-			fontSize: 1.5,
+			fontSize: 50,
 			font: 'KenFuture',
 			color: '#6d543a',
 			isClickable: false

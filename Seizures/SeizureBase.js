@@ -40,6 +40,13 @@ QQ.Seizures.Base = class Base {
 		};
 	}
 	
+	release() {
+		this._world.release();
+		this._world = null;
+		this._camera.release();
+		this._camera = null;
+	}
+	
 	init() {
 		// Executes after seizure became active
 		this._input.setActions(
@@ -47,8 +54,8 @@ QQ.Seizures.Base = class Base {
 			point => this.clickUp(point),
 			point => this.click(point)
 		);
-		this._input.setWorldFromScreen(
-			point => this._camera.getWorldFromScreen(point)
+		this._input.setConverterToWorldFromScreen(
+			point => this._camera.convertToWorldFromScreen(point)
 		);
 	}
 	

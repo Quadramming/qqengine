@@ -90,7 +90,8 @@ QQ.Seizures.Manager = class Manager {
 	
 	_closeActive() {
 		if ( this._actives.length > 0 ) {
-			this._actives.pop();
+			const toRelease = this._actives.pop();
+			toRelease.release();
 		}
 	}
 	
