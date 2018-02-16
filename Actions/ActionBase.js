@@ -3,20 +3,25 @@ QQ.Actions = {};
 QQ.Actions.Base = class Base {
 	
 	constructor(input = {}) {
-		this._app           = QQ.default(input.app, null);
-		this._subj          = QQ.default(input.subj, null);
-		this._toRestore     = null;
-		this._lasting       = 0;
-		this._progress      = 0;
-		this._duration      = QQ.default(input.duration, null);
-		this._isAbortable   = QQ.default(input.isAbortable, true);
-		this.onEnd          = QQ.default(input.onEnd, this.onEnd);
+		this._app = QQ.default(input.app, null);
+		this._subj = QQ.default(input.subj, null);
+		this._toRestore = null;
+		this._lasting = 0;
+		this._progress = 0;
+		this._duration = QQ.default(input.duration, null);
+		this._isAbortable = QQ.default(input.isAbortable, true);
+		this.onEnd = QQ.default(input.onEnd, this.onEnd);
 		if ( input.isRestoreOnFinish ) {
 			this._toRestore = this._subj.getAction();
 		}
 		if ( input.next ) {
 			this._next = input.next;
 		}
+	}
+	
+	reset() {
+		this._lasting = 0;
+		this._progress = 0;
 	}
 	
 	setApp(app) {

@@ -23,24 +23,19 @@ QQ.Application = class Application {
 		if ( config.showFps ) {
 			this._fpsCounter.showDetails();
 		}
-		if ( config.game ) {
-			config.game.init(this);
-		}
+		this._game = QQ.default(config.game, null);
 		this._loadResources(this._init);
 	}
 	
 	_init() {
-		this.pool = new QQ.ObjectPool(
-			() => {
-				return new Arrow({app: this});
-			},
-			3, 3
-		);
 		window.document.addEventListener(
 			'backbutton',
 			this.onBackButton.bind(this),
 			false
 		);
+		if ( this._game ) {
+			this._game.init(this);
+		}
 		this._seizures.init();
 		this._seizures.set('Main');
 		this.initMouseEvents();

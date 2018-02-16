@@ -84,6 +84,11 @@ QQ.getPixel = function(data, size, point) {
 	};
 };
 
+QQ.getPixelQuick = function(data, size, x, y) {
+	const index = (y*size.x() + x)*4;
+	return (data[index+3]<<24) + (data[index]<<16) + (data[index+1]<<8) + data[index+2];
+};
+
 QQ.makeCanvas = function(size) {
 		const cvs = document.createElement('canvas');
 		cvs.width  = size.w();

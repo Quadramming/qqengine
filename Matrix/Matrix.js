@@ -5,11 +5,31 @@ QQ.Matrix = {};
 	const sin = ( a => Math.sin(a) );
 	const cos = ( a => Math.cos(a) );
 	const abs = ( a => Math.abs(a) );
+
+	QQ.Matrix.copy = function(A, B) {
+		for ( let i = 0; i < B.length; ++i ) {
+			for ( let j = 0; j < B[i].length; ++j ) {
+				B[i][j] = A[i][j];
+			}
+		}
+	};
 	
 	QQ.Matrix.getIdentity = function() {
 		return [[1, 0, 0],
 				[0, 1, 0],
 				[0, 0, 1]];
+	};
+	
+	QQ.Matrix.setIdentity = function(M) {
+		M[0][0] = 1;
+		M[0][1] = 0;
+		M[0][2] = 0;
+		M[1][0] = 0;
+		M[1][1] = 1;
+		M[1][2] = 0;
+		M[2][0] = 0;
+		M[2][1] = 0;
+		M[2][2] = 1;
 	};
 	
 	QQ.Matrix.getScale = function(scale) {

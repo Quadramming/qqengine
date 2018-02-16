@@ -45,6 +45,7 @@ QQ.World.Base = class Base {
 	tickVariableStep(delta) {
 		if ( delta < this._pauseTime ) {
 				this._stage.tick(delta);
+				this._stage.tickSortByZ();
 				this.tickStep(delta);
 		} else {
 			if ( this._isPauseable ) {
@@ -136,6 +137,19 @@ QQ.World.Base = class Base {
 			}
 		});
 		return subjs;
+	}
+	
+	getSubject(pred = () => true) {
+		const subjs = [];
+		this._stage.forAllSubjects((subj) => {
+			if ( pred(subj) ) {
+				subjs.push(subj);
+			}
+		});
+		if ( subjs.length === 0 ) {
+			return null;
+		}
+		return subjs.shift();
 	}
 	
 	//================================================================

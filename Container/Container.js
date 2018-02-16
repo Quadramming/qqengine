@@ -1,46 +1,77 @@
 QQ.Container = class Container {
 	
 	//================================================================
-	// Constructor
+	// Constructor & initialize
 	//================================================================
 	
 	constructor(options = {}) {
-		this._app         = QQ.default(options.app, null);
-		this._position    = new QQ.Point(0, 0);
+		this._app = undefined;
+		this._position = new QQ.Point();
+		this._size = new QQ.Point();
+		this._scale = new QQ.Point();
+		this._anchor = new QQ.Point();
+		this._subjects = [];
+		this._angle = undefined;
+		this._parent = undefined;
+		this._isClickable = undefined;
+		this._z = undefined;
+		this._world = undefined;
+		this._updateOnTick = undefined;
+		this._onContainerClick = undefined;
+		this._isSortOnAddSubject = undefined;
+		this._isSortOnTick = undefined;
+		this._matrix = {
+			cached: QQ.Matrix.getIdentity(),
+			position: new QQ.Point(),
+			scale: new QQ.Scale(),
+			angle: undefined
+		};
+		Container.prototype.initialize.call(this, options, false);
+	}
+	
+	initialize(options, initializeSuper = true) {
+		this._app = QQ.default(options.app, null);
 		if ( options.position ) {
 			this._position.copy(options.position);
+		} else {
+			this._position.set(0, 0);
 		}
-		this._size        = new QQ.Point(1, 1);
 		if ( options.size ) {
 			this._size.copy(options.size);
+		} else {
+			this._size.set(1, 1);
 		}
-		this._scale       = new QQ.Scale(1, 1);
 		if ( options.scale ) {
 			this._scale.copy(options.scale);
+		} else {
+			this._scale.set(1, 1);
 		}
-		this._anchor      = new QQ.Point(0, 0);
 		if ( options.anchor ) {
 			this._anchor.copy(options.anchor);
+		} else {
+			this._anchor.set(0, 0);
 		}
-		this._subjects     = [];
-		this._angle        = QQ.default(options.angle, 0);
-		this._parent       = QQ.default(options.parent, null);
-		this._isClickable  = QQ.default(options.isClickable, true);
-		this._z            = QQ.default(options.z, 0);
-		this._world        = QQ.default(options.world, null);
+		this._subjects.length = 0;
+		this._angle = QQ.default(options.angle, 0);
+		this._parent = QQ.default(options.parent, null);
+		this._isClickable = QQ.default(options.isClickable, true);
+		this._z = QQ.default(options.z, 0);
+		this._world = QQ.default(options.world, null);
 		this._updateOnTick = QQ.default(options.updateOnTick, null);
-		this._matrix       = {
-			cached:   null,
-			position: new QQ.Point(),
-			scale:    new QQ.Scale(),
-			angle:    null
-		};
-		if ( options.onClick ) {
-			this.onClick = options.onClick;
-		}
+		QQ.Matrix.setIdentity(this._matrix.cached);
+		this._matrix.position.set(0, 0);
+		this._matrix.scale.set(0, 0);
+		this._matrix.angle = null;
 		if ( options.init ) {
 			options.init.call(this);
 		}
+		if ( options.onClick ) {
+			this._onContainerClick = options.onClick;
+		} else {
+			this._onContainerClick = () => {};
+		}
+		this._isSortOnAddSubject = QQ.default(options.isSortOnAdd, true);
+		this._isSortOnTick = QQ.default(options.isSortOnTick, false);
 	}
 	
 	//================================================================
@@ -55,6 +86,7 @@ QQ.Container = class Container {
 	}
 	
 	onClick(worldPoint) {
+		this._onContainerClick(worldPoint);
 	}
 	
 	//================================================================
@@ -66,7 +98,7 @@ QQ.Container = class Container {
 		M = QQ.Matrix.getScale(this._scale);
 		M = QQ.Matrix.mul(QQ.Matrix.getRotate(this._angle), M);
 		M = QQ.Matrix.mul(QQ.Matrix.getMove(this._position), M);
-		this._matrix.cached = M;
+		QQ.Matrix.copy(M, this._matrix.cached);
 		this._matrix.position.copy(this._position);
 		this._matrix.scale.copy(this._scale);
 		this._matrix.angle = this._angle;
@@ -135,13 +167,24 @@ QQ.Container = class Container {
 			this._updateOnTick(delta);
 		}
 		this.forChildren( (subj) => subj.tick(delta) );
-		this._sortSubjectsByZ();
 	}
 	
 	draw(ctx) {
 		//ctx.transform(this.getMatrix());
 		//this._drawLocalBorder(ctx);
 		this.forChildren( (subj) => subj.draw(ctx) );
+	}
+	
+	tickSortByZ() {
+		this.forChildren( (subj) => subj.tickSortByZ() );
+		if ( this._isSortOnTick ) {
+			this._sortSubjectsByZ();
+		}
+	}
+	
+	sortByZ() {
+		this.forChildren( (subj) => subj.sortByZ() );
+		this._sortSubjectsByZ();
 	}
 	
 	//================================================================
@@ -153,7 +196,9 @@ QQ.Container = class Container {
 		subj.setParent(this);
 		subj.setApp(this._app);
 		this._subjects.push(subj);
-		this._sortSubjectsByZ();
+		if ( this._isSortOnAddSubject ) {
+			this._sortSubjectsByZ();
+		}
 	}
 	
 	deleteSubjects() {
@@ -170,6 +215,9 @@ QQ.Container = class Container {
 	}
 	
 	cleanRelationships() {
+		if ( this._parent ) {
+			this._parent.spliceSubject(this);
+		}
 		this._parent = null;
 		this._world = null;
 		this.forChildren((subj) => {
@@ -179,9 +227,6 @@ QQ.Container = class Container {
 	}
 	
 	deleteMe() {
-		if ( this._parent ) {
-			this._parent.spliceSubject(this);
-		}
 		this.cleanRelationships();
 	}
 	
@@ -342,7 +387,6 @@ QQ.Container = class Container {
 			this._size.w(),
 			this._size.h()
 		);
-		
 	}
 	
 	_drawLocalBorder(ctx) {

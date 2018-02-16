@@ -2,8 +2,17 @@ QQ.Subject.ActionableMix = base => class ActionableMix extends base {
 	
 	constructor(options) {
 		super(options);
-		this._action = null;
+		this._action = undefined;
 		this._idleAction = new QQ.Actions.Base();
+		ActionableMix.prototype.initialize.call(this, options, false);
+	}
+	
+	initialize(options, initializeSuper = true) {
+		if ( initializeSuper ) {
+			super.initialize(options);
+		}
+		this._action = null;
+		this._idleAction.reset();
 		this.forceIdleAction();
 	}
 	

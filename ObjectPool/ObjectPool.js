@@ -1,36 +1,53 @@
 QQ.ObjectPool = class ObjectPool {
-	
-		constructor(constructor, amount, increment = 10) {
-			this._increment = increment;
+		
+		constructor(options) {
 			this._free = [];
 			this._pool = [];
-			this._constructor = constructor;
-			this._grow(amount);
+			this._amount = QQ.default(options.amount, 10);
+			this._increment = QQ.default(options.increment, 10);
+			this._doCreate = options.create;
+			this._doInitialize = options.initialize;
+			this._doRelease = options.release;
+			this.reset();
+		}
+		
+		reset() {
+			if ( this._doRelease ) {
+				for ( const i in this._pool ) {
+					if ( this._free.indexOf(i) === -1 ) {
+							this._doRelease(this._pool[i]);
+					}
+				}
+			}
+			this._free.length = 0;
+			this._pool.length = 0;
+			this._grow(this._amount);
 		}
 		
 		_grow(amount = this._increment) {
 			const size = this._pool.length;
 			for ( let i = 0; i < amount; ++i ) {
 				this._free.push(size + i);
-				const obj = this._constructor();
+				const obj = this._doCreate();
 				this._pool.push(obj);
-				if ( obj.construct ) {
-					obj.construct();
-				}
 			}
 		}
 		
-		get() {
+		get(options) {
 			if ( this._free.length === 0 ) {
 				this._grow();
 			}
 			const index = this._free.pop();
-			return this._pool[index];
+			const obj = this._pool[index];
+			if ( this._doInitialize ) {
+				this._doInitialize(obj, options);
+			}
+			return obj;
 		}
 		
 		release(obj) {
-			if ( obj.destruct ) {
-				obj.destruct();
+			if ( this._doRelease ) {
+				this._doRelease(obj);
 			}
 			const index = this._pool.indexOf(obj);
 			if ( index !== -1 ) {
