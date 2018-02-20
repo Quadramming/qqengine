@@ -13,6 +13,7 @@ QQ.Application = class Application {
 		this._time = new QQ.Time();
 		this._mouse = new QQ.Mouse();
 		this._touch = new QQ.Touch(this._mouse);
+		this._inputQueue = [];
 		this._storage = new QQ.Storage();
 		this._imgManager = new QQ.ImgManager();
 		this._seizures = new QQ.Seizures.Manager(this);
@@ -68,22 +69,50 @@ QQ.Application = class Application {
 	initMouseEvents() {
 		this._mouse.setMoveCb( () => {
 			const point = this._getPointerOnCanvas();
-			this._seizures.forActive((sz) => {
-				sz.pointerMove(point);
+			this._inputQueue.push({
+				type: 'mouse move',
+				point: point
 			});
 		});
 		this._mouse.setM1DownCb( () => {
 			const point = this._getPointerOnCanvas();
-			this._seizures.forActive((sz) => {
-				sz.pointerDown(point);
+			this._inputQueue.push({
+				type: 'mouse down',
+				point: point
 			});
 		});
 		this._mouse.setM1UpCb( () => {
 			const point = this._getPointerOnCanvas();
-			this._seizures.forActive((sz) => {
-				sz.pointerUp(point);
+			this._inputQueue.push({
+				type: 'mouse up',
+				point: point
 			});
 		});
+	}
+	
+	_handleInput() {
+		for ( const input of this._inputQueue ) {
+			switch ( input.type ) {
+				case 'mouse move':
+					this._seizures.forActive((sz) => {
+						sz.pointerMove(input.point);
+					});
+				break;
+				case 'mouse down':
+					this._seizures.forActive((sz) => {
+						sz.pointerDown(input.point);
+					});
+				break;
+				case 'mouse up':
+					this._seizures.forActive((sz) => {
+						sz.pointerUp(input.point);
+					});
+				break;
+				default:
+					alert('bad input type');
+			}
+		}
+		this._inputQueue.length = 0;
 	}
 	
 	_getPointerOnCanvas() {
@@ -216,6 +245,7 @@ QQ.Application = class Application {
 	
 	_tick() {
 		const delta = this._time.update();
+		this._handleInput();
 		this._fpsCounter.tick(delta);
 		this._seizures.tick(delta);
 	}

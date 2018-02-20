@@ -17,10 +17,13 @@ class Bar extends QQ.Subject.Sprite {
 			isClickable: false
 		});
 		this.setText(this._percent);
-		this.addSubject(this._text);
 	}
 	
 	setText(percent) {
+		if ( this._subjects.length === 0 ) {
+			// TODO: May be init() ?
+			this.addSubject(this._text);
+		}
 		if ( percent > 50 ) {
 			let text = String(percent);
 			if ( text.length > 5 ) {

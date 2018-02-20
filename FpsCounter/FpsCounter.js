@@ -36,13 +36,13 @@ QQ.FpsCounter = class FpsCounter {
 			let i = 0;
 			for ( const slot of this._slots ) {
 				ctx.fillStyle = 'green';
-				if ( slot > 99 ) {
+				if ( slot > 60 ) {
 					ctx.fillStyle = 'white';
 				}
-				if ( slot < 55 ) {
+				if ( slot < 25 ) {
 					ctx.fillStyle = 'yellow';
 				}
-				if ( slot < 50 ) {
+				if ( slot < 15 ) {
 					ctx.fillStyle = 'red';
 				}
 				ctx.fillText( slot + ' FPS', 20, 20 + 15*i);
