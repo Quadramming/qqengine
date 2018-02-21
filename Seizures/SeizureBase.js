@@ -45,6 +45,10 @@ QQ.Seizures.Base = class Base {
 		this._world = null;
 		this._camera.release();
 		this._camera = null;
+		this._parent = null;
+		this._hud.release();
+		this._hud = null;
+		this._input = null;
 	}
 	
 	init() {

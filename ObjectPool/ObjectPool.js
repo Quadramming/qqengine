@@ -11,7 +11,7 @@ QQ.ObjectPool = class ObjectPool {
 			this.reset();
 		}
 		
-		reset() {
+		clean() {
 			if ( this._doRelease ) {
 				for ( const i in this._pool ) {
 					if ( this._free.indexOf(i) === -1 ) {
@@ -21,6 +21,10 @@ QQ.ObjectPool = class ObjectPool {
 			}
 			this._free.length = 0;
 			this._pool.length = 0;
+		}
+		
+		reset() {
+			this.clean();
 			this._grow(this._amount);
 		}
 		

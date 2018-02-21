@@ -13,6 +13,9 @@ QQ.Seizures.FakeHud = class FakeHud {
 		return false;
 	}
 	
+	release(){ 
+	}
+	
 	tick() {
 	}
 	
