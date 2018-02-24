@@ -47,6 +47,9 @@ QQ.Sound = class Sound {
 	control(strSound, options = {}) {
 		if ( this._type === 'html5' ) {
 			const sound = this._sounds.get(strSound);
+			if ( ! sound ) {
+				return;
+			}
 			if ( options.loop !== undefined ) {
 				sound.loop = options.loop;
 			}
