@@ -1,4 +1,6 @@
-QQ.World.Physics = class Physics extends QQ.World.Base {
+import {World} from './World.js';
+
+export class Physics extends World {
 	//================================================================
 	// RECONSTRUCTION
 	//================================================================
@@ -63,4 +65,4 @@ QQ.World.Physics = class Physics extends QQ.World.Base {
 		super.deleteSubject(subj);
 	}
 	*/
-};
+}

@@ -1,15 +1,18 @@
-QQ.CheckBox = class CheckBox extends QQ.Subject.Sprite {
+import * as QQ from '../QQ.js';
+import * as Subject from '../Subject/index.js';
+
+export class CheckBox extends Subject.Sprite {
 	
 	constructor(options) {
-		options.img = 'checkBoxEmpty';
+		options.image = 'checkBoxEmpty';
 		super(options);
-		this._onChange = QQ.default(options.onChange, () => {});
-		this._isChecked = QQ.default(options.isChecked, false);
-		this._isByTouch = QQ.default(options.isTouch, false);
-		this.refreshImg();
+		this._onChange = QQ.useDefault(options.onChange, () => {});
+		this._isChecked = QQ.useDefault(options.isChecked, false);
+		this._isByTouch = QQ.useDefault(options.isTouch, false);
+		this.refreshImage();
 	}
 	
-	refreshImg() {
+	refreshImage() {
 		if ( this._isChecked ) {
 			this.setSprite('checkBoxChecked');
 		} else {
@@ -20,7 +23,7 @@ QQ.CheckBox = class CheckBox extends QQ.Subject.Sprite {
 	change() {
 		this._isChecked = ! this._isChecked;
 		this._onChange(this._isChecked);
-		this.refreshImg();
+		this.refreshImage();
 	}
 	
 	onClickDown(worldPoint) {

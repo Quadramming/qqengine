@@ -1,29 +1,24 @@
-class Bar extends QQ.Subject.Sprite {
+import * as QQ from '../QQ.js';
+import * as Text from '../Text/index.js';
+import * as Subject from '../Subject/index.js';
+import {Point} from '../Point.js';
+import {Size} from '../Size.js';
+import {Style} from '../Style/Style.js';
+
+export class Bar extends Subject.Sprite {
 	
-	constructor(input) {
-		input.img = QQ.default(input.img, 'bar');
-		input.anchor = QQ.default(input.anchor, new QQ.Point(0.5, 0.5));
-		super(input);
+	constructor(options) {
+		options.img = QQ.useDefault(options.image, 'bar');
+		options.anchor = QQ.useDefault(options.anchor, new Point(0.5, 0.5));
+		super(options);
 		this._percent = 0;
-		this._maxSize = QQ.default(input.maxSize, 10);
-		// TODO: To styles
-		this._text = new QQ.Text({
-			position: new QQ.Point(0, 0),
-			anchor: new QQ.Point(0.5, 0.5),
-			size: new QQ.Size(30, 1),
-			fontSize: 50,
-			font: 'KenFuture',
-			color: '#6d543a',
-			isClickable: false
-		});
-		this.setText(this._percent);
+		this._maxSize = QQ.useDefault(options.maxSize, 10);
+		this._text = new Text.Text( Style.use('bar', {size: new Size(this._maxSize, 2)}) );
+		this.addSubject(this._text);
+		this.setBarValue(options.percent);
 	}
 	
 	setText(percent) {
-		if ( this._subjects.length === 0 ) {
-			// TODO: May be init() ?
-			this.addSubject(this._text);
-		}
 		if ( percent > 50 ) {
 			let text = String(percent);
 			if ( text.length > 5 ) {
@@ -36,11 +31,11 @@ class Bar extends QQ.Subject.Sprite {
 		}
 	}
 	
-	setSize(percent) {
+	setBarValue(percent = 0) {
 		this._percent = percent;
 		this.setText(percent);
 		const width = (this._maxSize*percent)/100;
-		super.setSize(new QQ.Point(width, 2));
+		super.setSize(new Size(width, 2));
 	}
 	
-};
+}

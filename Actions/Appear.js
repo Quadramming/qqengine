@@ -1,4 +1,6 @@
-QQ.Actions.Appear = class Appear extends QQ.Actions.Base {
+import {Idle} from './Idle.js';
+
+export class Appear extends Idle {
 	
 	tick(delta) {
 		super.tick(delta);
@@ -9,4 +11,4 @@ QQ.Actions.Appear = class Appear extends QQ.Actions.Base {
 		this._subj.setAlpha(1);
 	}
 	
-};
+}

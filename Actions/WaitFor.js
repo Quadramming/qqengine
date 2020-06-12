@@ -1,2 +1,4 @@
-QQ.Actions.WaitFor = class WaitFor extends QQ.Actions.Base {
-};
+import {Idle} from './Idle.js';
+
+export class WaitFor extends Idle {
+}

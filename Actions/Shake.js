@@ -1,12 +1,17 @@
-QQ.Actions.Shake = class Shake extends QQ.Actions.Base {
+import * as QQ from '../QQ.js';
+import {Point} from '../Point.js';
+import {Size} from '../Size.js';
+import {Idle} from './Idle.js';
+
+export class Shake extends Idle {
 	
 	constructor(input = {}) {
 		super(input);
-		this._dispersion = new QQ.Size(1, 1);
+		this._dispersion = new Size(1, 1);
 		if ( input.dispersion ) {
 			this._dispersion.copy(input.dispersion);
 		}
-		this._period = QQ.default(input.period, 1);
+		this._period = QQ.useDefault(input.period, 1);
 		this._position = this._subj.getPosition();
 	}
 	
@@ -21,10 +26,10 @@ QQ.Actions.Shake = class Shake extends QQ.Actions.Base {
 	
 	_calcPosition() {
 		const time = this._lasting * Math.PI*2 / this._period;
-		return new QQ.Point(
+		return new Point(
 			this._position.x() + this._dispersion.w() * Math.sin(time)/2,
 			this._position.y() + this._dispersion.h() * Math.cos(time)/2
 		);
 	}
 	
-};
+}

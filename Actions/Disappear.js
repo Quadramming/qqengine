@@ -1,4 +1,6 @@
-QQ.Actions.Disappear = class Disappear extends QQ.Actions.Base {
+import {Idle} from './Idle.js';
+
+export class Disappear extends Idle {
 	
 	tick(delta) {
 		super.tick(delta);
@@ -9,4 +11,4 @@ QQ.Actions.Disappear = class Disappear extends QQ.Actions.Base {
 		this._subj.deleteMe();
 	}
 	
-};
+}

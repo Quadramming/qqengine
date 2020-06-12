@@ -1,8 +1,10 @@
-QQ.Actions.MoveTo = class MoveTo extends QQ.Actions.Move {
+import {Move} from './Move.js';
+
+export class MoveTo extends Move {
 	
 	constructor(options) {
 		options.from = options.subj.getPosition();
 		super(options);
 	}
 	
-};
+}

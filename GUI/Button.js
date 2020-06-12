@@ -1,9 +1,12 @@
-QQ.Button = class Button extends QQ.Subject.Sprite {
+import * as QQ from '../QQ.js';
+import * as Subject from '../Subject/index.js';
+
+export class Button extends Subject.Sprite {
 	
 	constructor(options) {
 		super(options);
-		this._onBtnClickDown = QQ.default(options.onBtnClickDown, () => {});
-		this._onBtnClick = QQ.default(options.onBtnClick, () => {});
+		this._onBtnClickDown = QQ.useDefault(options.onBtnClickDown, () => {});
+		this._onBtnClick = QQ.useDefault(options.onBtnClick, () => {});
 	}
 	
 	onClickDown(worldPoint) {
@@ -16,4 +19,4 @@ QQ.Button = class Button extends QQ.Subject.Sprite {
 		this._onBtnClick(worldPoint);
 	}
 	
-};
+}

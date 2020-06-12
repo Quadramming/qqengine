@@ -1,4 +1,6 @@
-QQ.Actions.Patrol = class Patrol extends QQ.Actions.WalkTo {
+import {WalkTo} from './WalkTo.js';
+
+export class Patrol extends WalkTo {
 	
 	constructor(options) {
 		super(options);
@@ -13,4 +15,4 @@ QQ.Actions.Patrol = class Patrol extends QQ.Actions.WalkTo {
 		[this._from, this._to] = [this._to, this._from];
 	}
 	
-};
+}

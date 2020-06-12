@@ -1,29 +1,51 @@
-QQ.Style = {
-	_map: new Map(),
-	
-	set(name, obj) {
-		let result = {};
-		if ( obj.style ) {
-			result = QQ.Style.use(result, obj.style);
-		}
-		this._map.set(name, QQ.merge(result, obj));
-	},
+import * as QQ from '../QQ.js';
 
-	use(...styles) {
-		let result = {};
+const map = new Map();
+
+function merge(...objs) {
+	const result = QQ.merge(...objs);
+	delete result.styles;
+	return result;
+}
+
+export class Style {
+	
+	static set(name, obj) {
+		map.set(name, obj);
+	}
+	
+	static use(...styles) {
+		const result = this._use('default', styles);
+		delete result._usedStyles;
+		return result;
+	}
+	
+	static _use(...styles) {
+		let result = {
+			_usedStyles: []
+		};
 		for ( const style of styles ) {
-			if ( Array.isArray(style) ) {
-				result = QQ.Style.use(result, ...style);
+			if ( style === undefined ) {
+				// Nothing
+			} else if ( Array.isArray(style) ) {
+				result = this._use(result, ...style);
 			} else if ( typeof style === 'string' ) {
-				const styleObj = this._map.get(style);
-				if ( styleObj ) {
-					result = QQ.merge(result, styleObj);
+				if ( style.includes(' ') ) {
+					result = this._use(result, style.split(' '));
+				} else {
+					if ( ! result._usedStyles.includes(style) ) {
+						result._usedStyles.push(style);
+						result = this._use(result, map.get(style));
+					}
 				}
-			} else {
-				result = QQ.merge(result, style);
+			} else if ( typeof style === 'object' ) {
+				if ( style.styles ) {
+					result = this._use(result, style.styles);
+				}
+				result = merge(result, style);
 			}
 		}
 		return result;
 	}
-
-};
+	
+}

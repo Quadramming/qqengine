@@ -1,69 +1,83 @@
-QQ.Text = class Text extends QQ.Subject.Base {
+import * as QQ from '../QQ.js';
+import * as Matrix from '../matrix.js';
+import * as Subject from '../subject/index.js';
+import {Rect} from '../Rect.js';
+import {Scale} from '../Scale.js';
+import {Size} from '../Size.js';
 
+export class Text extends Subject.Subject {
+	
 	constructor(options) {
 		super(options);
-		this._primalStr    = '';
-		this._strings      = '';
-		this._lines        = 0;
-		this._isNeedRecalc = true;
-		this._align        = QQ.default(options.align, 'center');
-		this._valign       = QQ.default(options.valign, 'middle');
-		this._baseLine     = QQ.default(options.baseLine, 'middle');
-		this._font         = QQ.default(options.font, 'Arial');
-		this._fontSize     = QQ.default(options.fontSize, 50);
-		this._spaceSize    = QQ.default(options.fontSpace, 1);
-		this._textScale    = new QQ.Scale();
-		this._color        = QQ.default(options.color, '#000000');
-		this._alpha        = QQ.default(options.alpha, 1);
-		this._hide         = false;
-		this._border       = QQ.default(options.border, false);
-		this.applyText(options.text);
+		this._originalString = '';
+		this._strings = '';
+		this._lines = 0;
+		this._hidden = false;
+		this._needCalculation = true;
+		this._textScale = new Scale();
+		this._color = QQ.useDefault(options.color, '#000000');
+		this._align = QQ.useDefault(options.align, 'center');
+		this._valign = QQ.useDefault(options.valign, 'middle');
+		this._baseLine = QQ.useDefault(options.baseLine, 'middle');
+		this._font = QQ.useDefault(options.font, 'Arial');
+		this._fontSize = QQ.useDefault(options.fontSize, 50);
+		this._spaceSize = QQ.useDefault(options.fontSpace, 1);
+		this._alpha = QQ.useDefault(options.alpha, 1);
+		this._border = QQ.useDefault(options.border, false);
+		this.setText(options.text);
 	}
 	
-	applyText(text) {
-		this._primalStr    = text;
-		this._strings      = String(text).split('\n');
-		this._lines        = this._strings.length;
+	setText(text) {
+		if ( this._originalString === text ) {
+			return;
+		}
+		this._originalString = text;
+		this._strings = String(text).split('\n');
+		this._lines = this._strings.length;
+		this._needCalculation = true;
 	}
 	
 	show() {
-		this._hide = false;
+		this._hidden = false;
 	}
 	
 	hide() {
-		this._hide = true;
+		this._hidden = true;
 	}
 	
 	setAlpha(a) {
 		this._alpha = a;
 	}
 	
-	draw(ctx) {
-		if ( this._hide ) {
+	draw(ctxWrap) {
+		if ( this._hidden ) {
 			return;
 		}
-		ctx.transform(this.getMatrix());
+		ctxWrap.transform(this.getMatrix());
 		if ( this._border ) {
-			this._drawLocalBorder(ctx);
+			super._drawLocalBorder(ctxWrap);
 		}
-		super.draw(ctx);
-		const changeAlpha = (this._alpha !== 1);
-		const context = ctx.get();
-		this._setupContext(context);
-		if ( this._isNeedRecalc ) {
-			this._calculate(context);
+		super.draw(ctxWrap);
+		const ctx = ctxWrap.get();
+		this._setupCtx(ctx);
+		if ( this._needCalculation ) {
+			this._calculate(ctx);
 		}
-		ctx.transform(
-			QQ.Matrix.mul(this.getMatrix(), QQ.Matrix.getScale(this._textScale))
+		ctxWrap.transform(
+			Matrix.mul(this.getMatrix(), Matrix.getScale(this._textScale))
 		);
 		const localRect = this._getLocalRect();
-		const rectScaled = new QQ.Rect(
+		const rectScaled = new Rect(
 			localRect.x() / this._textScale.x(),
 			localRect.y() / this._textScale.y(),
 			localRect.w() / this._textScale.w(),
 			localRect.h() / this._textScale.h()
 		);
 		let i = 0;
+		const changeAlpha = (this._alpha !== 1);
+		if ( changeAlpha ) {
+			ctx.globalAlpha = this._alpha;
+		}
 		for ( const str of this._strings ) {
 			let x, y;
 			if ( this._align === 'left' ) {
@@ -95,44 +109,32 @@ QQ.Text = class Text extends QQ.Subject.Base {
 					)
 					+ yOffset;
 			}
-			if ( changeAlpha ) {
-				context.globalAlpha = this._alpha;
-			}
-			context.fillText(str, x, y);
-			if ( changeAlpha ) {
-				context.globalAlpha = 1;
-			}
+			ctx.fillText(str, x, y);
 			++i;
 		}
-	}
-	
-	setText(text) {
-		if ( this._primalStr === text ) {
-			return;
+		if ( changeAlpha ) {
+			ctx.globalAlpha = 1;
 		}
-		this.applyText(text);
-		this.recalc();
 	}
 	
-	recalc() {
-		this._isNeedRecalc = true;
-	}
-	
-	_drawLocalBorder(ctx) {
-		super._drawLocalBorder(ctx);
-	}
-	
-	_setupContext(ctx) {
-		ctx.font         = 'normal ' + this._fontSize + 'px ' + this._font;
+	_setupCtx(ctx) {
+		ctx.font = 'normal ' + this._fontSize + 'px ' + this._font;
 		ctx.textBaseline = this._baseLine;
-		ctx.textAlign    = this._align;
-		ctx.fillStyle    = this._color;
+		ctx.textAlign = this._align;
+		ctx.fillStyle = this._color;
+	}
+	
+	_calculate(ctx) {
+		const size = this._measureText(ctx);
+		const w = this._size.w() / size.w();
+		const h = this._size.h() / size.h();
+		this._textScale.set(Math.min(w, h, 1));
 	}
 	
 	_measureText(ctx) {
-		const result = new QQ.Size();
-		for ( const str of this._strings ) {
-			const length = ctx.measureText(str).width;
+		const result = new Size(0, 0);
+		for ( const string of this._strings ) {
+			const length = ctx.measureText(string).width;
 			if ( length > result.w() ) {
 				result.w(length);
 			}
@@ -141,11 +143,4 @@ QQ.Text = class Text extends QQ.Subject.Base {
 		return result;
 	}
 	
-	_calculate(ctx) {
-		const size = this._measureText(ctx);
-		const w    = this._size.w() / size.w();
-		const h    = this._size.h() / size.h();
-		this._textScale.set(Math.min(w, h, 1));
-	}
-	
-};
+}
