@@ -1,12 +1,7 @@
-import {Size} from './Size.js';
-import {Point} from './Point.js';
-import {Rect} from './Rect.js';
+import * as QQ from './QQ.js';
+import {Size, Point, Rect} from './primitives/index.js';
 
 export class Canvas {
-	
-	//================================================================
-	// Constructor
-	//================================================================
 	
 	constructor(id, size, maximize = false) {
 		this._fullscreen = (size === undefined);
@@ -17,21 +12,20 @@ export class Canvas {
 		this._size = new Size();
 		this._scale = 1;
 		this._unit = null;
-		this._onCalcSize = () => {};
 		this._canvas = document.createElement('canvas');
 		this._context = this._canvas.getContext('2d');
 		this._canvas.id = id;
 		this._canvas.style.position = 'absolute';
-		this._context.imageSmoothingEnabled = true;
 		
 		this._calcSize();
 		document.body.appendChild(this._canvas);
-		window.addEventListener('resize', () => this.resize());
+		QQ.APP.addOnResize( () => this._calcSize() );
 	}
 	
-	//================================================================
-	// Common
-	//================================================================
+	destructor() {
+		document.body.removeChild(this._canvas);
+	}
+	
 	
 	getSizeRect() {
 		return new Rect(0, 0,
@@ -75,11 +69,6 @@ export class Canvas {
 		return this._size.getRatio();
 	}
 	
-	setOnCalcSize(fn) {
-		this._onCalcSize = fn;
-		this._calcSize();
-	}
-	
 	resize() {
 		this._calcSize();
 	}
@@ -94,14 +83,6 @@ export class Canvas {
 		context.stroke();
 	}
 	
-	remove() {
-		document.body.removeChild(this._canvas);
-	}
-	
-	//================================================================
-	// Private
-	//================================================================
-	
 	_calcSize() {
 		if ( this._fullscreen ) {
 			this._calcFullscreenSize();
@@ -113,7 +94,6 @@ export class Canvas {
 			}
 		}
 		this._calcCanvasSize();
-		this._onCalcSize();
 	}
 	
 	_calcNormalSize() {
@@ -162,6 +142,7 @@ export class Canvas {
 		this._context.font = 'bold ' +
 			Math.floor(20 * this.getScale()) + 'px' +
 			'defaultFont';
+		this._context.imageSmoothingEnabled = false;
 	}
 	
 }

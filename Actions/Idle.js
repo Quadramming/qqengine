@@ -3,7 +3,6 @@ import * as QQ from '../QQ.js';
 export class Idle {
 	
 	constructor(input = {}) {
-		this._app = QQ.useDefault(input.app, null);
 		this._subj = QQ.useDefault(input.subj, null);
 		this._lasting = 0;
 		this._progress = 0;
@@ -24,10 +23,6 @@ export class Idle {
 	reset() {
 		this._lasting = 0;
 		this._progress = 0;
-	}
-	
-	setApp(app) {
-		this._app = app;
 	}
 	
 	setSubject(subj) {

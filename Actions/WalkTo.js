@@ -1,11 +1,11 @@
-import {Point} from '../Point.js';
+import {Point} from '../primitives/index.js';
 import {Idle} from './Idle.js';
 
 export class WalkTo extends Idle {
 	
-	constructor(options) {
-		super(options);
-		this._to = options.to;
+	constructor(targetPoint) {
+		super();
+		this._to = targetPoint.clone();
 	}
 	
 	setTarget(to) {

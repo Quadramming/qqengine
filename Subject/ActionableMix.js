@@ -7,14 +7,17 @@ export function ActionableMix(base) {
 		constructor(options) {
 			super(options);
 			this._idleAction = new Idle();
-			this._action = null;
-			ActionableMix.prototype.initialize.call(this, options, false);
+			this._action = undefined;
+			
+			this._initializeActionableMix(options);
 		}
 		
-		initialize(options, initializeSuper = true) {
-			if ( initializeSuper ) {
-				super.initialize(options);
-			}
+		initialize(options) {
+			super.initialize(options);
+			_initializeActionableMix(options);
+		}
+		
+		_initializeActionableMix(options) {
 			this.forceIdleAction();
 		}
 		
@@ -35,7 +38,6 @@ export function ActionableMix(base) {
 		forceAction(action) {
 			this._action = action;
 			this._action.reset();
-			this._action.setApp(this._app);
 			this._action.setSubject(this);
 			this._action.onStart();
 		}
@@ -51,7 +53,7 @@ export function ActionableMix(base) {
 		
 		setActionOnEnd(fn) {
 			if ( this._action === this._idleAction ) {
-				alert('Do not redefine idle onEnd method');
+				throw new Error('Do not redefine idle onEnd method');
 			} else {
 				this._action.setOnEnd(fn);
 			}

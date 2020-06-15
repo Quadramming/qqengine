@@ -5,6 +5,7 @@ export class CheckBox extends Subject.Sprite {
 	
 	constructor(options) {
 		options.image = 'checkBoxEmpty';
+		options.isClickable = true;
 		super(options);
 		this._onChange = QQ.useDefault(options.onChange, () => {});
 		this._isChecked = QQ.useDefault(options.isChecked, false);

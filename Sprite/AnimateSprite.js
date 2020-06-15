@@ -1,5 +1,5 @@
 import {Sprite} from './Sprite.js';
-import {Point} from '../Point.js';
+import {Point} from '../primitives/index.js';
 
 export class AnimateSprite extends Sprite {
 	

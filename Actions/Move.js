@@ -1,4 +1,4 @@
-import {Point} from '../Point.js';
+import {Point} from '../primitives/index.js';
 import {Idle} from './Idle.js';
 
 export class Move extends Idle {

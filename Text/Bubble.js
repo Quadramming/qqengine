@@ -1,8 +1,8 @@
 import * as QQ from '../QQ.js';
 import * as Actions from '../Actions/index.js';
+import * as style from '../style/index.js';
 import {ActionableMix} from '../Subject/ActionableMix.js';
-import {Point} from '../Point.js';
-import {Style} from '../Style/Style.js';
+import {Point} from '../primitives/index.js';
 import {Text} from './Text.js';
 
 export class Bubble extends
@@ -45,7 +45,7 @@ export class Bubble extends
 	
 	static make(options) {
 		const bubble = new Bubble(
-			Style.use('bubbleText', options)
+			style.use('bubbleText', options)
 		);
 		if ( options.world ) {
 			options.world.addSubject(bubble);

@@ -2,10 +2,7 @@ import * as QQ from './QQ.js';
 import * as Matrix from './matrix.js';
 import * as Maths from './maths.js';
 import * as Subject from './Subject/index.js';
-import {Point} from './Point.js';
-import {Size} from './Size.js';
-import {Rect} from './Rect.js';
-import {Scale} from './Scale.js';
+import {Point, Size, Rect, Scale} from './primitives/index.js';
 
 export class Camera {
 	
@@ -29,13 +26,11 @@ export class Camera {
 		this._initViewSize.copy(viewSize);
 		this._position.copy(position);
 		this._calcMainMatrix();
-		this._onResize = this._calcMainMatrix.bind(this);
-		window.addEventListener('resize', this._onResize);
+		QQ.APP.addOnResize( () => this._calcMainMatrix() );
 	}
 	
 	release() {
 		this._world = null;
-		window.removeEventListener('resize', this._onResize);
 	}
 	
 	//================================================================
@@ -85,7 +80,7 @@ export class Camera {
 	}
 	
 	addView(addition) {
-		this._viewSize.add(addition);
+		this._initViewSize.add(addition);
 		this._calcMainMatrix();
 	}
 	
@@ -100,7 +95,7 @@ export class Camera {
 	}
 	
 	setView(size) {
-		this._initViewSize = size;
+		this._initViewSize.copy(size);
 		this._calcMainMatrix();
 	}
 	
@@ -127,7 +122,7 @@ export class Camera {
 			get: () => this._ctx,
 			transform: this.setTransform.bind(this)
 		};
-		const bg = this._world.getBackground();
+		const bg = this._world.background();
 		if ( bg && typeof bg === 'string' ) {
 			this._cleanCanvas(bg);
 		} else if ( bg && bg instanceof Subject.Subject ) {
@@ -204,13 +199,10 @@ export class Camera {
 	
 	_calcMainMatrix() {
 		const canvasRatio = (this._canvas.width / this._canvas.height);
-		const cameraRatio = this._initViewSize.getRatio();
-		if ( canvasRatio !== cameraRatio ) {
-			this._viewSize = Maths.increaseToRatio(
-				this._initViewSize,
-				canvasRatio
-			);
-		}
+		this._viewSize = Maths.increaseToRatio(
+			this._initViewSize,
+			canvasRatio
+		);
 		this._fixClip();
 		this._mainMatrix = Matrix.mul(
 			this._getScreenMatrix(),

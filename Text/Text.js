@@ -1,9 +1,7 @@
 import * as QQ from '../QQ.js';
 import * as Matrix from '../matrix.js';
-import * as Subject from '../subject/index.js';
-import {Rect} from '../Rect.js';
-import {Scale} from '../Scale.js';
-import {Size} from '../Size.js';
+import * as Subject from '../Subject/index.js';
+import {Rect, Scale, Size} from '../primitives/index.js';
 
 export class Text extends Subject.Subject {
 	

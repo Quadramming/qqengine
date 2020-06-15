@@ -14,6 +14,13 @@ export function c(variable, ...rest) {
 
 export let APP = null;
 
+export function setApp(app) {
+	if ( APP !== null ) {
+		throw new Error('Only one application can be created');
+	}
+	APP = app;
+}
+
 export function dump(...rest) {
 	for ( const variable of rest ) {
 		console.log(variable);
@@ -33,7 +40,7 @@ export function initApp(cfg) {
 	while ( document.body.firstChild ) {
 		document.body.removeChild( document.body.firstChild );
 	}
-	APP = new Application(cfg);
+	new Application(cfg);
 }
 
 export function isObject(obj) {
@@ -86,8 +93,12 @@ export function isNumbers(...args) {
 	return true;
 }
 
-export function setTransform(ctx, M) {
-	ctx.setTransform(M[0][0], M[1][0], M[0][1], M[1][1], M[0][2], M[1][2]);
+export function setTransform(ctx, matrix) {
+	ctx.setTransform(
+		matrix[0][0], matrix[1][0],
+		matrix[0][1], matrix[1][1],
+		matrix[0][2], matrix[1][2]
+	);
 }
 
 export function cleanTransform(ctx) {

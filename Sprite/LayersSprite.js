@@ -1,7 +1,6 @@
 import * as QQ from '../QQ.js';
 import {Sprite} from './Sprite.js';
-import {Rect} from '../Rect.js';
-import {Point} from '../Point.js';
+import {Point, Rect} from '../primitives/index.js';
 
 export class LayersSprite extends Sprite {
 	

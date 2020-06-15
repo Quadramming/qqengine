@@ -1,6 +1,5 @@
 import {Sprite} from './Sprite.js';
-import {Point} from '../Point.js';
-import {Size} from '../Size.js';
+import {Point, Size} from '../primitives/index.js';
 
 export class TileSprite extends Sprite {
 	

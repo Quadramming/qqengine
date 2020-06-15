@@ -1,6 +1,6 @@
 import * as QQ from '../QQ.js';
 import * as Subject from '../Subject/index.js';
-import {Point} from '../Point.js';
+import {Point} from '../primitives/index.js';
 import {Container} from '../Container.js';
 
 export class World {
@@ -14,11 +14,11 @@ export class World {
 		this._seizure = settings.seizure;
 		this._background = null;
 		this._deltaAccum = 0;
-		this._maxTicks = QQ.useDefault(settings.maxTicks, 7);
+		this._maxTicks = QQ.useDefault(settings.maxTicks, 1);
 		this._timeStep = QQ.useDefault(settings.timeStep, 0.0166);
 		this._pauseTime = QQ.useDefault(settings.pauseTime, 0.5);
 		this._isPauseable = QQ.useDefault(settings.isPauseable, false);
-		this._tickType = QQ.useDefault(settings.isPauseable, 'variable');
+		this._tickType = QQ.useDefault(settings.tickType, 'var');
 		this._stage = new Container({
 			app: this._app,
 			size: new Point(10, 10),
@@ -86,17 +86,16 @@ export class World {
 	// Background
 	//================================================================
 	
-	setBackground(background) {
+	background(background) {
 		if ( typeof background === 'string' ) {
 			this._background = background;
 		} else if ( background instanceof Image ) {
 			this._background = new Subject.Sprite({
 				image: background
 			});
+		} else if ( background === null ) {
+			this._background = null;
 		}
-	}
-	
-	getBackground() {
 		return this._background;
 	}
 	
@@ -137,7 +136,7 @@ export class World {
 	
 	getAllSubjectsAtPoint(point) {
 		return this.getSubjects((subj) => {
-			return subj instanceof QQ.Subject.Base && subj.isHit(point);
+			return subj instanceof Subject.Subject && subj.isHit(point);
 		});
 	}
 	

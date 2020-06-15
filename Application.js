@@ -1,6 +1,6 @@
 import * as QQ from './QQ.js';
-import {Point} from './Point.js';
-import {Size} from './Size.js';
+import * as Seizure from './Seizure/index.js';
+import {Point, Size} from './primitives/index.js';
 import {FpsCounter} from './FpsCounter.js';
 import {Time} from './Time.js';
 import {Mouse} from './Mouse.js';
@@ -9,11 +9,10 @@ import {Storage} from './Storage.js';
 import {ImgManager} from './ImgManager.js';
 import {Sound} from './Sound.js';
 import {Canvas} from './Canvas.js';
-import * as Seizure from './Seizure/index.js';
-import {S} from './Style/tag.js';
+import {OnResizeHandler} from './OnResizeHandler.js';
+import {Sprite} from './Sprite/index.js';
+import {S} from './style/index.js';
 import {T} from './i18n.js';
-
-import './Seizure/Main.js';
 
 export class Application {
 	
@@ -22,6 +21,8 @@ export class Application {
 	//================================================================
 	
 	constructor(config) {
+		QQ.setApp(this);
+		this._onResizeHandler = new OnResizeHandler();
 		this._canvas = new Canvas('QQ.Application.Canvas',
 			config.size,
 			config.maximize
@@ -179,31 +180,35 @@ export class Application {
 	//================================================================
 	
 	getResolution() {
-		return new Point(this._canvas.getWidth(), this._canvas.getHeight());
+		return new Size(this._canvas.getWidth(), this._canvas.getHeight());
 	}
 	
 	getImgByUrl(imgSrc) {
 		return this._imgManager.get(imgSrc);
 	}
 	
-	getImg(imgName) {
-		if ( this._imgs.has(imgName) ) {
-			return this.getImgByUrl(this._imgs.get(imgName));
+	getImg(imageSource) {
+		if ( imageSource instanceof HTMLCanvasElement ) {
+			return imageSource;
+		} else if ( this._imgs.has(imageSource) ) {
+			return this.getImgByUrl(this._imgs.get(imageSource));
 		} else {
-			alert('Application.getImg(): no such img');
+			throw new Error('Application.getImg(): no such img');
 		}
 	}
 	
 	createSprite(img) {
-		return new QQ.Sprite( this.getImg(img) );
+		return new Sprite( this.getImg(img) );
 	}
 	
 	getImgCanvas(image) {
 		image = this.getImg(image);
 		const map = this._canvases;
 		if ( ! map.get(image.src) ) {
-			const imgSize = new Size(image.width, image.height);
-			const canvas = QQ.makeCanvas(imgSize);
+			const canvas = QQ.makeCanvas( new Size(
+				image.width,
+				image.height
+			));
 			canvas.ctx.drawImage(image, 0, 0);
 			map.set(image.src, canvas);
 		}
@@ -231,6 +236,10 @@ export class Application {
 			const sz = this._seizures.getActive();
 			sz.onBackButton();
 		}
+	}
+	
+	addOnResize(fn) {
+		this._onResizeHandler.add(fn);
 	}
 	
 	//================================================================

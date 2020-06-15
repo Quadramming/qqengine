@@ -1,4 +1,4 @@
-import {Point} from './Point.js';
+import {Point} from './primitives/index.js';
 import * as QQ from './QQ.js';
 
 export class Mouse {

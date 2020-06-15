@@ -1,5 +1,4 @@
-import {Point} from '../Point.js';
-import {Size} from '../Size.js';
+import {Point, Size} from '../primitives/index.js';
 
 export class Sprite {
 	
@@ -7,15 +6,40 @@ export class Sprite {
 		this._alpha = 1;
 		this._anchor = new Point(0, 0);
 		this._isDisabled = false;
-		this._size = null; // Output size
 		this._image = null;
-		this._imageSize = null;
+		this._imageSize = new Size(0, 0);
+		this._outSize = new Size(0, 0);
+		
 		this.setImage(image);
-		this._size = this._imageSize.clone();
+		this._outSize = this._imageSize.clone();
 	}
 	
-	isDisabled() {
+	alpha(alpha) {
+		if ( alpha !== undefined ) {
+			this._alpha = alpha;
+		}
+		return this._alpha;
+	}
+	
+	anchor(anchor) {
+		if ( anchor !== undefined ) {
+			this._anchor.copy(anchor);
+		}
+		return this._anchor;
+	}
+	
+	disabled(disabled) {
+		if ( disabled !== undefined ) {
+			this._isDisabled = disabled;
+		}
 		return this._isDisabled;
+	}
+	
+	size(size) {
+		if ( size !== undefined ) {
+			this._outSize.copy(size);
+		}
+		return this._outSize;
 	}
 	
 	setImage(image) {
@@ -23,27 +47,7 @@ export class Sprite {
 			alert('Sprite: image must be completed');
 		}
 		this._image = image;
-		this._imageSize = new Size(this._image.width, this._image.height);
-	}
-	
-	setAlpha(alpha) {
-		this._alpha = alpha;
-	}
-	
-	setAnchor(point) {
-		this._anchor.copy(point);
-	}
-	
-	setDisabled(value) {
-		this._isDisabled = value;
-	}
-	
-	setSize(size) {
-		this._size.copy(size);
-	}
-	
-	getSize() {
-		return this._size;
+		this._imageSize.set(this._image.width, this._image.height);
 	}
 	
 	getImageSize() {
@@ -55,7 +59,14 @@ export class Sprite {
 	}
 	
 	getRatio() {
-		return this._size.getRatio();
+		return this._outSize.getRatio();
+	}
+	
+	getImageRatio() {
+		return this._imageSize.getRatio();
+	}
+	
+	tick(delta) {
 	}
 	
 	draw(ctx) {
@@ -75,17 +86,14 @@ export class Sprite {
 		ctx.drawImage(
 			this._image,
 			drawPoint.x(), drawPoint.y(),
-			this._size.w(), this._size.h()
+			this._outSize.w(), this._outSize.h()
 		);
-	}
-	
-	tick(delta) {
 	}
 	
 	_calcDrawPoint() {
 		return new Point(
-			this._anchor.x() * (-this._size.x()),
-			this._anchor.y() * (-this._size.y())
+			this._anchor.x() * (-this._outSize.x()),
+			this._anchor.y() * (-this._outSize.y())
 		);
 	}
 	

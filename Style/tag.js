@@ -1,8 +1,8 @@
-import {Style} from './Style.js';
-import {styles} from '../styles.js';
+import * as style from './style.js';
+import {styles} from '../../../styles/styles.js';
 
-for ( const [name, style] of Object.entries(styles) ) {
-	Style.set(name, style);
+for ( const [name, styleObj] of Object.entries(styles) ) {
+	style.set(name, styleObj);
 }
 
 function add(out, text) {
@@ -26,5 +26,5 @@ export function S(strs, ...substs) {
 		}
 		add(out, strs[i+1]);
 	}
-	return Style.use(...out);
+	return style.use(...out);
 }

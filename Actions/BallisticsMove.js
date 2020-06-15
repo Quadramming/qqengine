@@ -1,5 +1,4 @@
-import {Point} from '../Point.js';
-import {Size} from '../Size.js';
+import {Point, Size} from '../primitives/index.js';
 import {Idle} from './Idle.js';
 
 export class BallisticsMove extends Idle {

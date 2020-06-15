@@ -1,9 +1,8 @@
 import * as QQ from '../QQ.js';
 import * as Text from '../Text/index.js';
 import * as Subject from '../Subject/index.js';
-import {Point} from '../Point.js';
-import {Size} from '../Size.js';
-import {Style} from '../Style/Style.js';
+import * as style from '../style/index.js';
+import {Point, Size} from '../primitives/index.js';
 
 export class Bar extends Subject.Sprite {
 	
@@ -13,7 +12,7 @@ export class Bar extends Subject.Sprite {
 		super(options);
 		this._percent = 0;
 		this._maxSize = QQ.useDefault(options.maxSize, 10);
-		this._text = new Text.Text( Style.use('bar', {size: new Size(this._maxSize, 2)}) );
+		this._text = new Text.Text( style.use('bar', {size: new Size(this._maxSize, 2)}) );
 		this.addSubject(this._text);
 		this.setBarValue(options.percent);
 	}

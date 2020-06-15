@@ -1,9 +1,7 @@
 import * as QQ from './QQ.js';
+import * as CONST from './CONST/index.js';
 import * as Matrix from './matrix.js';
-import {Point} from './Point.js';
-import {Scale} from './Scale.js';
-import {Size} from './Size.js';
-import {Rect} from './Rect.js';
+import {Point, Scale, Size, Rect} from './primitives/index.js';
 
 export class Container {
 	
@@ -12,37 +10,52 @@ export class Container {
 	//================================================================
 	
 	constructor(options = {}) {
-		this._app = undefined;
-		this._position = new Point();
-		this._size = new Size();
-		this._scale = new Scale();
-		this._anchor = new Point();
-		this._subjects = [];
-		this._angle = undefined;
 		this._parent = undefined;
-		this._isClickable = undefined;
-		this._z = undefined;
+		this._subjects = [];
 		this._world = undefined;
+		this._seizure = undefined;
+		
+		this._position = new Point(0, 0);
+		this._z = undefined;
+		this._size = new Size(1, 1);
+		this._scale = new Scale(1, 1);
+		this._anchor = new Point(0.5, 0.5);
+		this._angle = undefined;
+		
 		this._updateOnTick = undefined;
+		
+		this._isClickable = undefined;
 		this._onContainerClick = undefined;
+		
 		this._isSortOnAddSubject = undefined;
 		this._isSortOnTick = undefined;
+		
 		this._matrix = {
 			cached: Matrix.getIdentity(),
 			position: new Point(),
 			scale: new Scale(),
 			angle: undefined
 		};
-		Container.prototype.initialize.call(this, options);
+		
+		this._initializeContainer(options);
 	}
 	
 	initialize(options) {
-		this._app = QQ.useDefault(options.app, null);
+		this._initializeContainer(options);
+	}
+	
+	_initializeContainer(options) {
+		this._parent = QQ.useDefault(options.parent, null);
+		this._subjects.length = 0;
+		this._world = QQ.useDefault(options.world, null);
+		this._seizure = QQ.useDefault(options.seizure, null);
+		
 		if ( options.position ) {
 			this._position.copy(options.position);
 		} else {
 			this._position.set(0, 0);
 		}
+		this._z = QQ.useDefault(options.z, 0);
 		if ( options.size ) {
 			this._size.copy(options.size);
 		} else {
@@ -58,13 +71,16 @@ export class Container {
 		} else {
 			this._anchor.set(0.5, 0.5);
 		}
-		this._subjects.length = 0;
 		this._angle = QQ.useDefault(options.angle, 0);
-		this._parent = QQ.useDefault(options.parent, null);
-		this._isClickable = QQ.useDefault(options.isClickable, true);
-		this._z = QQ.useDefault(options.z, 0);
-		this._world = QQ.useDefault(options.world, null);
+		
 		this._updateOnTick = QQ.useDefault(options.updateOnTick, null);
+		
+		this._isClickable = QQ.useDefault(options.isClickable, false);
+		this._onContainerClick = QQ.useDefault(options.onClick, CONST.FN.IDLE);
+		
+		this._isSortOnAddSubject = QQ.useDefault(options.isSortOnAdd, true);
+		this._isSortOnTick = QQ.useDefault(options.isSortOnTick, false);
+		
 		Matrix.setIdentity(this._matrix.cached);
 		this._matrix.position.set(0, 0);
 		this._matrix.scale.set(0, 0);
@@ -72,13 +88,9 @@ export class Container {
 		if ( options.init ) {
 			options.init.call(this);
 		}
-		if ( options.onClick ) {
-			this._onContainerClick = options.onClick;
-		} else {
-			this._onContainerClick = () => {};
+		if ( options.selfAdd === true ) {
+			this._seizure.addSubject(this);
 		}
-		this._isSortOnAddSubject = QQ.useDefault(options.isSortOnAdd, true);
-		this._isSortOnTick = QQ.useDefault(options.isSortOnTick, false);
 	}
 	
 	//================================================================
@@ -135,7 +147,7 @@ export class Container {
 		let M = this.getMatrix();
 		M = Matrix.mul(
 			Matrix.inverse(M),
-			[[point.x()],[point.y()],[1]]
+			[[point.x()], [point.y()], [1]]
 		);
 		return new Point(M[0][0], M[1][0]);
 	}
@@ -201,7 +213,6 @@ export class Container {
 	addSubject(subj) {
 		subj.setWorld(this._world);
 		subj.setParent(this);
-		subj.setApp(this._app);
 		this._subjects.push(subj);
 		if ( this._isSortOnAddSubject ) {
 			this._sortSubjectsByZ();
@@ -260,11 +271,6 @@ export class Container {
 		this.forChildren( (subj) => subj.setWorld(world) );
 	}
 	
-	setApp(app) {
-		this._app = app;
-		this.forChildren( (subj) => subj.setApp(app) );
-	}
-	
 	//================================================================
 	// Gets
 	//================================================================
@@ -308,10 +314,6 @@ export class Container {
 	
 	getAnchor() {
 		return this._anchor;
-	}
-	
-	getApp() {
-		return this._app;
 	}
 	
 	getWorld() {

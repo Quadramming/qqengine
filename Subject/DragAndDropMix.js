@@ -1,5 +1,5 @@
 import * as QQ from '../QQ.js';
-import {Point} from '../Point.js';
+import {Point} from '../primitives/index.js';
 
 export function DragAndDropMix(base) {
 	return class DragAndDropMix extends base {

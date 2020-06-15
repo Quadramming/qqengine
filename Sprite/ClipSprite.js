@@ -1,5 +1,5 @@
 import {Sprite} from './Sprite.js';
-import {Rect} from '../Rect.js';
+import {Rect} from '../primitives/index.js';
 
 export class ClipSprite extends Sprite {
 	

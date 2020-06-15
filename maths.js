@@ -1,6 +1,5 @@
-import {Size} from './Size.js';
-import {Scale} from './Scale.js';
-import {PIVOT} from './PIVOT.js';
+import {Size, Scale} from './primitives/index.js';
+import {PIVOT} from './CONST/index.js';
 
 export const PIx2 = Math.PI * 2;
 

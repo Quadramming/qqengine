@@ -5,7 +5,13 @@ import {ActionableMix} from './ActionableMix.js';
 import {DragAndDropMix} from './DragAndDropMix.js';
 import {Subject} from './Subject.js';
 
-export {Subject};
+export {
+	Subject,
+	SpriteMix,
+	ActionableMix,
+	DragAndDropMix,
+	PhysicsMix
+};
 
 export class Sprite extends
 	QQ.mixins(SpriteMix, Subject)

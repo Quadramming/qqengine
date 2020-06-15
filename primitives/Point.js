@@ -1,4 +1,4 @@
-import {AXIS} from './AXIS.js';
+import {AXIS} from '../CONST/AXIS.js';
 
 /** Class for simple point */
 export class Point {

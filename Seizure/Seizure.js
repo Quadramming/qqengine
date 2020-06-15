@@ -1,8 +1,7 @@
 import * as QQ from '../QQ.js';
 import * as World from '../World/index.js';
 import {FakeHud} from './FakeHud.js';
-import {Point} from '../Point.js';
-import {Size} from '../Size.js';
+import {Point, Size} from '../primitives/index.js';
 import {Camera} from '../Camera.js';
 import {WorldPointer} from '../WorldPointer.js';
 
@@ -47,6 +46,7 @@ export class Seizure {
 			world: new Point(NaN),
 			screen: new Point(NaN)
 		};
+		this._cameraFollow = null;
 	}
 	
 	release() {
@@ -100,6 +100,11 @@ export class Seizure {
 			this.tickScroll(delta);
 		}
 		this._world.tick(delta);
+		if ( this._cameraFollow ) {
+			this._camera.setPosition(
+				this._cameraFollow.getPosition()
+			);
+		}
 	}
 	
 	draw() {
@@ -245,13 +250,15 @@ export class Seizure {
 		return false;
 	}
 	
-	cameraSet(size, eye) {
-		this._camera.setView(size);
-		this._camera.setPosition(eye);
+	setCamera(view, eye) {
+		this._camera.setView(view);
+		if ( eye !== undefined ) {
+			this._camera.setPosition(eye);
+		}
 	}
 	
 	setBackground(...args) {
-		this._world.setBackground(...args);
+		this._world.background(...args);
 	}
 	
 	makeSubject(...args) {
@@ -262,13 +269,21 @@ export class Seizure {
 		this._world.addSubject(...args);
 	}
 	
+	cameraFollow(subj) {
+		this._cameraFollow = subj;
+	}
+	
 	//================================================================
 	// Hud
 	//================================================================
 	
-	_setHud(sz, input) {
+	_setHud(sz, input = {}) {
 		input.parent = this;
 		this._hud = this._szManager.create(sz, input, false);
+	}
+	
+	getParent() {
+		return this._parent;
 	}
 	
 }

@@ -4,14 +4,16 @@ import {ClipSprite} from '../Sprite/ClipSprite.js';
 import {AnimateSprite} from '../Sprite/AnimateSprite.js';
 import {LayersSprite} from '../Sprite/LayersSprite.js';
 import {TileSprite} from '../Sprite/TileSprite.js';
+import {Point, Size} from '../primitives/index.js';
 
 // TOFIX: maybe some how split diffrent sprites?
 
 export function SpriteMix(base) {
 	return class SpriteMix extends base {
 		
-		constructor(options) {
+		constructor(options = {}) {
 			super(options);
+			this.fixImage(options);
 			this._image = options.image;
 			this._sprite = null;
 			this._alpha = QQ.useDefault(options.alpha, 1);
@@ -24,11 +26,20 @@ export function SpriteMix(base) {
 			}
 		}
 		
-		setSprite(image) {
+		fixImage(options) {
+			if ( options.image === undefined ) {
+				const memoryImage = QQ.makeCanvas( new Size(1, 1) );
+				memoryImage.ctx.fillStyle = 'red';
+				memoryImage.ctx.fillRect(0, 0, 1, 1);
+				options.image = memoryImage.cvs;
+			}
+		}
+		
+		setSpriteImage(image) {
+			this._image = image;
 			this._sprite.setImage(
 				QQ.APP.getImg(image)
 			);
-			this._image = image;
 		}
 		
 		getSprite() {
@@ -48,11 +59,6 @@ export function SpriteMix(base) {
 			ctx.transform(this.getMatrix());
 			this._sprite.draw(ctx.get());
 			super.draw(ctx);
-		}
-		
-		setSize(size) {
-			super.setSize(size);
-			this._sprite.setSize(size);
 		}
 		
 		setStaticSprite() {
@@ -128,17 +134,17 @@ export function SpriteMix(base) {
 		
 		setAlpha(alpha) {
 			this._alpha = alpha;
-			this._sprite.setAlpha(alpha);
+			this._sprite.alpha(alpha);
 		}
 		
 		setAnchor(point) {
 			super.setAnchor(point);
-			this._sprite.setAnchor(point);
+			this._sprite.anchor(point);
 		}
 		
 		setSize(size) {
 			super.setSize(size);
-			this._sprite.setSize(size);
+			this._sprite.size(size);
 		}
 		
 		_setSpriteSettings() {
