@@ -1,6 +1,6 @@
 import * as QQ from '../QQ.js';
 import * as Subject from '../Subject/index.js';
-import {Point} from '../primitives/index.js';
+import {Size, Point} from '../primitives/index.js';
 import {Container} from '../Container.js';
 
 export class World {
@@ -9,22 +9,25 @@ export class World {
 	// Constructor
 	//================================================================
 	
-	constructor(settings) {
-		this._app = settings.app;
-		this._seizure = settings.seizure;
+	constructor(options) {
+		this._app = options.app;
+		this._seizure = options.seizure;
 		this._background = null;
 		this._deltaAccum = 0;
-		this._maxTicks = QQ.useDefault(settings.maxTicks, 1);
-		this._timeStep = QQ.useDefault(settings.timeStep, 0.0166);
-		this._pauseTime = QQ.useDefault(settings.pauseTime, 0.5);
-		this._isPauseable = QQ.useDefault(settings.isPauseable, false);
-		this._tickType = QQ.useDefault(settings.tickType, 'var');
-		this._stage = new Container({
-			app: this._app,
-			size: new Point(10, 10),
-			anchor: new Point(0.5, 0.5),
-			angle: 0
-		});
+		this._maxTicks = QQ.useDefault(options.maxTicks, 1);
+		this._timeStep = QQ.useDefault(options.timeStep, 0.0166);
+		this._pauseTime = QQ.useDefault(options.pauseTime, 0.5);
+		this._isPauseable = QQ.useDefault(options.isPauseable, false);
+		this._tickType = QQ.useDefault(options.tickType, 'const');
+		if ( options.stageConstructor ) {
+			this._stage = new options.stageConstructor({
+				isSortOnTick: options.isSortOnTick
+			});
+		} else {
+			this._stage = new Subject.Group({
+				isSortOnTick: options.isSortOnTick
+			});
+		}
 		this._stage.setWorld(this);
 	}
 	
@@ -67,6 +70,7 @@ export class World {
 						break;
 					}
 					this._stage.tick(this._timeStep);
+					this._stage.tickSortByZ();
 					this.tickStep(this._timeStep);
 					this._deltaAccum -= this._timeStep;
 					ticksDone++;

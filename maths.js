@@ -86,6 +86,10 @@ export function getSign(x) {
 	 return x >= 0 ? 1 : -1;
 }
 
+export function absMin(a, b) {
+	 return Math.abs(a) < Math.abs(b) ? a : b;
+}
+
 export function secToMs(x) {
 	 return x * 1000;
 }

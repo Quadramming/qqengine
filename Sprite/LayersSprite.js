@@ -2,6 +2,7 @@ import * as QQ from '../QQ.js';
 import {Sprite} from './Sprite.js';
 import {Point, Rect} from '../primitives/index.js';
 
+// TOFIX avoid real pixels
 export class LayersSprite extends Sprite {
 	
 	constructor(image, layer) {
@@ -24,13 +25,13 @@ export class LayersSprite extends Sprite {
 		}
 	}
 	
-	drawImage(ctx, drawPoint, img) {
+	drawImage(ctx) {
 		for ( const layer of this._layers ) {
 			ctx.drawImage(
 				this._image,
 				layer.x(), layer.y(),
 				layer.width(), layer.height(),
-				drawPoint.x(), drawPoint.y(),
+				0, 0,
 				this._size.w(), this._size.h()
 			);
 		}

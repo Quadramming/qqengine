@@ -1,7 +1,9 @@
 import * as QQ from './QQ.js';
 import * as CONST from './CONST/index.js';
 import * as Matrix from './matrix.js';
-import {Point, Scale, Size, Rect} from './primitives/index.js';
+import {Point, Scale, Size, Rect, Offset} from './primitives/index.js';
+
+// To Pack
 
 export class Container {
 	
@@ -30,6 +32,7 @@ export class Container {
 		this._isSortOnAddSubject = undefined;
 		this._isSortOnTick = undefined;
 		
+		// add anchor
 		this._matrix = {
 			cached: Matrix.getIdentity(),
 			position: new Point(),
@@ -99,6 +102,7 @@ export class Container {
 	
 	onClickDown(worldPoint) {
 		const local = this.worldToLocalPoint(worldPoint);
+		c(local);
 	}
 	
 	onClickUp(worldPoint) {
@@ -113,8 +117,14 @@ export class Container {
 	//================================================================
 	
 	calcMatrix() {
+		const position = this._position.clone();
+		const offset = new Offset(
+			-this._size.x()*this._anchor.x(),
+			-this._size.y()*this._anchor.y()
+		);
 		let M;
-		M = Matrix.getScale(this._scale);
+		M = Matrix.getMove(offset);
+		M = Matrix.mul(Matrix.getScale(this._scale), M);
 		M = Matrix.mul(Matrix.getRotate(this._angle), M);
 		M = Matrix.mul(Matrix.getMove(this._position), M);
 		Matrix.copy(M, this._matrix.cached);
@@ -126,6 +136,15 @@ export class Container {
 	
 	getMatrix(withParent = true) {
 		let M = null;
+		if ( M === null ) {
+			M = this.calcMatrix();
+		}
+		if ( withParent && this._parent ) {
+			M = Matrix.mul(this._parent.getMatrix(), M);
+		}
+		return M;
+		// TOFIX need cache + Pack
+		M = null;
 		if ( this._matrix.cached ) {
 			const position = this._matrix.position.isEquals(this._position);
 			const angle = this._matrix.angle === this._angle;
@@ -134,19 +153,12 @@ export class Container {
 				M = this._matrix.cached;
 			}
 		}
-		if ( M === null ) {
-			M = this.calcMatrix();
-		}
-		if ( withParent && this._parent ) {
-			M = Matrix.mul(this._parent.getMatrix(), M);
-		}
 		return M;
 	}
 	
 	worldToLocalPoint(point) {
-		let M = this.getMatrix();
-		M = Matrix.mul(
-			Matrix.inverse(M),
+		const M = Matrix.mul(
+			Matrix.inverse( this.getMatrix() ),
 			[[point.x()], [point.y()], [1]]
 		);
 		return new Point(M[0][0], M[1][0]);
@@ -161,9 +173,8 @@ export class Container {
 	}
 	
 	parentToLocalPoint(point) {
-		let M = this.getMatrix(false);
-		M = Matrix.mul(
-			Matrix.inverse(M),
+		const M = Matrix.mul(
+			Matrix.inverse(this.getMatrix(false)),
 			[[point.x()],[point.y()],[1]]
 		);
 		return new Point(M[0][0], M[1][0]);
@@ -188,10 +199,10 @@ export class Container {
 		this.forChildren( (subj) => subj.tick(delta) );
 	}
 	
-	draw(ctx) {
-		//ctx.transform(this.getMatrix());
-		//this._drawLocalBorder(ctx);
-		this.forChildren( (subj) => subj.draw(ctx) );
+	draw(context) {
+		//this._drawWorldBorder(context);
+		//this._drawLocalBorder(context);
+		this.forChildren( (subj) => subj.draw(context) );
 	}
 	
 	tickSortByZ() {
@@ -257,6 +268,7 @@ export class Container {
 	
 	forChildren(fn) {
 		// deleteMe() in fn can change _subjects
+		// that why copy first
 		for ( const subject of [...this._subjects] ) {
 			fn(subject);
 		}
@@ -274,6 +286,10 @@ export class Container {
 	//================================================================
 	// Gets
 	//================================================================
+	
+	getSubjects() {
+		return this._subjects;
+	}
 	
 	isClickable() {
 		return this._isClickable;
@@ -322,12 +338,12 @@ export class Container {
 	
 	getBounds() {
 		const rect = this._getLocalRect();
-		return Rect.fromPoints([
+		return Rect.fromPoints(
 			this.localToWorldPoint(new Point(rect.left(), rect.top())),
 			this.localToWorldPoint(new Point(rect.right(), rect.top())),
 			this.localToWorldPoint(new Point(rect.left(), rect.bottom())),
 			this.localToWorldPoint(new Point(rect.right(), rect.bottom()))
-		]);
+		);
 	}
 	
 	//================================================================
@@ -390,27 +406,39 @@ export class Container {
 	}
 	
 	_getLocalRect() {
-		return new Rect(
-			-this._size.w()*this._anchor.x(),
-			-this._size.h()*this._anchor.y(),
-			this._size.w(),
-			this._size.h()
-		);
+		return new Rect(0, 0, this._size.w(), this._size.h());
 	}
 	
-	_drawLocalBorder(ctx) {
-		const rect = this._getLocalRect();
-		const context = ctx.get();
-		context.beginPath();
-		context.rect(
+	_drawWorldBorder(context) {
+		context.cleanTransform();
+		const rect = this.getBounds();
+		const ctx = context.get();
+		ctx.beginPath();
+		ctx.rect(
 			rect.x(),
 			rect.y(),
 			rect.w(),
 			rect.h()
 		);
-		context.lineWidth = 1;
-		context.strokeStyle = '#000000';
-		context.stroke();
+		ctx.lineWidth = 0.1;
+		ctx.strokeStyle = '#FF00FF';
+		ctx.stroke();
+	}
+	
+	_drawLocalBorder(context) {
+		context.transform(this.getMatrix());
+		const rect = this._getLocalRect();
+		const ctx = context.get();
+		ctx.beginPath();
+		ctx.rect(
+			rect.x(),
+			rect.y(),
+			rect.w(),
+			rect.h()
+		);
+		ctx.lineWidth = 0.1;
+		ctx.strokeStyle = '#0000FF';
+		ctx.stroke();
 	}
 	
 }

@@ -9,3 +9,4 @@ export * from './Patrol.js';
 export * from './Shake.js';
 export * from './WaitFor.js';
 export * from './WalkTo.js';
+export * from './Walk.js';

@@ -28,6 +28,12 @@ export function setIdentity(matrix) {
 	matrix[2][2] = 1;
 }
 
+export function getReflect() {
+	return [[1,  0, 0],
+					[0, -1, 0],
+					[0,  0, 1]];
+}
+
 export function getScale(scale) {
 	const x = scale.x();
 	const y = scale.y();
@@ -45,67 +51,28 @@ export function getMove(offset) {
 }
 
 export function getRotate(A) {
-	return [[cos(A), -sin(A), 0],
-					[sin(A),  cos(A), 0],
+	return [[ cos(A), sin(A), 0],
+					[-sin(A), cos(A), 0],
 					[     0,       0, 1]];
 }
 
 export function determinant(A) {
-	let N = A.length;
-	let B = [];
-	let denom = 1;
-	let exchanges = 0;
-	for ( let i = 0; i < N; ++i ) {
-		B[i] = [];
-		for ( let j = 0; j < N; ++j ) {
-			B[i][j] = A[i][j];
-		}
-	}
-	for ( let i = 0; i < N-1; ++i ) {
-		let maxN = i;
-		let maxValue = abs(B[i][i]);
-		for ( let j = i+1; j < N; ++j ) {
-			let value = abs(B[j][i]);
-			if ( value > maxValue ) {
-				maxN = j; maxValue = value;
-			}
-		}
-		if ( maxN > i ) {
-			let t = B[i];
-			B[i] = B[maxN];
-			B[maxN] = t;
-			++exchanges;
-		} else {
-			if ( maxValue === 0 ) {
-				return maxValue;
-			}
-		}
-		let value1 = B[i][i];
-		for ( let j = i+1; j < N; ++j ) {
-			let value2 = B[j][i];
-			B[j][i] = 0;
-			for ( let k = i+1; k < N; ++k ) {
-				B[j][k] = (B[j][k] * value1 - B[i][k] * value2) / denom;
-			}
-		}
-		denom = value1;
-	}
-	if ( exchanges % 2 ) {
-		return -B[N-1][N-1];
+	if ( A[0].length === 2 ) {
+		return (A[0][0] * A[1][1]) - (A[0][1] * A[1][0]);
 	} else {
-		return B[N-1][N-1];
+		return A[0][0] * (A[1][1]*A[2][2] - A[1][2]*A[2][1]) -
+			A[0][1] * (A[1][0]*A[2][2] - A[1][2]*A[2][0]) +
+			A[0][2] * (A[1][0]*A[2][1] - A[1][1]*A[2][0]);
 	}
 }
 
 export function inverse(A) {
 	let det = determinant(A);
-	if ( det === 0 ) {
-		throw new Error(`Matrix inverse error`);
-	}
+	// Hope det !== 0 ;)
 	let N = A.length;
-	let invA = [];
+	let inverse = [];
 	for ( let i = 0; i < N; ++i ) {
-		invA[i] = [];
+		inverse[i] = [];
 		for ( let j = 0; j < N; ++j ) {
 			let B = [];
 			let sign = ((i+j) % 2 === 0) ? 1 : -1;
@@ -127,23 +94,21 @@ export function inverse(A) {
 					B[m-1][n-1] = A[m][n];
 				}
 			}
-			invA[i][j] = sign * determinant(B) / det;
+			inverse[i][j] = sign * determinant(B) / det;
 		}
 	}
-	return invA;
+	return inverse;
 }
 
 export function mul(A, B) {
-	let rowsA = A.length;
-	let colsA = A[0].length;
-	let rowsB = B.length;
-	let colsB = B[0].length;
-	let C = [];
-	if ( colsA !== rowsB ) {
-		throw new Error(`Matrix mul error`);
-	}
+	const rowsA = A.length;
+	const colsA = A[0].length;
+	const rowsB = B.length;
+	const colsB = B[0].length;
+	// Hope colsA === rowsB ;)
+	const result = [];
 	for ( let i = 0; i < rowsA; ++i ) {
-		C[i] = [];
+		result[i] = [];
 	}
 	for ( let k = 0; k < colsB; ++k ) {
 		for ( let i = 0; i < rowsA; ++i ) {
@@ -151,8 +116,8 @@ export function mul(A, B) {
 			for ( let j = 0; j < rowsB; ++j ) {
 				temp += A[i][j]*B[j][k];
 			}
-			C[i][k] = temp;
+			result[i][k] = temp;
 		}
 	}
-	return C;
+	return result;
 }

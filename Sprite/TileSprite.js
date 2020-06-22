@@ -1,6 +1,7 @@
 import {Sprite} from './Sprite.js';
 import {Point, Size} from '../primitives/index.js';
 
+// TOFIX avoid real pixels
 export class TileSprite extends Sprite {
 	
 	constructor(image, tileSize, tileOffset) {
@@ -26,10 +27,10 @@ export class TileSprite extends Sprite {
 		);
 	}
 	
-	drawImage(ctx, drawPoint) {
+	drawImage(ctx) {
 		ctx.save(); // save for resetore
 		ctx.beginPath(); // clean before clip
-		ctx.rect(drawPoint.x(), drawPoint.y(), this._size.w(), this._size.h());
+		ctx.rect(0, 0, this._size.w(), this._size.h());
 		ctx.clip();
 		let coveredX = this._tileOffset.x();
 		let coveredY = this._tileOffset.y();
@@ -37,7 +38,7 @@ export class TileSprite extends Sprite {
 			while ( coveredX < this._size.w() ) {
 				ctx.drawImage(
 					this._image,
-					drawPoint.x() + coveredX, drawPoint.y() + coveredY,
+					coveredX, coveredY,
 					this._tileSize.w(), this._tileSize.h()
 				);
 				coveredX += this._tileSize.w();

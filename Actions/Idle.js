@@ -25,8 +25,11 @@ export class Idle {
 		this._progress = 0;
 	}
 	
-	setSubject(subj) {
-		this._subj = subj;
+	subject(subj) {
+		if ( subj !== undefined ) {
+			this._subj = subj;
+		}
+		return this._subj;
 	}
 	
 	setAbortable(value) {

@@ -1,13 +1,17 @@
 import * as QQ from '../QQ.js';
 import {SpriteMix} from './SpriteMix.js';
+import {SolidMix} from './SolidMix.js';
 import {PhysicsMix} from './PhysicsMix.js';
 import {ActionableMix} from './ActionableMix.js';
 import {DragAndDropMix} from './DragAndDropMix.js';
 import {Subject} from './Subject.js';
+import {Group} from './Group.js';
 
 export {
 	Subject,
+	Group,
 	SpriteMix,
+	SolidMix,
 	ActionableMix,
 	DragAndDropMix,
 	PhysicsMix
@@ -20,6 +24,16 @@ export class Sprite extends
 
 export class Actionable extends
 	QQ.mixins(ActionableMix, Sprite)
+{
+}
+
+export class Solid extends
+	QQ.mixins(SolidMix, Sprite)
+{
+}
+
+export class SolidActor extends
+	QQ.mixins(SolidMix, Actionable)
 {
 }
 
@@ -36,15 +50,31 @@ export class DnD extends
 export function make(options = {}) {
 	if ( options.image ) {
 		let subj = null;
-		if ( options.isActionable === false ) {
-			subj = new Sprite(options);
+		if ( options.isActor === true ) {
+			if ( options.solid ) {
+				subj = new SolidActor(options);
+			} else {
+				subj = new Actionable(options);
+			}
 		} else {
-			subj = new Actionable(options);
+			if ( options.solid ) {
+				subj = new Solid(options);
+			} else {
+				subj = new Sprite(options);
+			}
 		}
 		if ( options.tile ) {
 			subj.setTileSprite(...options.tile);
 		} else if ( options.clip ) {
-			subj.setClipSprite(...options.clip);
+			if ( options.clip instanceof Array ) {
+				subj.setClipSprite(...options.clip);
+			} else {
+				subj.setClipSprite(options.clip);
+			}
+		} else if ( options.animate ) {
+			subj.setAnimateSprite(...options.animate);
+		} else if ( options.layer ) {
+			subj.setLayersSprite(options.layer);
 		}
 		return subj;
 	}

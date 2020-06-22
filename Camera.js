@@ -13,23 +13,17 @@ export class Camera {
 	constructor(canvas, world) {
 		this._canvas = canvas;
 		this._world = world;
-		this._mainMatrix = 0;
+		this._mainMatrix = null;
 		this._clip = null;
-		this._viewSize = new Size();
-		this._initViewSize = new Size();
-		this._position = new Point();
+		this._initViewSize = new Size(20, 20);
+		this._viewSize = this._initViewSize.clone();
+		this._position = new Point(0, 0);
 		this._ctx = canvas.getContext('2d');
-	}
-	
-	init(viewSize, position) {
-		this._viewSize.copy(viewSize);
-		this._initViewSize.copy(viewSize);
-		this._position.copy(position);
 		this._calcMainMatrix();
 		QQ.APP.addOnResize( () => this._calcMainMatrix() );
 	}
 	
-	release() {
+	destructor() {
 		this._world = null;
 	}
 	
@@ -120,7 +114,8 @@ export class Camera {
 	draw() {
 		const ctxObj = {
 			get: () => this._ctx,
-			transform: this.setTransform.bind(this)
+			transform: this.setTransform.bind(this),
+			cleanTransform: () => QQ.setTransform(this._ctx, this._mainMatrix)
 		};
 		const bg = this._world.background();
 		if ( bg && typeof bg === 'string' ) {
@@ -130,7 +125,6 @@ export class Camera {
 			bg.draw(ctxObj);
 		}
 		this._world.getStage().draw(ctxObj);
-		//this.drawRect(subj.getBounds());
 		//this._drawAxis();
 	}
 	
@@ -147,38 +141,21 @@ export class Camera {
 			rect.height()
 		);
 		this._ctx.lineWidth = 1;
-		this._ctx.strokeStyle = '#000000';
+		this._ctx.strokeStyle = '#00FFFF';
 		this._ctx.stroke();
 	}
 	
-	cleanTransform(ctx = this._ctx) {
-		QQ.setTransform(ctx, Matrix.getIdentity());
-	}
-	
 	setTransform(matrix, ctx = this._ctx) {
-		const M = Matrix.mul(this._mainMatrix, matrix);
-		QQ.setTransform(ctx, M);
+		QQ.setTransform(
+			ctx,
+			Matrix.mul(this._mainMatrix, matrix)
+		);
 	}
 	
 	//================================================================
 	// Private
 	//================================================================
 	
-	_getInverseCameraMatrix() {
-		return Matrix.getMove(this._position.cloneOposite());
-	}
-	
-	_getScreenMatrix() {
-		let M = Matrix.getScale(new Scale(
-				this._canvas.width / this._viewSize.width(),
-				this._canvas.height / this._viewSize.height()
-			));
-			M = Matrix.mul(Matrix.getMove(new Point(
-				this._canvas.width / 2,
-				this._canvas.height / 2
-			)), M);
-		return M;
-	}
 	
 	_fixClip() {
 		if ( this._clip !== null ) {
@@ -198,16 +175,36 @@ export class Camera {
 	}
 	
 	_calcMainMatrix() {
+		// Prepare
 		const canvasRatio = (this._canvas.width / this._canvas.height);
 		this._viewSize = Maths.increaseToRatio(
 			this._initViewSize,
 			canvasRatio
 		);
 		this._fixClip();
-		this._mainMatrix = Matrix.mul(
-			this._getScreenMatrix(),
-			this._getInverseCameraMatrix()
-		);
+		
+		// Camera settings
+		/*
+		let M = Matrix.getReflect();
+		M = Matrix.mul(Matrix.getScale(new Scale(2, 2)), M);
+		M = Matrix.mul(Matrix.getRotate(0.1), M);
+		M = Matrix.mul(Matrix.getMove(this._position), M);
+		M = Matrix.inverse(M);
+		*/
+		// Or simple
+		let M = Matrix.getMove( this._position.cloneOposite() );
+		
+		// Screen settings
+		M = Matrix.mul( Matrix.getScale(new Scale(
+				this._canvas.width / this._viewSize.width(),
+				this._canvas.height / this._viewSize.height()
+		)), M);
+		M = Matrix.mul(Matrix.getMove(new Point(
+			this._canvas.width / 2,
+			this._canvas.height / 2
+		)), M);
+		
+		this._mainMatrix = M;
 	}
 	
 	_drawAxis() {
@@ -236,7 +233,7 @@ export class Camera {
 	}
 	
 	_cleanCanvas(color = 'gray') {
-		this.cleanTransform();
+		QQ.cleanTransform(this._ctx);
 		this._ctx.fillStyle = color;
 		this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 	}

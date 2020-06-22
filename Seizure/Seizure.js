@@ -24,7 +24,9 @@ export class Seizure {
 			maxTicks: options.maxTicks,
 			timeStep: options.timeStep,
 			seizure: this,
-			isPauseable: options.isPauseable
+			isPauseable: options.isPauseable,
+			isSortOnTick: options.isSortOnTick,
+			stageConstructor: options.stageConstructor
 		};
 		if ( QQ.useDefault(options.physicsWorld, false) ) {
 			this._world = new World.Physics(worldInput);
@@ -35,7 +37,6 @@ export class Seizure {
 			this._app.getHtmlCanvas(),
 			this._world
 		);
-		this._camera.init(new Size(20, 20), new Point(0, 0));
 		this._isScrollable = QQ.useDefault(options.scrolling, false);
 		this._epsilon = QQ.useDefault(options.epsilon, 1);
 		this._epsilon = this._camera.widthPercentsToPx(this._epsilon);
@@ -52,7 +53,7 @@ export class Seizure {
 	release() {
 		this._world.release();
 		this._world = null;
-		this._camera.release();
+		this._camera.destructor();
 		this._camera = null;
 		this._parent = null;
 		this._hud.release();

@@ -32,7 +32,9 @@ export class Point {
 	* @return {Point} This
 	*/
 	copy(point) {
-		this.set(point._x, point._y);
+		if ( point instanceof Point ) {
+			this.set(point._x, point._y);
+		}
 		return this;
 	}
 	
@@ -64,6 +66,10 @@ export class Point {
 	// Check functions
 	//================================================================
 	
+	isZero() {
+		return this._x === 0 && this._y === 0;
+	}
+	
 	isEquals(point) {
 		return (point._x === this._x) && (point._y === this._y);
 	}
@@ -82,6 +88,12 @@ export class Point {
 	
 	hasNaN() {
 		return Number.isNaN(this._x) || Number.isNaN(this._y);
+	}
+	
+	oposite() {
+		this._x = -this._x;
+		this._y = -this._y;
+		return this;
 	}
 	
 	//================================================================

@@ -4,7 +4,8 @@ import {ClipSprite} from '../Sprite/ClipSprite.js';
 import {AnimateSprite} from '../Sprite/AnimateSprite.js';
 import {LayersSprite} from '../Sprite/LayersSprite.js';
 import {TileSprite} from '../Sprite/TileSprite.js';
-import {Point, Size} from '../primitives/index.js';
+import {Point, Size, Scale} from '../primitives/index.js';
+import * as matrix from '../matrix.js';
 
 // TOFIX: maybe some how split diffrent sprites?
 
@@ -17,13 +18,7 @@ export function SpriteMix(base) {
 			this._image = options.image;
 			this._sprite = null;
 			this._alpha = QQ.useDefault(options.alpha, 1);
-			if ( options.animateSprite ) {
-				this.setAnimateSprite(...options.animateSprite);
-			} else if ( options.clipSprite ) {
-				this.setClipSprite(...options.clipSprite);
-			} else {
-				this.setStaticSprite();
-			}
+			this.setStaticSprite();
 		}
 		
 		fixImage(options) {
@@ -55,17 +50,40 @@ export function SpriteMix(base) {
 			this._sprite.tick(delta);
 		}
 		
-		draw(ctx) {
-			ctx.transform(this.getMatrix());
-			this._sprite.draw(ctx.get());
-			super.draw(ctx);
+		draw(context) {
+			// TOFIX need cache
+			const spriteSize = this._sprite.getFrameSize();
+			const size = this.getSize();
+			const scale = new Scale(
+				size.x()/spriteSize.x(),
+				size.y()/spriteSize.y()
+			);
+			
+			let M = matrix.getScale(scale);
+			/* You can scale it
+			M = matrix.mul(matrix.getMove(new Point(-size.x()/2, -size.y()/2)), M);
+			M = matrix.mul(matrix.getScale(new Scale(2, 2)), M);
+			M = matrix.mul(matrix.getMove(new Point(size.x()/2, size.y()/2)), M);
+			*/
+			M = matrix.mul(this.getMatrix(), M);
+			context.transform(M);
+			
+			const ctx = context.get();
+			const changeAlpha = (this._alpha !== 1);
+			if ( changeAlpha ) {
+				ctx.globalAlpha = this._alpha;
+			}
+			this._sprite.draw(ctx);
+			if ( changeAlpha ) {
+				ctx.globalAlpha = 1;
+			}
+			super.draw(context);
 		}
 		
 		setStaticSprite() {
 			this._sprite = new Sprite(
 				QQ.APP.getImg(this._image)
 			);
-			this._setSpriteSettings();
 		}
 		
 		setClipSprite(...args) {
@@ -73,7 +91,6 @@ export function SpriteMix(base) {
 				QQ.APP.getImg(this._image),
 				...args
 			);
-			this._setSpriteSettings();
 		}
 		
 		setAnimateSprite(...args) {
@@ -81,7 +98,6 @@ export function SpriteMix(base) {
 				QQ.APP.getImg(this._image),
 				...args
 			);
-			this._setSpriteSettings();
 		}
 		
 		setClipSprite(...args) {
@@ -89,7 +105,6 @@ export function SpriteMix(base) {
 				QQ.APP.getImg(this._image),
 				...args
 			);
-			this._setSpriteSettings();
 		}
 		
 		setLayersSprite(...args) {
@@ -97,7 +112,6 @@ export function SpriteMix(base) {
 				QQ.APP.getImg(this._image),
 				...args
 			);
-			this._setSpriteSettings();
 		}
 		
 		setTileSprite(...args) {
@@ -105,7 +119,6 @@ export function SpriteMix(base) {
 				QQ.APP.getImg(this._image),
 				...args
 			);
-			this._setSpriteSettings();
 		}
 		
 		setTileOffset(offset) {
@@ -132,27 +145,11 @@ export function SpriteMix(base) {
 			}
 		}
 		
-		setAlpha(alpha) {
-			this._alpha = alpha;
-			this._sprite.alpha(alpha);
-		}
-		
-		setAnchor(point) {
-			super.setAnchor(point);
-			this._sprite.anchor(point);
-		}
-		
-		setSize(size) {
-			super.setSize(size);
-			this._sprite.size(size);
-		}
-		
-		_setSpriteSettings() {
-			const newSize = this.getSize().clone();
-			newSize.fixNaNToSimilar(this._sprite.getImageFrameSize());
-			this.setSize(newSize);
-			this.setAnchor(this.getAnchor());
-			this.setAlpha(this._alpha);
+		alpha(alpha) {
+			if ( alpha !== undefined ) {
+				this._alpha = alpha;
+			}
+			return this._alpha;
 		}
 		
 	}

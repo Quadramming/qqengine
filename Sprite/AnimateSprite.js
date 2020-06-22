@@ -6,26 +6,26 @@ export class AnimateSprite extends Sprite {
 	constructor(image, frames, fps) {
 		super(image);
 		this._fps = fps;
-		this._tpf = 1/fps; // Time per frame
+		this._tpf = 1 / this._fps; // Time per frame
 		this._frames = frames;
 		this._passedTime = 0;
 		this._currentFrame = 0;
-		this._frameWidth = this._imageSize.x()/this._frames;
+		this._frameWidth = this._size.x()/this._frames;
 	}
 	
-	getImageFrameSize() {
-		return new Point(this._frameWidth, this._imageSize.y());
+	getFrameSize() {
+		return new Point(this._frameWidth, this._size.y());
 	}
 	
-	drawImage(ctx, drawPoint) {
+	drawImage(ctx) {
 		const passedFrames = Math.round(this._passedTime / this._tpf);
 		this._currentFrame = passedFrames % this._frames;
 		ctx.drawImage(
 			this._image,
 			this._frameWidth * this._currentFrame, 0,
-			this._frameWidth, this._imageSize.h(),
-			drawPoint.x(), drawPoint.y(),
-			this._size.w(), this._size.h()
+			this._frameWidth, this._size.h(),
+			0, 0,
+			this._frameWidth, this._size.h()
 		);
 	}
 	

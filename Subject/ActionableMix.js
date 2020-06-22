@@ -38,7 +38,7 @@ export function ActionableMix(base) {
 		forceAction(action) {
 			this._action = action;
 			this._action.reset();
-			this._action.setSubject(this);
+			this._action.subject(this);
 			this._action.onStart();
 		}
 		

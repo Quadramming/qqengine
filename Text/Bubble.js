@@ -12,8 +12,8 @@ export class Bubble extends
 	constructor(options) {
 		super(options);
 		this._alpha = 1;
-		this._upHeight = 2.5;
-		this._durationUp = 10.5;
+		this._upHeight = 0.5;
+		this._durationUp = 1;
 		this._durationDisapper = 0.5;
 		this.up();
 	}
