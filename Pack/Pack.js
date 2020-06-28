@@ -1,37 +1,35 @@
 import * as QQ from '../QQ.js';
-import {Point, Size, Scale} from '../primitives/index.js';
+import {Point, Size, Scale, Anchor} from '../primitives/index.js';
+
+function reset(options = {}) {
+	this._size.copyOrSet(options.size, 1, 1);
+	this._scale.copyOrSet(options.scale, 1, 1);
+	this._position.copyOrSet(options.position, 0, 0);
+	this._anchor.copyOrSet(options.anchor, 0.5, 0.5);
+	this._angle = QQ.useDefault(options.angle, 0);
+	this._z = QQ.useDefault(options.z, 0);
+}
 
 export class Pack {
 	
-	constructor(options = {}) {
-		// Set default
-		this._size = new Size(1, 1);
-		this._scale = new Scale(1, 1);
-		this._position = new Point(0, 0);
-		this._z = 0;
-		this._anchor = new Point(0.5, 0.5),
-		this._angle = 0;
-		// Set options
-		this._size.copy(options.size);
-		this._scale.copy(options.scale);
-		this._position.copy(options.position);
-		if ( options.z !== undefined ) {
-			this._z = options.z;
-		}
-		this._anchor.copy(options.anchor);
-		if ( options.angle !== undefined ) {
-			this._angle = options.angle;
-		}
+	constructor(options) {
+		this._size = new Size;
+		this._scale = new Scale;
+		this._position = new Point;
+		this._anchor = new Anchor,
+		this._angle = undefined;
+		this._z = undefined;
+		reset.call(this, options);
 	}
 	
-	_update() {
-		// Override me
+	reset(options) {
+		reset.call(this, options);
 	}
 	
 	size(size) {
 		if ( size !== undefined ) {
 			this._size.copy(size);
-			this._update();
+			this._packUpdate();
 		}
 		return this._size;
 	}
@@ -39,7 +37,7 @@ export class Pack {
 	scale(scale) {
 		if ( scale !== undefined ) {
 			this._scale.copy(scale);
-			this._update();
+			this._packUpdate();
 		}
 		return this._scale;
 	}
@@ -47,23 +45,15 @@ export class Pack {
 	position(position) {
 		if ( position !== undefined ) {
 			this._position.copy(position);
-			this._update();
+			this._packUpdate();
 		}
 		return this._position;
-	}
-	
-	z(z) {
-		if ( z !== undefined ) {
-			this._z = z;
-			this._update();
-		}
-		return this._z;
 	}
 	
 	anchor(anchor) {
 		if ( anchor !== undefined ) {
 			this._anchor.copy(anchor);
-			this._update();
+			this._packUpdate();
 		}
 		return this._anchor;
 	}
@@ -71,9 +61,21 @@ export class Pack {
 	angle(angle) {
 		if ( angle !== undefined ) {
 			this._angle = angle;
-			this._update();
+			this._packUpdate();
 		}
 		return this._angle;
+	}
+	
+	z(z) {
+		if ( z !== undefined ) {
+			this._z = z;
+			this._packUpdate();
+		}
+		return this._z;
+	}
+	
+	_packUpdate() {
+		// Override me
 	}
 	
 }

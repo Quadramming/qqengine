@@ -1,46 +1,44 @@
 import {Pack} from './Pack.js';
 import {Point, Size, Rect, Offset} from '../primitives/index.js';
 import * as CONST from '../CONST/index.js';
+import * as QQ from '../QQ.js';
+
+function reset(options = {}) {
+	this._offset.copyOrSet(options.offset, 0, 0);
+	this._getBasis = QQ.useDefault(options.getBasis, null);
+	this._type = QQ.useDefault(options.type, CONST.SOLID.STATIC);
+	this._weight = QQ.useDefault(options.weight, 1);
+}
 
 export class Solid extends Pack {
 	
-	constructor(options = {}) {
+	constructor(options) {
 		super(options);
-		// Set default
-		this._offset = new Offset(0, 0);
-		this._getBasis = null;
-		this._rect = new Rect();
-		this._type = CONST.SOLID.STATIC;
-		this._weight = 1;
-		// Set options
-		this._offset.copy(options.offset);
-		if ( options.getBasis !== undefined ) {
-			this._getBasis = options.getBasis;
-		}
-		if ( options.type !== undefined ) {
-			this._type = options.type;
-		}
-		if ( options.weight !== undefined ) {
-			this._weight = options.weight;
-		}
+		this._offset = new Offset;
+		this._getBasis = undefined;
+		this._type = undefined;
+		this._weight = undefined;
+		reset.call(this, options);
+	}
+	
+	reset(options) {
+		super.reset(options);
+		reset.call(this, options);
 	}
 	
 	position(position) { // override
 		if ( this._getBasis ) {
 			const basis = this._getBasis().clone();
 			basis.add(this._offset);
-			this._position.copy(basis);
-		} else if ( position !== undefined ) {
-			this._position.copy(position);
-			this._update();
+			return basis;
 		}
-		return this._position;
+		return super.position(position);
 	}
 	
 	weight(weight) {
 		if ( weight !== undefined ) {
 			this._weight = weight;
-			this._update();
+			this._packUpdate();
 		}
 		return this._weight;
 	}
@@ -48,7 +46,7 @@ export class Solid extends Pack {
 	type(type) {
 		if ( type !== undefined ) {
 			this._type = type;
-			this._update();
+			this._packUpdate();
 		}
 		return this._type;
 	}
@@ -57,12 +55,12 @@ export class Solid extends Pack {
 		const position = this.position();
 		const size = this.size();
 		const anchor = this.anchor();
-		const rect = this._rect;
-		rect.x(position.x() - size.w()*anchor.x());
-		rect.y(position.y() - size.h()*anchor.y());
-		rect.w(size.w());
-		rect.h(size.h());
-		return rect;
+		return new Rect(
+			position.x() - size.w()*anchor.x(),
+			position.y() - size.h()*anchor.y(),
+			size.w(),
+			size.h()
+		);
 	}
 	
 }

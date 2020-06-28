@@ -13,6 +13,10 @@ export class Point {
 	constructor(x = 0, y = x) {
 		this._x = NaN;
 		this._y = NaN;
+		if ( x instanceof Array ) {
+			y = x[1][0];
+			x = x[0][0];
+		}
 		this.set(x, y)
 	}
 	
@@ -34,6 +38,15 @@ export class Point {
 	copy(point) {
 		if ( point instanceof Point ) {
 			this.set(point._x, point._y);
+		}
+		return this;
+	}
+	
+	copyOrSet(point, x, y) {
+		if ( point instanceof Point ) {
+			this.set(point._x, point._y);
+		} else {
+			this.set(x, y);
 		}
 		return this;
 	}
@@ -159,8 +172,12 @@ export class Point {
 	// Debug
 	//================================================================
 	
+	toString() {
+		return '(' + this._x + ', ' + this._y + ')'
+	}
+	
 	debug() {
-		c('(' + this._x + ', ' + this._y + ')');
+		c(this.toString());
 	}
 	
 	//================================================================

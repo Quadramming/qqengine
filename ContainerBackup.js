@@ -26,8 +26,8 @@ export class Container {
 		
 		this._updateOnTick = undefined;
 		
-		this._isClickable = undefined;
 		this._onContainerClick = undefined;
+		this._isClickable = undefined;
 		
 		this._isSortOnAddSubject = undefined;
 		this._isSortOnTick = undefined;
@@ -78,8 +78,13 @@ export class Container {
 		
 		this._updateOnTick = QQ.useDefault(options.updateOnTick, null);
 		
-		this._isClickable = QQ.useDefault(options.isClickable, false);
-		this._onContainerClick = QQ.useDefault(options.onClick, CONST.FN.IDLE);
+		if ( options.onClick ) {
+			this._onContainerClick = options.onClick;
+			this._isClickable = true;
+		} else {
+			this._onContainerClick = CONST.FN.IDLE;
+			this._isClickable = QQ.useDefault(options.isClickable, false);
+		}
 		
 		this._isSortOnAddSubject = QQ.useDefault(options.isSortOnAdd, true);
 		this._isSortOnTick = QQ.useDefault(options.isSortOnTick, false);
@@ -102,7 +107,6 @@ export class Container {
 	
 	onClickDown(worldPoint) {
 		const local = this.worldToLocalPoint(worldPoint);
-		c(local);
 	}
 	
 	onClickUp(worldPoint) {
@@ -257,6 +261,7 @@ export class Container {
 	
 	deleteMe() {
 		this.cleanRelationships();
+		return null;
 	}
 	
 	forAllSubjects(fn) {

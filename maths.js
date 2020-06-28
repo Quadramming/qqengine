@@ -1,4 +1,4 @@
-import {Size, Scale} from './primitives/index.js';
+import {Size, Scale, Offset} from './primitives/index.js';
 import {PIVOT} from './CONST/index.js';
 
 export const PIx2 = Math.PI * 2;
@@ -27,6 +27,13 @@ export function increaseToRatio(size, target) {
 	} else {
 		return new Size(size.w(), size.w()/target);
 	}
+}
+
+export function getOffset(size, anchor) {
+	return new Offset(
+		-size.x()*anchor.x(),
+		-size.y()*anchor.y()
+	);
 }
 
 export function reduceToSize(size, value) {

@@ -5,9 +5,9 @@ export class BallisticsMove extends Idle {
 	
 	constructor(input) {
 		super(input);
-		this._from = this._subj.getPosition();
+		this._from = this._subj.position();
 		this._to = input.to;
-		this._size = this._subj.getSize().clone();
+		this._size = this._subj.size().clone();
 	}
 	
 	tick(delta) {

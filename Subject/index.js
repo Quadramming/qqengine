@@ -6,10 +6,12 @@ import {ActionableMix} from './ActionableMix.js';
 import {DragAndDropMix} from './DragAndDropMix.js';
 import {Subject} from './Subject.js';
 import {Group} from './Group.js';
+import {Stage} from './Stage.js';
 
 export {
 	Subject,
 	Group,
+	Stage,
 	SpriteMix,
 	SolidMix,
 	ActionableMix,

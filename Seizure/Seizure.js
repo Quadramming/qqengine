@@ -103,7 +103,7 @@ export class Seizure {
 		this._world.tick(delta);
 		if ( this._cameraFollow ) {
 			this._camera.setPosition(
-				this._cameraFollow.getPosition()
+				this._cameraFollow.position()
 			);
 		}
 	}
@@ -277,6 +277,10 @@ export class Seizure {
 	//================================================================
 	// Hud
 	//================================================================
+	
+	getHud() {
+		return this._hud;
+	}
 	
 	_setHud(sz, input = {}) {
 		input.parent = this;

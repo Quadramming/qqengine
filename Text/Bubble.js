@@ -19,7 +19,7 @@ export class Bubble extends
 	}
 	
 	up() {
-		const thisPos = this.getPosition();
+		const thisPos = this.position();
 		this.setAction(
 			new Actions.MoveTo({
 				subj: this,
@@ -36,9 +36,7 @@ export class Bubble extends
 		this.setAction(
 			new Actions.Disappear({
 				duration: this._durationDisapper,
-				onEnd: () => {
-					this.deleteMe();
-				}
+				onEnd: () => this.delete()
 			})
 		);
 	}

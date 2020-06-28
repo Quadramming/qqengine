@@ -28,6 +28,10 @@ export function setIdentity(matrix) {
 	matrix[2][2] = 1;
 }
 
+export function getVector(point) {
+	return [[point.x()], [point.y()], [1]];
+}
+
 export function getReflect() {
 	return [[1,  0, 0],
 					[0, -1, 0],
@@ -48,6 +52,14 @@ export function getMove(offset) {
 	return [[1, 0, x],
 					[0, 1, y],
 					[0, 0, 1]];
+}
+
+export function getInverseMove(offset) {
+	const x = offset.x();
+	const y = offset.y();
+	return [[1, 0, -x],
+					[0, 1, -y],
+					[0, 0,  1]];
 }
 
 export function getRotate(A) {

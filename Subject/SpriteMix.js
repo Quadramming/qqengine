@@ -53,7 +53,7 @@ export function SpriteMix(base) {
 		draw(context) {
 			// TOFIX need cache
 			const spriteSize = this._sprite.getFrameSize();
-			const size = this.getSize();
+			const size = this.size();
 			const scale = new Scale(
 				size.x()/spriteSize.x(),
 				size.y()/spriteSize.y()

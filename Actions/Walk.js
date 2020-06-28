@@ -12,7 +12,7 @@ export class Walk extends Idle {
 		const subj = this.subject();
 		const walked = subj.getSpeed() * delta;
 		
-		const from = subj.getPosition();
+		const from = subj.position();
 		const to = from.clone().add(this._direction);
 		
 		const A = to.y() - from.y();

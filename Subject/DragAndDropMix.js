@@ -5,6 +5,7 @@ export function DragAndDropMix(base) {
 	return class DragAndDropMix extends base {
 		
 		constructor(options) {
+			options.isClickable = true;
 			super(options);
 			this._input = null;
 			this._dragAndDrop = {

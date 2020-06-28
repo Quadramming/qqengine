@@ -1,7 +1,6 @@
 import * as QQ from '../QQ.js';
 import * as Subject from '../Subject/index.js';
 import {Size, Point} from '../primitives/index.js';
-import {Container} from '../Container.js';
 
 export class World {
 	
@@ -21,19 +20,20 @@ export class World {
 		this._tickType = QQ.useDefault(options.tickType, 'const');
 		if ( options.stageConstructor ) {
 			this._stage = new options.stageConstructor({
-				isSortOnTick: options.isSortOnTick
+				isSortOnTick: options.isSortOnTick,
+				world: this
 			});
 		} else {
-			this._stage = new Subject.Group({
-				isSortOnTick: options.isSortOnTick
+			this._stage = new Subject.Stage({
+				isSortOnTick: options.isSortOnTick,
+				world: this
 			});
 		}
-		this._stage.setWorld(this);
 	}
 	
 	release() {
 		this._seizure = null;
-		this._stage.deleteMe();
+		this._stage.delete();
 	}
 	
 	//================================================================
@@ -51,7 +51,6 @@ export class World {
 	tickVariableStep(delta) {
 		if ( delta < this._pauseTime ) {
 				this._stage.tick(delta);
-				this._stage.tickSortByZ();
 				this.tickStep(delta);
 		} else {
 			if ( this._isPauseable ) {
@@ -70,7 +69,6 @@ export class World {
 						break;
 					}
 					this._stage.tick(this._timeStep);
-					this._stage.tickSortByZ();
 					this.tickStep(this._timeStep);
 					this._deltaAccum -= this._timeStep;
 					ticksDone++;

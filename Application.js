@@ -175,6 +175,10 @@ export class Application {
 		this._seizures.closePopUp();
 	}
 	
+	getActiveSz() {
+		return this._seizures.getActive();
+	}
+	
 	//================================================================
 	// Graphics
 	//================================================================

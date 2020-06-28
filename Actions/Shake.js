@@ -11,7 +11,7 @@ export class Shake extends Idle {
 			this._dispersion.copy(input.dispersion);
 		}
 		this._period = QQ.useDefault(input.period, 1);
-		this._position = this._subj.getPosition();
+		this._position = this._subj.position();
 	}
 	
 	onStart() {

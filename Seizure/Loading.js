@@ -9,17 +9,26 @@ class Loading extends Seizure {
 	constructor(options) {
 		super(options);
 		this.setBackground('black');
+		
+		let g = new Subject.Group({
+			position: new Point(-4, 0),
+			parent: this.getWorld().getStage(),
+			selfAdd: true
+		});
+		
 		let s = Subject.make({
-			seizure: this,
+			/*
 			size: new Size(3, 3),
-			anchor: new Point(0.5, 0.5),
-			scale: new Scale(1, 1),
-			position: new Point(3, 3),
+			position: new Point(3.5, 3.5),
+			anchor: new Point(1, 1),
 			angle: 0.4,
+			scale: new Scale(1, 3),
+			*/
 			selfAdd: true,
-			isActor: false,
+			parent: g,
 			image: 'char',
-			isClickable: true
+			onClick: ()=>c(1),
+			tickFn: ()=>c(2)
 		});
 	}
 	
