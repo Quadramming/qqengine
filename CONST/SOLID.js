@@ -1,7 +1,7 @@
 const SOLID = {
-	STATIC: 1,
-	DYNAMIC: 2,
-	SLIM: 3
+	STATIC: 0,
+	DYNAMIC: 1,
+	SLIM: 2
 };
 
 export {

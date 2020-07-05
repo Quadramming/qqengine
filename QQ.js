@@ -9,6 +9,9 @@ export function c(variable, ...rest) {
 			output += ', ' + variable;
 		}
 	}
+	if ( output === undefined ) {
+		debugger;
+	}
 	console.log(output);
 }
 

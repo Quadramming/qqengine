@@ -1,7 +1,6 @@
 import * as QQ from '../QQ.js';
 import {SpriteMix} from './SpriteMix.js';
 import {SolidMix} from './SolidMix.js';
-import {PhysicsMix} from './PhysicsMix.js';
 import {ActionableMix} from './ActionableMix.js';
 import {DragAndDropMix} from './DragAndDropMix.js';
 import {Subject} from './Subject.js';
@@ -15,8 +14,7 @@ export {
 	SpriteMix,
 	SolidMix,
 	ActionableMix,
-	DragAndDropMix,
-	PhysicsMix
+	DragAndDropMix
 };
 
 export class Sprite extends
@@ -36,11 +34,6 @@ export class Solid extends
 
 export class SolidActor extends
 	QQ.mixins(SolidMix, Actionable)
-{
-}
-
-export class Physics extends
-	QQ.mixins(PhysicsMix, Sprite)
 {
 }
 

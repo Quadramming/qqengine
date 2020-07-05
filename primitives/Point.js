@@ -75,6 +75,14 @@ export class Point {
 		}
 	}
 	
+	static subtraction(p1, p2) {
+		return p1.clone().sub(p2);
+	}
+	
+	static addition(p1, p2) {
+		return p1.clone().add(p2);
+	}
+	
 	//================================================================
 	// Check functions
 	//================================================================
@@ -101,6 +109,10 @@ export class Point {
 	
 	hasNaN() {
 		return Number.isNaN(this._x) || Number.isNaN(this._y);
+	}
+	
+	isFilled() {
+		return ! this.hasNaN();
 	}
 	
 	oposite() {
@@ -166,6 +178,12 @@ export class Point {
 	
 	add(point) {
 		return this.translate(point);
+	}
+	
+	sub(point) {
+		this.x(this._x - point._x);
+		this.y(this._y - point._y);
+		return this;
 	}
 	
 	//================================================================

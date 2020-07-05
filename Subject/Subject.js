@@ -52,6 +52,7 @@ export class Subject extends
 	draw(context) {
 		//this._drawWorldBorder(context);
 		//this._drawLocalBorder(context);
+		this._drawCenter(context);
 		this.forSubjects( subj => subj.draw(context) );
 	}
 	
@@ -172,6 +173,18 @@ export class Subject extends
 		ctx.lineWidth = 0.1;
 		ctx.strokeStyle = '#0000FF';
 		ctx.stroke();
+	}
+	
+	_drawCenter(ctx) {
+		ctx.cleanTransform();
+		let point = this.parentToLocal(this.position());
+		point = this.localToWorld(point);
+		const context = ctx.get();
+		context.beginPath();
+		context.arc(point.x(), point.y(), 0.1, 0, 2 * Math.PI);
+		context.lineWidth = 0.05;
+		context.strokeStyle = '#0000FF';
+		context.stroke();
 	}
 	
 }

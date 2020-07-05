@@ -1,10 +1,9 @@
 import * as QQ from './QQ.js';
 import * as Seizure from './Seizure/index.js';
+import * as CONST from './CONST/index.js';
 import {Point, Size} from './primitives/index.js';
 import {FpsCounter} from './FpsCounter.js';
 import {Time} from './Time.js';
-import {Mouse} from './Mouse.js';
-import {Touch} from './Touch.js';
 import {Storage} from './Storage.js';
 import {ImgManager} from './ImgManager.js';
 import {Sound} from './Sound.js';
@@ -13,6 +12,7 @@ import {OnResizeHandler} from './OnResizeHandler.js';
 import {Sprite} from './Sprite/index.js';
 import {S} from './style/index.js';
 import {T} from './i18n.js';
+import {Input} from './Input.js';
 
 export class Application {
 	
@@ -24,14 +24,14 @@ export class Application {
 		QQ.setApp(this);
 		this._onResizeHandler = new OnResizeHandler();
 		this._canvas = new Canvas('QQ.Application.Canvas',
-			config.size,
-			config.maximize
+			new Size(300, 300)
+			//config.size,
+			//config.maximize
 		);
 		this._fpsCounter = new FpsCounter();
 		this._time = new Time();
-		this._mouse = new Mouse();
-		this._touch = new Touch(this._mouse);
 		this._inputQueue = [];
+		this._input = new Input(this._canvas.getCanvas(), this._inputQueue);
 		this._storage = new Storage();
 		this._imgManager = new ImgManager();
 		this._seizures = new Seizure.Manager(this);
@@ -56,7 +56,7 @@ export class Application {
 			this._game.init(this);
 		}
 		this._seizures.init();
-		this._seizures.set('Main');
+		//this._seizures.set('Main');
 		this.initMouseEvents();
 		this._gameLoop();
 	}
@@ -85,6 +85,7 @@ export class Application {
 	//================================================================
 	
 	initMouseEvents() {
+		/*
 		this._mouse.setMoveCb( () => {
 			const point = this._getPointerOnCanvas();
 			this._inputQueue.push({
@@ -106,31 +107,7 @@ export class Application {
 				point: point
 			});
 		});
-	}
-	
-	_handleInput() {
-		for ( const input of this._inputQueue ) {
-			switch ( input.type ) {
-				case 'mouse move':
-					this._seizures.forActive((sz) => {
-						sz.pointerMove(input.point);
-					});
-				break;
-				case 'mouse down':
-					this._seizures.forActive((sz) => {
-						sz.pointerDown(input.point);
-					});
-				break;
-				case 'mouse up':
-					this._seizures.forActive((sz) => {
-						sz.pointerUp(input.point);
-					});
-				break;
-				default:
-					alert('bad input type');
-			}
-		}
-		this._inputQueue.length = 0;
+		*/
 	}
 	
 	_getPointerOnCanvas() {
@@ -271,7 +248,7 @@ export class Application {
 	
 	_tick() {
 		const delta = this._time.update();
-		this._handleInput();
+		this._seizures.forActive( sz => sz.handleInput(this._inputQueue) );
 		this._fpsCounter.tick(delta);
 		this._seizures.tick(delta);
 	}

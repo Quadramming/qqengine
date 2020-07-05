@@ -168,6 +168,19 @@ export class Rect {
 		return new Point(this._x + this._width/2, this._y + this._height/2);
 	}
 	
+	enclose(point) {
+		if ( point.x() > this.right() ) {
+			point.x( this.right() );
+		} else if ( point.x() < this.left() ) {
+			point.x( this.left() );
+		}
+		if ( point.y() < this.top() ) {
+			point.y( this.top() );
+		} else if ( point.y() > this.bottom() ) {
+			point.y( this.bottom() );
+		}
+	}
+	
 	//================================================================
 	// Debug
 	//================================================================

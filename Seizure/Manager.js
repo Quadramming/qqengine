@@ -92,8 +92,8 @@ export class Manager {
 	
 	_closeActive() {
 		if ( this._actives.length > 0 ) {
-			const toRelease = this._actives.pop();
-			toRelease.release();
+			const toDestruct = this._actives.pop();
+			toDestruct.destructor();
 		}
 	}
 	

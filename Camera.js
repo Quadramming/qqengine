@@ -98,17 +98,11 @@ export class Camera {
 	//================================================================
 	
 	getWorldFromScreen(point) {
-		const world = point.clone();
-		this.convertToWorldFromScreen(world);
-		return world;
-	}
-	
-	convertToWorldFromScreen(point) {
 		const M = Matrix.mul(
 			Matrix.inverse(this._mainMatrix),
 			[[point.x()],[point.y()],[1]]
 		);
-		point.set(M[0][0], M[1][0]);
+		return new Point(M[0][0], M[1][0]);
 	}
 	
 	draw() {
@@ -125,7 +119,7 @@ export class Camera {
 			bg.draw(ctxObj);
 		}
 		this._world.getStage().draw(ctxObj);
-		//this._drawAxis();
+		this._drawAxis();
 	}
 	
 	tick() {

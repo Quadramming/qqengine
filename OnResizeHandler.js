@@ -6,12 +6,12 @@ export class OnResizeHandler {
 		window.addEventListener('resize', this._listnerFn);
 	}
 	
-	add(fn) {
-		this._actions.push(fn);
-	}
-	
 	destructor() {
 		window.removeEventListener('resize', this._listnerFn);
+	}
+	
+	add(fn) {
+		this._actions.push(fn);
 	}
 	
 	_onResize() {

@@ -102,6 +102,7 @@ export class WorldPointer {
 		}
 		this._process(this._startPosition, null);
 		this._isClicked = false;
+		c('unclick');
 		this._isNearStart = false;
 	}
 	

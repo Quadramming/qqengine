@@ -1,82 +1,91 @@
 import * as QQ from '../QQ.js';
-import {Point} from '../primitives/index.js';
+import {Point, Rect} from '../primitives/index.js';
+
+function isActive(pointer) {
+	return Boolean( pointer && pointer.isActive() );
+}
+
+function isInactive(pointer) {
+	return ! isActive(pointer);
+}
+
+function reset(options) {
+	this._DnD.isActive = false;
+	this._DnD.pointer = null;
+	this._DnD.start.set(NaN);
+	if ( options.clip ) {
+		this._DnD.clip = options.clip.clone();
+	} else {
+		this._DnD.clip = null;
+	}
+}
+
+function fixOptions(options) {
+	options.isClickable = true;
+}
 
 export function DragAndDropMix(base) {
 	return class DragAndDropMix extends base {
 		
 		constructor(options) {
-			options.isClickable = true;
+			fixOptions(options);
 			super(options);
-			this._input = null;
-			this._dragAndDrop = {
-				isDraging: false,
-				point: new Point(NaN)
+			this._DnD = {
+				isActive: undefined,
+				pointer: undefined,
+				start: new Point,
+				clip: undefined
 			};
-			this._clip = QQ.useDefault(options.clip, null);
+			reset.call(this, options);
 		}
 		
-		setWorld(world) {
-			super.setWorld(world);
-			this._input = this._world.getInput();
+		destructor() {
+			this._DnD = undefined;
 		}
 		
-		onClickDown(point) {
-			super.onClickDown(point);
-			this._dragAndDrop.isDraging = true;
-			this._dragAndDrop.point.copy(
-				this.worldToLocalPoint(point)
-			);
+		reset(options = {}) {
+			fixOptions(options);
+			super.reset(options);
+			reset.call(this, options);
 		}
 		
-		onClickUp(point) {
-			super.onClickUp(point);
-			this.onDrop();
-			this._dragAndDrop.isDraging = false;
+		onClickDown(point, pointer) {
+			super.onClickDown(point, pointer);
+			this._DnD.pointer = pointer;
+			this._DnD.start = this.worldToLocal(point);
+			this._DnD.isActive = true;
 		}
 		
-		onDrop() {
+		onDrop(point) {
 		}
 		
 		tick(delta) {
 			super.tick(delta);
-			if ( this._dragAndDrop.isDraging ) {
-				if ( this._input.isClicked() ) {
-					const DnD = this._dragAndDrop;
-					const point = this._input.getWorldPoint();
-					this.setPosition( new Point(
-						point.x() - DnD.point.x(),
-						point.y() - DnD.point.y(),
-					));
-				} else {
-					this.onClickUp();
-					this._dragAndDrop.isDraging = false;
+			const pointer = this._DnD.pointer;
+			if ( isActive(pointer) ) {
+				const offset = Point.subtraction(
+					this.worldToLocal(pointer.getWorldPoint()),
+					this._DnD.start
+				);
+				const position = Point.addition(
+					this.position(),
+					offset
+				);
+				if ( this._DnD.clip ) {
+					this._DnD.clip.enclose(position);
 				}
+				this.position(position);
+			} else if ( this._DnD.isActive ) {
+				this._DnD.isActive = false;
+				this.onDrop(this.getWorldPosition());
 			}
 		}
 		
 		setClip(rect) {
-			this._clip.copy(rect);
-		}
-		
-		setPosition(point) {
-			super.setPosition(point);
-			this._fixClip();
-		}
-		
-		_fixClip() {
-			if ( this._clip !== null ) {
-				if ( this._position.x() > this._clip.right() ) {
-					this._position.x( this._clip.right() );
-				}
-				if ( this._position.x() < this._clip.left() ) {
-					this._position.x( this._clip.left() );
-				}
-				if ( this._position.y() < this._clip.top() ) {
-					this._position.y( this._clip.top() );
-				}
-				if ( this._position.y() > this._clip.bottom() ) {
-					this._position.y( this._clip.bottom() );
-				}
+			if ( this._DnD.clip ) {
+				this._DnD.clip.copy(rect);
+			} else {
+				this._DnD.clip = rect.clone();
 			}
 		}
 		
