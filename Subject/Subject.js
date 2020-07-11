@@ -86,7 +86,7 @@ export class Subject extends
 	isHit(worldPoint) {
 		if ( ! this._isClickable ) {
 			// TOFIX why isClickable affects result?
-			//return false;
+			return false;
 		}
 		const local = this.worldToLocal(worldPoint);
 		const rect = this._getLocalRect();

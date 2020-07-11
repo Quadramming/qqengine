@@ -15,6 +15,14 @@ export function any(...args) {
 	return args[rand(0, args.length-1)];
 }
 
+export function shuffleArray(a) {
+	for ( let i = a.length - 1; i > 0; i-- ) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[a[i], a[j]] = [a[j], a[i]];
+	}
+	return a;
+}
+
 /* TOFIX what is it?
 export function randDispersion(x) {
 	return x * Math.random() * any(1, -1);

@@ -32,6 +32,11 @@ export class Solid extends
 {
 }
 
+export class GhostSolid extends
+	QQ.mixins(SolidMix, Subject)
+{
+}
+
 export class SolidActor extends
 	QQ.mixins(SolidMix, Actionable)
 {

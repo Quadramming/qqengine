@@ -34,7 +34,7 @@ export class Application {
 		this._storage = new Storage();
 		this._imgManager = new ImgManager();
 		this._seizures = new Seizure.Manager(this);
-		this._imgs = new Map(config.imgs);
+		this._imgs = new Map(config.images);
 		this._canvases = new Map();
 		this._sound = new Sound();
 		this._sound.set(config.sounds);
