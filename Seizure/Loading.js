@@ -7,38 +7,25 @@ import {Size, Point, Scale, Rect} from '../primitives/index.js';
 class Loading extends Seizure {
 	
 	constructor(options) {
-		options.scrollable = true;
-		options.scrollClip = new Rect(1,2,3,4);
-		
 		super(options);
 		this.setBackground('black');
 		
-		let g = new Subject.Group({
-			position: new Point(0, 0),
-			parent: this.getWorld().getStage(),
-			selfAdd: true
-		});
-		
-		new Subject.DnD({
-			size: new Size(3, 3),
-			selfAdd: true,
-			parent: g,
-			image: 'char',
-			onClick: ()=>c(1)
-		});
-		
 		const o = new Subject.Sprite({
-			position: new Point(4, 0),
+			angle: 0.3,
+			position: new Point(2, 2),
 			size: new Size(3, 3),
-			selfAdd: true,
-			parent: g,
 			image: 'char',
-			onClick: ()=>c('CLICL')
+			onClick: (p)=>c(p)
 		});
-		o.onClickDown = ()=>c('Down');
-		o.onClickUp = ()=>c('Up');
+		const i = new Subject.Sprite({
+			position: new Point(0, 0),
+			size: new Size(1, 1),
+			image: 'char',
+			onClick: (p)=>c(p)
+		});
 		
-		this.setHud('Test');
+		//o.addSubject(i);
+		this.addSubject(o);
 	}
 	
 }

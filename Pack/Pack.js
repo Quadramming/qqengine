@@ -22,6 +22,9 @@ export class Pack {
 		reset.call(this, options);
 	}
 	
+	destructor() {
+	}
+	
 	reset(options) {
 		reset.call(this, options);
 	}

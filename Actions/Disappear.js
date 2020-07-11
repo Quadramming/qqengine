@@ -8,7 +8,7 @@ export class Disappear extends Idle {
 	}
 	
 	onEnd() {
-		this._subj.delete();
+		this._subj.destructor();
 	}
 	
 }

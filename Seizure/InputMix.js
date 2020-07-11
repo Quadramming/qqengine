@@ -3,7 +3,7 @@ import * as CONST from '../CONST/index.js';
 import {Pointer} from '../Pointer.js';
 
 function reset() {
-	for ( const pointer of this._pointers ) {
+	for ( const [key, pointer] of this._pointers ) {
 		pointer.destructor();
 	}
 	this._pointers.clear();

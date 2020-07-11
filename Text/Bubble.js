@@ -36,7 +36,7 @@ export class Bubble extends
 		this.setAction(
 			new Actions.Disappear({
 				duration: this._durationDisapper,
-				onEnd: () => this.delete()
+				onEnd: () => this.destructor()
 			})
 		);
 	}

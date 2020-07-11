@@ -119,7 +119,7 @@ export class Camera {
 			bg.draw(ctxObj);
 		}
 		this._world.getStage().draw(ctxObj);
-		this._drawAxis();
+		//this._drawAxis();
 	}
 	
 	tick() {

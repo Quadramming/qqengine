@@ -1,3 +1,5 @@
+import * as QQ from '../QQ.js';
+
 const register = new Map();
 
 export class Manager {
@@ -6,27 +8,27 @@ export class Manager {
 		register.set(name, sz);
 	}
 	
-	//================================================================
-	// Constructor
-	//================================================================
-	
-	constructor(app) {
-		this._app      = app;
-		this._register = register;
-		this._loading  = null;
-		this._reset    = () => {};
-		this._actives  = [];
+	constructor() {
+		this._reset = () => {};
+		this._actives = [];
+		this._toSet = null;
+		this._toCloseActive = false;
+		this._loading = null;
 	}
 	
 	init() {
 		this.create('Loading', {}, true);
 	}
 	
-	//================================================================
-	// Tick & draw
-	//================================================================
-	
 	tick(delta) {
+		if ( this._toCloseActive ) {
+			this._closeActive();
+			this._toCloseActive = false;
+		}
+		if ( this._toSet ) {
+			this._toSet();
+			this._toSet = null;
+		}
 		this.getActive().tick(delta);
 	}
 	
@@ -36,14 +38,9 @@ export class Manager {
 		}
 	}
 	
-	//================================================================
-	// Manage
-	//================================================================
-	
 	create(sz, input = {}, activate = false) {
-		input.app       = this._app;
 		input.szManager = this;
-		const newSz = new (this._register.get(sz))(input);
+		const newSz = new (register.get(sz))(input);
 		if ( activate ) {
 			this._actives.push(newSz);
 		}
@@ -51,11 +48,15 @@ export class Manager {
 		return newSz;
 	}
 	
-	set(sz, input, popup = false) {
-		this.forAll( (sz) => { sz.resetInput(); });
+	set(...args) {
+		this._toSet = () => this._set(...args);
+	}
+	
+	_set(sz, input, popup = false) {
+		this._reset = () => this.set(sz, input);
+		this.forAll( sz => sz.resetInput() );
 		if ( popup === false ) {
 			this._closeActive();
-			this._reset = () => this.set(sz, input);
 		}
 		//this._actives.push( this._loading );
 		//setTimeout( () => {
@@ -74,14 +75,13 @@ export class Manager {
 	
 	getActive() {
 		if ( this._actives.length > 0 ) {
-			return this._actives[this._actives.length-1];
+			return QQ.getLast(this._actives);
 		}
-		alert('Error: Getting undefined active');
+		throw new Error(`No active seizures`);
 	}
 	
 	forActive(fn) {
-		const active = this.getActive();
-		return fn(active);
+		return fn( this.getActive() );
 	}
 	
 	forAll(fn) {
@@ -90,23 +90,19 @@ export class Manager {
 		}
 	}
 	
-	_closeActive() {
-		if ( this._actives.length > 0 ) {
-			const toDestruct = this._actives.pop();
-			toDestruct.destructor();
-		}
-	}
-	
-	//================================================================
-	// Pop up
-	//================================================================
-	
 	popUp(sz, input) {
 		this.set(sz, input, true);
 	}
 	
 	closePopUp() {
-		this._closeActive();
+		this._toCloseActive = true;
+	}
+	
+	_closeActive() {
+		if ( this._actives.length > 0 ) {
+			const toDestruct = this._actives.pop();
+			toDestruct.destructor();
+		}
 	}
 	
 }

@@ -1,5 +1,8 @@
 export class FakeHud {
 	
+	destructor() {
+	}
+	
 	draw() {
 	}
 	

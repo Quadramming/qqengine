@@ -25,8 +25,7 @@ export function MatrixMix(base) {
 		}
 		
 		calcMatrix() {
-			let M = matrix.getMove(maths.getOffset(this.size(), this.anchor()));
-			M = matrix.mul(matrix.getScale(this.scale()), M);
+			let M = matrix.getScale(this.scale());
 			M = matrix.mul(matrix.getRotate(this.angle()), M);
 			M = matrix.mul(matrix.getMove(this.position()), M);
 			return M;
@@ -41,29 +40,25 @@ export function MatrixMix(base) {
 		}
 		
 		worldToLocal(point) {
-			let M = matrix.getMove(maths.getOffset(this.size(), this.anchor()));
-			M = matrix.mul(M, matrix.inverse(this.getMatrix()));
+			let M = matrix.inverse(this.getMatrix());
 			M = matrix.mul(M, matrix.getVector(point));
 			return new Point(M);
 		}
 		
 		localToWorld(point) {
 			let M = this.getMatrix();
-			M = matrix.mul(M, matrix.getInverseMove(maths.getOffset(this.size(), this.anchor())));
 			M = matrix.mul(M, matrix.getVector(point));
 			return new Point(M);
 		}
 		
 		parentToLocal(point) {
-			let M = matrix.getMove(maths.getOffset(this.size(), this.anchor()));
-			M = matrix.mul(M, matrix.inverse(this.getMatrix(false)));
+			let M = matrix.inverse(this.getMatrix(false));
 			M = matrix.mul(M, matrix.getVector(point));
 			return new Point(M);
 		}
 		
 		localToParent(point) {
 			let M = this.getMatrix(false);
-			M = matrix.mul(M, matrix.getInverseMove(maths.getOffset(this.size(), this.anchor())));
 			M = matrix.mul(M, matrix.getVector(point));
 			return new Point(M);
 		}

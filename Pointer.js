@@ -96,6 +96,7 @@ export class Pointer {
 	}
 	
 	_unset(position) {
+		if ( ! position ) debugger;
 		position.screen.set(NaN);
 		position.world.set(NaN);
 	}

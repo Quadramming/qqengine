@@ -23,8 +23,8 @@ export class SeizureBase {
 			maxTicks: options.maxTicks,
 			timeStep: options.timeStep,
 			seizure: this,
-			isPauseable: options.isPauseable,
-			isSortOnTick: options.isSortOnTick,
+			isSortByZOnTick: options.isSortByZOnTick,
+			isSortByZOnAdd: options.isSortByZOnAdd,
 			stageConstructor: options.stageConstructor
 		};
 		if ( QQ.useDefault(options.physicsWorld, false) ) {
@@ -40,12 +40,12 @@ export class SeizureBase {
 	}
 	
 	destructor() {
-		this._world.release();
+		this._world.destructor();
 		this._world = null;
 		this._camera.destructor();
 		this._camera = null;
 		this._parent = null;
-		this._hud.release();
+		this._hud.destructor();
 		this._hud = null;
 	}
 	

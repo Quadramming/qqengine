@@ -41,10 +41,10 @@ export function SortByZMix(base) {
 		_sortByZ() {
 			const copy = [...this.subjects()];
 			this.subjects().sort( (a, b) => {
-				if ( a.getZ() === b.getZ() ) {
+				if ( a.z() === b.z() ) {
 					return copy.indexOf(a) - copy.indexOf(b);
 				}
-				return a.getZ() - b.getZ();
+				return a.z() - b.z();
 			});
 		}
 		

@@ -20,20 +20,22 @@ export class World {
 		this._tickType = QQ.useDefault(options.tickType, 'const');
 		if ( options.stageConstructor ) {
 			this._stage = new options.stageConstructor({
-				isSortOnTick: options.isSortOnTick,
+				isSortByZOnTick: options.isSortByZOnTick,
+				isSortByZOnAdd: options.isSortByZOnAdd,
 				world: this
 			});
 		} else {
 			this._stage = new Subject.Stage({
-				isSortOnTick: options.isSortOnTick,
+				isSortByZOnTick: options.isSortByZOnTick,
+				isSortByZOnAdd: options.isSortByZOnAdd,
 				world: this
 			});
 		}
 	}
 	
-	release() {
+	destructor() {
 		this._seizure = null;
-		this._stage.delete();
+		this._stage.destructor();
 	}
 	
 	//================================================================

@@ -24,9 +24,8 @@ export class Application {
 		QQ.setApp(this);
 		this._onResizeHandler = new OnResizeHandler();
 		this._canvas = new Canvas('QQ.Application.Canvas',
-			new Size(300, 300)
-			//config.size,
-			//config.maximize
+			config.size,
+			config.maximize
 		);
 		this._fpsCounter = new FpsCounter();
 		this._time = new Time();
@@ -56,7 +55,7 @@ export class Application {
 			this._game.init(this);
 		}
 		this._seizures.init();
-		//this._seizures.set('Main');
+		this._seizures.set('Main');
 		this.initMouseEvents();
 		this._gameLoop();
 	}
@@ -248,8 +247,8 @@ export class Application {
 	
 	_tick() {
 		const delta = this._time.update();
-		this._seizures.forActive( sz => sz.handleInput(this._inputQueue) );
 		this._fpsCounter.tick(delta);
+		this._seizures.forActive( sz => sz.handleInput(this._inputQueue) );
 		this._seizures.tick(delta);
 	}
 	

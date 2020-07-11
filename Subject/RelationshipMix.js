@@ -1,7 +1,8 @@
 import * as QQ from '../QQ.js';
+import * as Seizure from '../Seizure/index.js';
 
 function reset(options = {}) {
-	this._parent = QQ.useDefault(options.parent, null);
+	this.parent(QQ.useDefault(options.parent, null));
 	this._subjects = [];
 }
 
@@ -15,6 +16,11 @@ export function RelationshipMix(base) {
 			reset.call(this, options);
 		}
 		
+		destructor() {
+			super.destructor();
+			this.cleanRelationships();
+		}
+		
 		reset(options) {
 			super.reset(options);
 			reset.call(this, options);
@@ -22,6 +28,9 @@ export function RelationshipMix(base) {
 		
 		parent(parent) {
 			if ( parent !== undefined ) {
+				if ( parent instanceof Seizure.Seizure ) {
+					parent = parent.getWorld().getStage();
+				}
 				this._parent = parent;
 			}
 			return this._parent;
@@ -38,8 +47,18 @@ export function RelationshipMix(base) {
 		
 		deleteSubjects() {
 			this.forSubjects(
-				subj => subj.delete()
+				subj => subj.destructor()
 			);
+		}
+		
+		stealSubject(subj) {
+			const i = this._subjects.indexOf(subj);
+			if ( i >= 0 ) {
+				let what = this._subjects.splice(i, 1).pop();
+				what.parent(null);
+				return what;
+			}
+			throw Error('stealSubject() problem');
 		}
 		
 		spliceSubject(subj) {
@@ -59,11 +78,6 @@ export function RelationshipMix(base) {
 			reset.call(this);
 		}
 		
-		delete() {
-			this.cleanRelationships();
-			return null; // For subj = subj.delete();
-		}
-		
 		forAllSubjects(fn) {
 			this.forSubjects(subj => {
 				fn(subj);
@@ -72,7 +86,7 @@ export function RelationshipMix(base) {
 		}
 		
 		forSubjects(fn) {
-			// delete() in fn can change subjects array
+			// destructor() in fn can change subjects array
 			// that why copy first
 			for ( const subj of [...this._subjects] ) {
 				fn(subj);

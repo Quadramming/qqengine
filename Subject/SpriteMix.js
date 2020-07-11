@@ -6,6 +6,7 @@ import {LayersSprite} from '../Sprite/LayersSprite.js';
 import {TileSprite} from '../Sprite/TileSprite.js';
 import {Point, Size, Scale} from '../primitives/index.js';
 import * as matrix from '../matrix.js';
+import * as maths from '../maths.js';
 
 // TOFIX: maybe some how split diffrent sprites?
 
@@ -60,11 +61,10 @@ export function SpriteMix(base) {
 			);
 			
 			let M = matrix.getScale(scale);
-			/* You can scale it
-			M = matrix.mul(matrix.getMove(new Point(-size.x()/2, -size.y()/2)), M);
-			M = matrix.mul(matrix.getScale(new Scale(2, 2)), M);
-			M = matrix.mul(matrix.getMove(new Point(size.x()/2, size.y()/2)), M);
-			*/
+			M = matrix.mul(
+				matrix.getMove(maths.getOffset(this.size(), this.anchor())),
+				M
+			);
 			M = matrix.mul(this.getMatrix(), M);
 			context.transform(M);
 			

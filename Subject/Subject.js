@@ -52,7 +52,7 @@ export class Subject extends
 	draw(context) {
 		//this._drawWorldBorder(context);
 		//this._drawLocalBorder(context);
-		this._drawCenter(context);
+		//this._drawCenter(context);
 		this.forSubjects( subj => subj.draw(context) );
 	}
 	
@@ -86,7 +86,7 @@ export class Subject extends
 	isHit(worldPoint) {
 		if ( ! this._isClickable ) {
 			// TOFIX why isClickable affects result?
-			return false;
+			//return false;
 		}
 		const local = this.worldToLocal(worldPoint);
 		const rect = this._getLocalRect();
@@ -156,11 +156,7 @@ export class Subject extends
 	}
 	
 	_drawLocalBorder(context) {
-		const M = matrix.mul(
-			this.getMatrix(),
-			matrix.getInverseMove(maths.getOffset(this.size(), this.anchor()))
-		);
-		context.transform(M);
+		context.transform( this.getMatrix() );
 		const rect = this._getLocalRect();
 		const ctx = context.get();
 		ctx.beginPath();
@@ -177,8 +173,7 @@ export class Subject extends
 	
 	_drawCenter(ctx) {
 		ctx.cleanTransform();
-		let point = this.parentToLocal(this.position());
-		point = this.localToWorld(point);
+		let point = this.localToWorld(Point.ZERO());
 		const context = ctx.get();
 		context.beginPath();
 		context.arc(point.x(), point.y(), 0.1, 0, 2 * Math.PI);

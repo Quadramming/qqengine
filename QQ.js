@@ -51,8 +51,9 @@ export function isObject(obj) {
 }
 
 export function mixins(...mixins) {
-	let base = mixins[mixins.length-1];
-	for ( let i = 0; i < mixins.length-1; ++i ) {
+	let base = getLast(mixins);
+	const from = getLastIndex(mixins)-1;
+	for ( let i = from; i >= 0; --i ) {
 		base = mixins[i](base);
 	}
 	return base;
@@ -137,4 +138,16 @@ export function makeCanvas(size) {
 
 export function getLast(array) {
 	return array[array.length-1];
+}
+
+export function getLastIndex(array) {
+	return array.length-1;
+}
+
+export function arrayOfNull(elements) {
+	const result = [];
+	for ( let i = 0; i < elements; ++i ) {
+		result.push(null);
+	}
+	return result;
 }
