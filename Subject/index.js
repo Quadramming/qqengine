@@ -3,6 +3,7 @@ import {SpriteMix} from './SpriteMix.js';
 import {SolidMix} from './SolidMix.js';
 import {ActionableMix} from './ActionableMix.js';
 import {DragAndDropMix} from './DragAndDropMix.js';
+import {ElasticMix} from './ElasticMix.js';
 import {Subject} from './Subject.js';
 import {Group} from './Group.js';
 import {Stage} from './Stage.js';
@@ -14,7 +15,8 @@ export {
 	SpriteMix,
 	SolidMix,
 	ActionableMix,
-	DragAndDropMix
+	DragAndDropMix,
+	ElasticMix
 };
 
 export class Sprite extends

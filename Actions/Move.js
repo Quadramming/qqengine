@@ -19,6 +19,7 @@ export class Move extends Idle {
 			this._from.x() + this._progress * this._distance.x(),
 			this._from.y() + this._progress * this._distance.y()
 		));
+		c(this._progress);
 	}
 	
 }

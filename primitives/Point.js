@@ -3,6 +3,9 @@ import {AXIS} from '../CONST/AXIS.js';
 /** Class for simple point */
 export class Point {
 	
+	#x;
+	#y;
+	
 	/** Construct point
 	* @param {number} [x=0] - The x value
 	* @param {number} [y=x] - The y value
@@ -11,8 +14,6 @@ export class Point {
 	* new Point(); // (0, 0)
 	*/
 	constructor(x = 0, y = x) {
-		this._x = NaN;
-		this._y = NaN;
 		if ( x instanceof Array ) {
 			y = x[1][0];
 			x = x[0][0];
@@ -37,14 +38,14 @@ export class Point {
 	*/
 	copy(point) {
 		if ( point instanceof Point ) {
-			this.set(point._x, point._y);
+			this.set(point.#x, point.#y);
 		}
 		return this;
 	}
 	
 	copyOrSet(point, x, y) {
 		if ( point instanceof Point ) {
-			this.set(point._x, point._y);
+			this.set(point.#x, point.#y);
 		} else {
 			this.set(x, y);
 		}
@@ -55,23 +56,23 @@ export class Point {
 	@return {Point} New cloned Point
 	**/
 	clone() {
-		return new Point(this._x, this._y);
+		return new Point(this.#x, this.#y);
 	}
 	
 	/** Clone Point with oposite values (-x, -y)
 	@return {Point} New cloned Point
 	**/
 	cloneOposite() {
-		return new Point(-this._x, -this._y);
+		return new Point(-this.#x, -this.#y);
 	}
 	
 	fixNaNToSimilar(point) {
 		if ( this.getNaNAxis() === AXIS.XY ) {
 			this.copy(point);
 		} else if ( this.getNaNAxis() === AXIS.X ) {
-			this.x( this._y * point.getRatio() );
+			this.x( this.#y * point.getRatio() );
 		} else if ( this.getNaNAxis() === AXIS.Y ) {
-			this.y( this._x / point.getRatio() );
+			this.y( this.#x / point.getRatio() );
 		}
 	}
 	
@@ -92,11 +93,11 @@ export class Point {
 	//================================================================
 	
 	isZero() {
-		return this._x === 0 && this._y === 0;
+		return this.#x === 0 && this.#y === 0;
 	}
 	
 	isEquals(point) {
-		return (point._x === this._x) && (point._y === this._y);
+		return (point.#x === this.#x) && (point.#y === this.#y);
 	}
 	
 	isCorrect() {
@@ -107,12 +108,12 @@ export class Point {
 		if ( point.hasNaN() || this.hasNaN() ) {
 			return false;
 		}
-		return Math.abs(point._x - this._x) <= epsilon
-		    && Math.abs(point._y - this._y) <= epsilon;
+		return Math.abs(point.#x - this.#x) <= epsilon
+		    && Math.abs(point.#y - this.#y) <= epsilon;
 	}
 	
 	hasNaN() {
-		return Number.isNaN(this._x) || Number.isNaN(this._y);
+		return Number.isNaN(this.#x) || Number.isNaN(this.#y);
 	}
 	
 	isFilled() {
@@ -120,8 +121,8 @@ export class Point {
 	}
 	
 	oposite() {
-		this._x = -this._x;
-		this._y = -this._y;
+		this.#x = -this.#x;
+		this.#y = -this.#y;
 		return this;
 	}
 	
@@ -130,44 +131,44 @@ export class Point {
 	//================================================================
 	
 	getNaNAxis() {
-		if ( Number.isNaN(this._x) && Number.isNaN(this._y) ) {
+		if ( Number.isNaN(this.#x) && Number.isNaN(this.#y) ) {
 			return AXIS.XY;
-		} else if ( Number.isNaN(this._x) ) {
+		} else if ( Number.isNaN(this.#x) ) {
 			return AXIS.X;
-		} else if ( Number.isNaN(this._y) ) {
+		} else if ( Number.isNaN(this.#y) ) {
 			return AXIS.Y;
 		}
 		return AXIS.NONE;
 	}
 	
 	getDistance(point) {
-		const x = this._x - point._x;
-		const y = this._y - point._y;
+		const x = this.#x - point.#x;
+		const y = this.#y - point.#y;
 		return Math.sqrt( x*x + y*y );
 	}
 	
 	getLength() {
-		return Math.sqrt(this._x ** 2 + this._y ** 2);
+		return Math.sqrt(this.#x ** 2 + this.#y ** 2);
 	}
 	
 	getRatio() {
-		return this._x / this._y;
+		return this.#x / this.#y;
 	}
 	
 	x(value) {
 		if ( value !== undefined ) {
-			this._check(value);
-			this._x = value;
+			this.#check(value);
+			this.#x = value;
 		}
-		return this._x;
+		return this.#x;
 	}
 	
 	y(value) {
 		if ( value !== undefined ) {
-			this._check(value);
-			this._y = value;
+			this.#check(value);
+			this.#y = value;
 		}
-		return this._y;
+		return this.#y;
 	}
 	
 	//================================================================
@@ -175,8 +176,8 @@ export class Point {
 	//================================================================
 	
 	translate(point) {
-		this.x(this._x + point._x);
-		this.y(this._y + point._y);
+		this.x(this.#x + point.#x);
+		this.y(this.#y + point.#y);
 		return this;
 	}
 	
@@ -185,8 +186,8 @@ export class Point {
 	}
 	
 	sub(point) {
-		this.x(this._x - point._x);
-		this.y(this._y - point._y);
+		this.x(this.#x - point.#x);
+		this.y(this.#y - point.#y);
 		return this;
 	}
 	
@@ -195,7 +196,7 @@ export class Point {
 	//================================================================
 	
 	toString() {
-		return '(' + this._x + ', ' + this._y + ')'
+		return '(' + this.#x + ', ' + this.#y + ')'
 	}
 	
 	debug() {
@@ -206,7 +207,7 @@ export class Point {
 	// Private
 	//================================================================
 	
-	_check(value) {
+	#check(value) {
 		if ( typeof value !== 'number' ) {
 			throw new Error(`Has to be number`);
 		}

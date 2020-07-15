@@ -3,9 +3,10 @@ import {Idle} from './Idle.js';
 
 export class WalkTo extends Idle {
 	
-	constructor(targetPoint) {
-		super();
-		this._to = targetPoint.clone();
+	constructor(options) {
+		super(options);
+		this._to = options.to.clone();
+		this._prevPosition = this._subj.position();
 	}
 	
 	setTarget(to) {
@@ -17,8 +18,12 @@ export class WalkTo extends Idle {
 	}
 	
 	tick(delta) {
+		if ( this._prevPosition.isEquals(this._subj.position()) ) {
+			c('stop');
+			this.finishAction();
+		}
 		const walked = this._subj.getSpeed() * delta;
-		const from = this._subj.getPosition();
+		const from = this._subj.position();
 		const to = this._to;
 		const A = to.y() - from.y();
 		const B = to.x() - from.x();
@@ -29,8 +34,9 @@ export class WalkTo extends Idle {
 		const b = sin * walked;
 		if ( walked < C ) {
 			this._subj.addPosition(new Point(a, b));
+			this._prevPosition.copy(this._subj.position());
 		} else {
-			this._subj.setPosition(to);
+			this._subj.position(to);
 			this.finishAction();
 		}
 	}
