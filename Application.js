@@ -1,3 +1,4 @@
+// QQDOC
 import * as QQ from './QQ.js';
 import * as Seizure from './Seizure/index.js';
 import * as CONST from './CONST/index.js';
