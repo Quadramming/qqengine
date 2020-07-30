@@ -7,7 +7,8 @@ export class XY {
 	#x; // X value
 	#y; // Y value
 	
-	constructor(x = 0, y = x) { // x can be vector
+	constructor(x = 0, y = x) { // Or constructor(vector)
+		// We need y = x for new XY(NaN);
 		if ( x instanceof Array ) {
 			y = x[1][0];
 			x = x[0][0];
@@ -65,14 +66,19 @@ export class XY {
 		} else if ( this.getNaNAxis() === AXIS.Y ) {
 			this.y( this.#x / xy.getRatio() );
 		}
-	} // void
+		return this;
+	} // this
 	
 	isZero() {
 		return this.#x === 0 && this.#y === 0;
 	} // boolean
 	
-	isEquals(xy) {
-		return (xy.#x === this.#x) && (xy.#y === this.#y);
+	isEquals(x, y = x) { // Or isEquals(xy)
+		if ( x instanceof XY ) {
+			return Object.is(x.#x, this.#x) && Object.is(x.#y, this.#y);
+		} else {
+			return Object.is(x, this.#x) && Object.is(y, this.#y);
+		}
 	} // boolean
 	
 	isCorrect() { // Has no NaN
