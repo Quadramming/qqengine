@@ -1,3 +1,5 @@
+// QQDOC
+
 import {Point} from './Point.js';
 import {Size} from './Size.js';
 import * as maths from '../maths.js';
@@ -21,7 +23,7 @@ export class Rect {
 		const right = Math.max( ...points.map( point => point.x() ));
 		const bottom = Math.max( ...points.map( point => point.y() ));
 		return new Rect(left, top, right-left, bottom-top);
-	}
+	} // new Rect
 	
 	//================================================================
 	// Copy functions
@@ -29,7 +31,7 @@ export class Rect {
 	
 	clone() {
 		return new Rect(this._x, this._y, this._width, this._height);
-	}
+	} // new Rect
 	
 	copy(rectangle) {
 		this._x = rectangle._x;
@@ -37,7 +39,7 @@ export class Rect {
 		this._width = rectangle._width;
 		this._height = rectangle._height;
 		return this;
-	}
+	} // this
 	
 	//================================================================
 	// Checks
@@ -55,7 +57,7 @@ export class Rect {
 			}
 		}
 		return false;
-	}
+	} // boolean
 	
 	isIntersect(rect) {
 		if ( this.bottom() <= rect.top() || this.top() >= rect.bottom() ) {
@@ -65,7 +67,7 @@ export class Rect {
 			return false;
 		}
 		return true;
-	}
+	} // boolean
 	
 	intersectValue(rect) {
 		if ( ! this.isIntersect(rect) ) {
@@ -83,7 +85,7 @@ export class Rect {
 			value.y(maths.absMin(y1, y2));
 		}
 		return value;
-	}
+	} // new Point
 	
 	intersectResolve(rect) {
 		const value = this.intersectValue(rect);
@@ -95,7 +97,7 @@ export class Rect {
 			}
 		}
 		return value;
-	}
+	} // new Point
 	
 	//================================================================
 	// Get
@@ -106,67 +108,67 @@ export class Rect {
 		this._y = y;
 		this._width = width;
 		this._height = height;
-	}
+	} // void
 	
-	x(x) {
+	x(x) { // {F}
 		if ( x !== undefined ) {
 			this._x = x;
 		}
 		return this._x;
-	}
+	} // number
 	
-	y(y) {
+	y(y) { // {F}
 		if ( y !== undefined ) {
 			this._y = y;
 		}
 		return this._y;
-	}
+	} // number
 	
-	width(width) {
+	width(width) { // {F}
 		if ( width !== undefined ) {
 			this._width = width;
 		}
 		return this._width;
-	}
+	} // number
 	
-	height(height) {
+	height(height) { // {F}
 		if ( height !== undefined ) {
 			this._height = height;
 		}
 		return this._height;
-	}
+	} // number
 	
-	w(w) {
+	w(w) { // {F}
 		return this.width(w);
-	}
+	} // number
 	
-	h(h) {
+	h(h) { // {F}
 		return this.height(h);
-	}
+	} // number
 	
 	left() {
 		return this._x;
-	}
+	} // number
 	
 	right() {
 		return this._x + this._width;
-	}
+	} // number
 	
 	top() {
 		return this._y;
-	}
+	} // number
 	
 	bottom() {
 		return this._y + this._height;
-	}
+	} // number
 	
 	size() {
 		return new Size(this._width, this._height);
-	}
+	} // new Size
 	
 	center() {
 		return new Point(this._x + this._width/2, this._y + this._height/2);
-	}
+	} // new Point
 	
 	enclose(point) {
 		if ( point.x() > this.right() ) {
@@ -179,7 +181,7 @@ export class Rect {
 		} else if ( point.y() > this.bottom() ) {
 			point.y( this.bottom() );
 		}
-	}
+	} // void
 	
 	//================================================================
 	// Debug
@@ -192,6 +194,6 @@ export class Rect {
 		c('width: ' + this._width);
 		c('height: ' + this._height);
 		c(')');
-	}
+	} // void
 	
 }

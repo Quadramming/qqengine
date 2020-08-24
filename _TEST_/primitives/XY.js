@@ -15,6 +15,7 @@ describe('XY', function() {
 	describe('Static', function() {
 		it('ZERO', function() {
 			check(XY.ZERO().isEquals(0, 0));
+			check(XY.ZERO() instanceof XY);
 		});
 		it('addition', function() {
 			const a = new XY(1, 1);
@@ -78,6 +79,12 @@ describe('XY', function() {
 			const b = new XY(NaN);
 			check(b.isEquals(a));
 		});
-		
+		it('clone', function() {
+			const a = new XY(1, 2);
+			const b = a.clone();
+			check(b.isEquals(a));
+			check(a !== b);
+			check(b instanceof XY);
+		});
 	});
 });

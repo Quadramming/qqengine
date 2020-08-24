@@ -1,30 +1,34 @@
+// QQDOC
+
 export class Storage {
 	
+	this.#storage; // window.localStorage
+	
 	constructor() {
-		this._storage = window.localStorage;
+		this.#storage = window.localStorage;
 	}
 	
 	remove(key) {
-		this._storage.removeItem(key);
-	}
+		this.#storage.removeItem(key);
+	} // void
 	
 	set(key, value) {
 		if ( value === null ) {
 			this.remove(key);
 		} else {
-			this._storage.setItem(key, value);
+			this.#storage.setItem(key, value);
 		}
-	}
+	} // void
 	
 	get(key) {
-		return this._storage.getItem(key);
-	}
+		return this.#storage.getItem(key);
+	} // string | null
 	
-	store(key, value) {
+	store(key, value) { // {F}
 		if ( value !== undefined ) {
 			this.set(key, value);
 		}
 		return this.get(key);
-	}
+	} // string | null
 	
 }

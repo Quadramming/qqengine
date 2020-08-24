@@ -1,30 +1,23 @@
-import {Point} from './Point.js';
+// QQDOC
 
-/** Size class **/
-export class Size extends Point {
+import {XY} from './XY.js';
+
+export class Size extends XY {
 	
-	cloneOposite() {
-		return new Size(-this._x, -this._y);
-	}
-	
-	clone() {
-		return new Size(this._x, this._y);
-	}
-	
-	width(value) {
+	width(value) { // {F}
 		return this.x(value);
-	}
+	} // number
 	
-	height(value) {
+	height(value) { // {F}
 		return this.y(value);
-	}
+	} // number
 	
-	w(value) {
+	w(value) { // {F}
 		return this.x(value);
-	}
+	} // number
 	
-	h(value) {
+	h(value) { // {F}
 		return this.y(value);
-	}
+	} // number
 	
 }

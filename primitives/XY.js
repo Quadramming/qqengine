@@ -17,7 +17,11 @@ export class XY {
 	}
 	
 	static ZERO() {
-		return new XY(0, 0);
+		return this.spawn(0, 0);
+	} // new XY
+	
+	static spawn(...args) {
+		return new this(...args);
 	} // new XY
 	
 	static addition(xy1, xy2) {
@@ -28,11 +32,13 @@ export class XY {
 		return xy1.clone().sub(xy2);
 	} // new XY
 	
-	set(x = 0, y = x) {
-		this.x(x);
-		this.y(y);
-		return this;
-	} // this
+	clone() {
+		return this.constructor.spawn(this.#x, this.#y);
+	} // new XY
+	
+	cloneInverted() {
+		return this.constructor.spawn(-this.#x, -this.#y);
+	} // new XY
 	
 	copy(xy) {
 		if ( xy instanceof XY ) {
@@ -50,24 +56,15 @@ export class XY {
 		return this;
 	} // this
 	
-	clone() {
-		return new XY(this.#x, this.#y);
-	} // new XY
-	
-	cloneOposite() {
-		return new XY(-this.#x, -this.#y);
-	} // new XY
-	
-	fixNaNToSimilar(xy) {
-		if ( this.getNaNAxis() === AXIS.XY ) {
-			this.copy(xy);
-		} else if ( this.getNaNAxis() === AXIS.X ) {
-			this.x( this.#y * xy.getRatio() );
-		} else if ( this.getNaNAxis() === AXIS.Y ) {
-			this.y( this.#x / xy.getRatio() );
-		}
+	set(x = 0, y = x) {
+		this.x(x);
+		this.y(y);
 		return this;
 	} // this
+	
+	hasNaN() {
+		return Number.isNaN(this.#x) || Number.isNaN(this.#y);
+	} // boolean
 	
 	isZero() {
 		return this.#x === 0 && this.#y === 0;
@@ -81,10 +78,6 @@ export class XY {
 		}
 	} // boolean
 	
-	isCorrect() { // Has no NaN
-		return ! this.hasNaN();
-	} // boolean
-	
 	isNear(xy, epsilon = 0) {
 		if ( xy.hasNaN() || this.hasNaN() ) {
 			return false;
@@ -93,19 +86,13 @@ export class XY {
 		    && Math.abs(xy.#y - this.#y) <= epsilon;
 	} // boolean
 	
-	hasNaN() {
-		return Number.isNaN(this.#x) || Number.isNaN(this.#y);
+	isCorrect() { // Has no NaN
+		return ! this.hasNaN();
 	} // boolean
 	
 	isFilled() { // Has no NaN
 		return this.isCorrect();
 	} // boolean
-	
-	oposite() {
-		this.#x = -this.#x;
-		this.#y = -this.#y;
-		return this;
-	} // this
 	
 	getNaNAxis() {
 		if ( Number.isNaN(this.#x) && Number.isNaN(this.#y) ) {
@@ -132,21 +119,11 @@ export class XY {
 		return this.#x / this.#y;
 	} // number
 	
-	x(value) { // {F}
-		if ( value !== undefined ) {
-			this.#check(value);
-			this.#x = value;
-		}
-		return this.#x;
-	} // number
-	
-	y(value) { // {F}
-		if ( value !== undefined ) {
-			this.#check(value);
-			this.#y = value;
-		}
-		return this.#y;
-	} // number
+	invert() {
+		this.#x = -this.#x;
+		this.#y = -this.#y;
+		return this;
+	} // this
 	
 	translate(xy) {
 		this.x(this.#x + xy.#x);
@@ -163,6 +140,33 @@ export class XY {
 		this.y(this.#y - xy.#y);
 		return this;
 	} // this
+	
+	fixNaNToSimilar(xy) {
+		if ( this.getNaNAxis() === AXIS.XY ) {
+			this.copy(xy);
+		} else if ( this.getNaNAxis() === AXIS.X ) {
+			this.x( this.#y * xy.getRatio() );
+		} else if ( this.getNaNAxis() === AXIS.Y ) {
+			this.y( this.#x / xy.getRatio() );
+		}
+		return this;
+	} // this
+	
+	x(value) { // {F}
+		if ( value !== undefined ) {
+			this.#check(value);
+			this.#x = value;
+		}
+		return this.#x;
+	} // number
+	
+	y(value) { // {F}
+		if ( value !== undefined ) {
+			this.#check(value);
+			this.#y = value;
+		}
+		return this.#y;
+	} // number
 	
 	toString() {
 		return '(' + this.#x + ', ' + this.#y + ')'
