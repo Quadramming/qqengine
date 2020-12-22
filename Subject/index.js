@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 import {SpriteMix} from './SpriteMix.js';
 import {SolidMix} from './SolidMix.js';
@@ -49,7 +51,7 @@ export class DnD extends
 {
 }
 
-export function make(options = {}) {
+export function make(options = {}) { // Create new subject
 	if ( options.image ) {
 		let subj = null;
 		if ( options.isActor === true ) {
@@ -81,4 +83,4 @@ export function make(options = {}) {
 		return subj;
 	}
 	return new Subject(options);
-}
+} // new Subject or similar

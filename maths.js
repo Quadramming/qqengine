@@ -1,3 +1,5 @@
+// QQDOC
+
 import {Size, Scale, Offset} from './primitives/index.js';
 import {PIVOT} from './CONST/index.js';
 
@@ -137,4 +139,8 @@ export function calcPivotY(pivot, y, h, yAxis = 1) {
 		return y - yAxis*(h/2);
 	}
 	throw new Error(`PIVOT is wrong`);
+}
+
+export function clamp(min, max, value) {
+  return Math.min(Math.max(value, min), max);
 }

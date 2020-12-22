@@ -1,10 +1,12 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 
 const register = new Map();
 
 export class Manager {
-	
-	static addToRegister(name, sz) {
+
+	static registerSeizure(name, sz) {
 		register.set(name, sz);
 	}
 	

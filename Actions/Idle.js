@@ -1,22 +1,27 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 
 export class Idle {
 	
+	_subj; // Subject of action
+	_duration; // Full action duration time
+	_isAbortable; // Is action can be aborted
+	_next; // Action after end current action
+	_toRestore = null; // Action to restore on action end
+	_lasting = 0; // How long is action active
+	_progress = 0; // Progress of action [0, 1]
+	
 	constructor(input = {}) {
-		this._subj = QQ.useDefault(input.subj, null);
-		this._lasting = 0;
-		this._progress = 0;
-		this._duration = QQ.useDefault(input.duration, null);
-		this._isAbortable = QQ.useDefault(input.isAbortable, true);
-		this._next = null;
-		this._toRestore = null;
-		
-		this.onEnd = QQ.useDefault(input.onEnd, this.onEnd);
+		this._subj = input.subj ?? null;
+		this._duration = input.duration ?? null;
+		this._isAbortable = input.isAbortable ?? true;
+		this._next = input.next ?? null;
 		if ( input.isRestoreOnFinish ) {
 			this._toRestore = this._subj.getAction();
 		}
-		if ( input.next ) {
-			this._next = input.next;
+		if ( input.onEnd ) {
+			this.onEnd = input.onEnd;
 		}
 	}
 	
@@ -25,32 +30,31 @@ export class Idle {
 		this._progress = 0;
 	}
 	
-	subject(subj) {
+	subject(subj) { // {F}
 		if ( subj !== undefined ) {
 			this._subj = subj;
 		}
 		return this._subj;
 	}
-	
-	setAbortable(value) {
-		this._isAbortable = value;
-	}
-	
-	isAbortable() {
+
+	abortable(value) { // {F}
+		if ( value !== undefined ) {
+			this._isAbortable = value;
+		}
 		return this._isAbortable;
-	}
+	} // boolean
 	
 	setOnEnd(fn) {
 		this.onEnd = fn;
 	}
 	
-	onStart() {
+	onStart() { // {V}
 	}
 	
-	onEnd() {
+	onEnd() { // {V}
 	}
 	
-	onAbort() {
+	onAbort() { // {V}
 	}
 	
 	finishAction() {
@@ -77,7 +81,7 @@ export class Idle {
 		}
 	}
 	
-	draw(ctx) {
+	draw(ctx) { // {V}
 	}
 	
 }

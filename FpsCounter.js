@@ -1,40 +1,40 @@
+// QQDOC
+
 export class FpsCounter {
 	
-	constructor() {
-		this._details = false;
-		this._accumDelta = 0;
-		this._accumFps = 0;
-		this._fpsToShow = 0;
-		this._iSlot = 0;
-		this._maxSlots = 10;
-		this._font = '10px defaultFont';
-		this._slots = [];
-	}
+	#details = false;
+	#accumDelta = 0;
+	#accumFps = 0;
+	#fpsToShow = 0;
+	#iSlot = 0;
+	#maxSlots = 10;
+	#font = '10px defaultFont';
+	#slots = [];
 	
-	showDetails() {
-		this._details = ! this._details;
+	toggleShow() {
+		this.#details = ! this.#details;
 	}
 	
 	tick(delta) {
-		this._slots[this._iSlot] = Math.floor(1/delta);
-		this._iSlot = (this._iSlot+1) % this._maxSlots;
-		++this._accumFps;
-		this._accumDelta += delta;
-		if ( this._accumDelta > 1 ) {
-			this._fpsToShow = this._accumFps;
-			this._accumFps = 0;
-			this._accumDelta = 0;
+		this.#slots[this.#iSlot] = Math.floor(1/delta);
+		this.#iSlot = (this.#iSlot+1) % this.#maxSlots;
+		++this.#accumFps;
+		this.#accumDelta += delta;
+		if ( this.#accumDelta > 1 ) {
+			this.#fpsToShow = this.#accumFps;
+			this.#accumFps = 0;
+			this.#accumDelta = 0;
 		}
 	}
 	
 	show(ctx) {
-		if ( this._details ) {
+		if ( this.#details ) {
 			ctx.setTransform(1, 0, 0, 1, 0, 0, 0);
-			ctx.font = this._font;
+			ctx.font = this.#font;
 			ctx.textBaseline = 'middle';
 			ctx.textAlign = 'center';
 			let i = 0;
-			for ( const slot of this._slots ) {
+			for ( const slot of this.#slots ) {
 				ctx.fillStyle = 'green';
 				if ( slot > 60 ) {
 					ctx.fillStyle = 'white';
@@ -48,7 +48,7 @@ export class FpsCounter {
 				ctx.fillText( slot + ' FPS', 20, 20 + 15*i);
 				++i;
 			}
-			// document.title = this._fpsToShow + ' FPS';
+			// document.title = this.#fpsToShow + ' FPS';
 		}
 	}
 	

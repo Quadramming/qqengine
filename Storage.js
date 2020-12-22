@@ -2,7 +2,7 @@
 
 export class Storage {
 	
-	this.#storage; // window.localStorage
+	#storage; // window.localStorage
 	
 	constructor() {
 		this.#storage = window.localStorage;

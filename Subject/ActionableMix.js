@@ -1,71 +1,72 @@
-import * as QQ from '../QQ.js';
+// QQDOC
+
 import {Idle} from '../Actions/Idle.js';
 
-export function ActionableMix(base) {
+export function ActionableMix(base) { // Mix Actionable to base
 	return class ActionableMix extends base {
+		
+		#action; // Current action
+		#idleAction = new Idle(); // Instance of Idle action
 		
 		constructor(options) {
 			super(options);
-			this._idleAction = new Idle();
-			this._action = undefined;
-			
-			this._initializeActionableMix(options);
+			this.#reset(options);
 		}
 		
-		initialize(options) {
-			super.initialize(options);
-			_initializeActionableMix(options);
-		}
+		reset(options) { // Reset
+			super.reset(options);
+			this.#reset(options);
+		} // void
 		
-		_initializeActionableMix(options) {
+		#reset(options) {
 			this.forceIdleAction();
 		}
 		
-		tick(delta) {
-			super.tick(delta);
-			this._action.tick(delta);
-		}
-		
-		draw(ctx) {
-			super.draw(ctx);
-			this._action.draw(ctx);
-		}
-		
 		getAction() {
-			return this._action;
-		}
-		
-		forceAction(action) {
-			this._action = action;
-			this._action.reset();
-			this._action.subject(this);
-			this._action.onStart();
+			return this.#action;
 		}
 		
 		setAction(action) {
-			if ( this._action.isAbortable() ) {
-				this._action.onAbort();
+			if ( this.#action.abortable() ) {
+				this.#action.onAbort();
 				this.forceAction(action);
 				return true;
 			}
 			return false;
 		}
 		
+		forceAction(action) { // Enforce action set
+			this.#action = action;
+			this.#action.reset();
+			this.#action.subject(this);
+			this.#action.onStart();
+		} // void
+		
+		setIdleAction() { // Try to set Idle action
+			this.setAction(this.#idleAction);
+		}
+		
+		forceIdleAction() { // Enforce Idle action set
+			this.forceAction(this.#idleAction);
+		}
+		
 		setActionOnEnd(fn) {
-			if ( this._action === this._idleAction ) {
+			if ( this.#action === this.#idleAction ) {
 				throw new Error('Do not redefine idle onEnd method');
 			} else {
-				this._action.setOnEnd(fn);
+				this.#action.setOnEnd(fn);
 			}
 		}
 		
-		setIdleAction() {
-			this.setAction(this._idleAction);
+		tick(delta) {
+			super.tick(delta);
+			this.#action.tick(delta);
 		}
 		
-		forceIdleAction() {
-			this.forceAction(this._idleAction);
+		draw(ctx) {
+			super.draw(ctx);
+			this.#action.draw(ctx);
 		}
 		
 	}
-}
+} // class ActionableMix extends base

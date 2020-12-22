@@ -1,4 +1,4 @@
-import {dictionary as dictionary_RU} from '../../language/RU.js';
+import {dictionary as dictionary_RU} from '../language/RU.js';
 
 const language = 'RU';
 

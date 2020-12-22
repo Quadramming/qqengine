@@ -1,8 +1,5 @@
 import * as QQ from '../QQ.js';
 
-function reset(options = {}) {
-}
-
 function fixOptions(options) {
 }
 
@@ -12,7 +9,7 @@ export function nameMix(base) {
 		constructor(options) {
 			fixOptions(options);
 			super(options);
-			reset.call(this, options);
+			this.#reset(options);
 		}
 		
 		destructor() {
@@ -22,7 +19,11 @@ export function nameMix(base) {
 		reset(options) {
 			fixOptions(options);
 			super.reset(options);
-			reset.call(this, options);
+			this.#reset(options);
+		}
+		
+		#reset(options) {
+			// Do reset
 		}
 		
 	}

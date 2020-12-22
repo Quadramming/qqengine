@@ -7,7 +7,7 @@ export class Sound {
 		this._type = 'html5';
 	}
 	
-	set(input) {
+	set(input = []) {
 		if ( this._type === 'html5' ) {
 			for ( const sound of input ) {
 				this._sounds.set(sound[0], new Audio(sound[1]));

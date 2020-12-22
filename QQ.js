@@ -1,6 +1,13 @@
 import {Application} from './Application.js';
 
+globalThis.a = a;
 globalThis.c = c;
+globalThis.check = check;
+
+export function a(message) {
+	alert(message);
+}
+
 export function c(variable, ...rest) {
 	let output = variable;
 	if ( rest.length > 0 ) {
@@ -15,6 +22,18 @@ export function c(variable, ...rest) {
 	console.log(output);
 }
 
+export function check(condition, message = 'Error') {
+	if (!condition) {
+		throw new Error(message);
+	}
+}
+
+export function dump(...rest) {
+	for ( const variable of rest ) {
+		console.log(variable);
+	}
+}
+
 export let APP = null;
 
 export function setApp(app) {
@@ -22,12 +41,6 @@ export function setApp(app) {
 		throw new Error('Only one application can be created');
 	}
 	APP = app;
-}
-
-export function dump(...rest) {
-	for ( const variable of rest ) {
-		console.log(variable);
-	}
 }
 
 export function start(cfg) {

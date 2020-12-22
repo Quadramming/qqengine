@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 import * as World from '../World/index.js';
 import * as CONST from '../CONST/index.js';
@@ -9,6 +11,9 @@ import {InputMix} from './InputMix.js';
 import {ScrollMix} from './ScrollMix.js';
 
 export class SeizureBase {
+	
+	camera; // Camera
+	
 	//================================================================
 	// Constructor
 	//================================================================
@@ -32,7 +37,7 @@ export class SeizureBase {
 		} else {
 			this._world = new World.World(worldInput);
 		}
-		this._camera = new Camera(
+		this.camera = new Camera(
 			QQ.APP.getHtmlCanvas(),
 			this._world
 		);
@@ -42,8 +47,8 @@ export class SeizureBase {
 	destructor() {
 		this._world.destructor();
 		this._world = null;
-		this._camera.destructor();
-		this._camera = null;
+		this.camera.destructor();
+		this.camera = null;
 		this._parent = null;
 		this._hud.destructor();
 		this._hud = null;
@@ -54,7 +59,7 @@ export class SeizureBase {
 	}
 	
 	getWorldFromScreen(point) {
-		return this._camera.getWorldFromScreen(point);
+		return this.camera.getWorldFromScreen(point);
 	}
 	
 	//================================================================
@@ -62,7 +67,7 @@ export class SeizureBase {
 	//================================================================
 	
 	getCamera() {
-		return this._camera;
+		return this.camera;
 	}
 	
 	getWorld() {
@@ -75,17 +80,17 @@ export class SeizureBase {
 	
 	tick(delta) {
 		this._hud.tick(delta);
-		this._camera.tick();
+		this.camera.tick();
 		this._world.tick(delta);
 		if ( this._cameraFollow ) {
-			this._camera.setPosition(
+			this.camera.setPosition(
 				this._cameraFollow.position()
 			);
 		}
 	}
 	
 	draw() {
-		this._camera.draw();
+		this.camera.draw();
 		this._hud.draw();
 	}
 	
@@ -123,7 +128,7 @@ export class SeizureBase {
 		if ( point === false ) {
 			return false;
 		}
-		const worldPoint = this._camera.getWorldFromScreen(point);
+		const worldPoint = this.camera.getWorldFromScreen(point);
 		return this._world.getSubjectAtPoint(worldPoint);
 	}
 	
@@ -137,9 +142,9 @@ export class SeizureBase {
 	}
 	
 	setCamera(view, eye) {
-		this._camera.setView(view);
+		this.camera.setView(view);
 		if ( eye !== undefined ) {
-			this._camera.setPosition(eye);
+			this.camera.setPosition(eye);
 		}
 	}
 	

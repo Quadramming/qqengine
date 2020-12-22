@@ -1,5 +1,5 @@
 import * as style from './style.js';
-import {styles} from '../../../styles/styles.js';
+import {styles} from '../../styles/styles.js';
 
 for ( const [name, styleObj] of Object.entries(styles) ) {
 	style.set(name, styleObj);

@@ -13,4 +13,4 @@ class Loading extends Seizure {
 	
 }
 
-Manager.addToRegister('Loading', Loading);
+Manager.registerSeizure('Loading', Loading);

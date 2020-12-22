@@ -1,13 +1,14 @@
 // QQDOC
+
 import * as QQ from '../QQ.js';
 import * as Seizure from '../Seizure/index.js';
 
-function reset(options = {}) {
+function reset(options = {}) { // Reset
 	this.parent(QQ.useDefault(options.parent, null));
 	this._subjects = [];
-}
+} // void
 
-export function RelationshipMix(base) {
+export function RelationshipMix(base) { // Mix Relationship to base
 	return class RelationshipMix extends base {
 		
 		constructor(options) {
@@ -95,4 +96,4 @@ export function RelationshipMix(base) {
 		}
 		
 	}
-}
+} // class RelationshipMix extends base

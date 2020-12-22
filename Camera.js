@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as QQ from './QQ.js';
 import * as Matrix from './matrix.js';
 import * as Maths from './maths.js';
@@ -5,6 +7,8 @@ import * as Subject from './Subject/index.js';
 import {Point, Size, Rect, Scale} from './primitives/index.js';
 
 export class Camera {
+	
+	#isDrawAxis = false; // Is draw axis
 	
 	//================================================================
 	// Constructor
@@ -113,13 +117,15 @@ export class Camera {
 		};
 		const bg = this._world.background();
 		if ( bg && typeof bg === 'string' ) {
-			this._cleanCanvas(bg);
+			this.#cleanCanvas(bg);
 		} else if ( bg && bg instanceof Subject.Subject ) {
 			bg.fitInRect(this.getViewRect());
 			bg.draw(ctxObj);
 		}
+		if ( this.#isDrawAxis ) {
+			this.#drawAxis();
+		}
 		this._world.getStage().draw(ctxObj);
-		//this._drawAxis();
 	}
 	
 	tick() {
@@ -186,7 +192,7 @@ export class Camera {
 		M = Matrix.inverse(M);
 		*/
 		// Or simple
-		let M = Matrix.getMove( this._position.cloneOposite() );
+		let M = Matrix.getMove( this._position.cloneInverted() );
 		
 		// Screen settings
 		M = Matrix.mul( Matrix.getScale(new Scale(
@@ -201,7 +207,11 @@ export class Camera {
 		this._mainMatrix = M;
 	}
 	
-	_drawAxis() {
+	toggleDrawAxis() {
+		this.#isDrawAxis = ! this.#isDrawAxis;
+	}
+	
+	#drawAxis() {
 		const ctx = this._ctx;
 		QQ.setTransform(ctx, this._mainMatrix);
 		for ( let i = -10; i <= 10; i++ ) {
@@ -226,7 +236,7 @@ export class Camera {
 		ctx.fillRect(10, 10, 0.2, 0.2);
 	}
 	
-	_cleanCanvas(color = 'gray') {
+	#cleanCanvas(color = 'gray') {
 		QQ.cleanTransform(this._ctx);
 		this._ctx.fillStyle = color;
 		this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);

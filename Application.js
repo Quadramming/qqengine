@@ -1,4 +1,5 @@
 // QQDOC
+
 import * as QQ from './QQ.js';
 import * as Seizure from './Seizure/index.js';
 import * as CONST from './CONST/index.js';
@@ -21,15 +22,16 @@ export class Application {
 	// Constructor
 	//================================================================
 	
-	constructor(config) {
+	#fpsCounter = new FpsCounter(); // Fps counter
+	#time = new Time();
+	
+	constructor(config = {}) {
 		QQ.setApp(this);
 		this._onResizeHandler = new OnResizeHandler();
 		this._canvas = new Canvas('QQ.Application.Canvas',
 			config.size,
 			config.maximize
 		);
-		this._fpsCounter = new FpsCounter();
-		this._time = new Time();
 		this._inputQueue = [];
 		this._input = new Input(this._canvas.getCanvas(), this._inputQueue);
 		this._storage = new Storage();
@@ -40,7 +42,7 @@ export class Application {
 		this._sound = new Sound();
 		this._sound.set(config.sounds);
 		if ( config.showFps ) {
-			this._fpsCounter.showDetails();
+			this.#fpsCounter.toggleShow();
 		}
 		this._game = QQ.useDefault(config.game, null);
 		this._loadResources(this._init);
@@ -209,7 +211,7 @@ export class Application {
 	}
 	
 	showFpsDetails() {
-		this._fpsCounter.showDetails();
+		this.#fpsCounter.showDetails();
 	}
 	
 	onBackButton() {
@@ -247,8 +249,8 @@ export class Application {
 	}
 	
 	_tick() {
-		const delta = this._time.update();
-		this._fpsCounter.tick(delta);
+		const delta = this.#time.update();
+		this.#fpsCounter.tick(delta);
 		this._seizures.forActive( sz => sz.handleInput(this._inputQueue) );
 		this._seizures.tick(delta);
 	}
@@ -256,7 +258,7 @@ export class Application {
 	_draw() {
 		this._seizures.draw();
 		//this._canvas.drawBorder();
-		this._fpsCounter.show(this._canvas.getContext());
+		this.#fpsCounter.show(this._canvas.getContext());
 	}
 	
 }
