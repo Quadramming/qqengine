@@ -10,8 +10,9 @@ export class Manager {
 		register.set(name, sz);
 	}
 	
+	reset = () => {}
+	
 	constructor() {
-		this._reset = () => {};
 		this._actives = [];
 		this._toSet = null;
 		this._toCloseActive = false;
@@ -55,7 +56,7 @@ export class Manager {
 	}
 	
 	_set(sz, input, popup = false) {
-		this._reset = () => this.set(sz, input);
+		this.reset = () => this.set(sz, input);
 		this.forAll( sz => sz.resetInput() );
 		if ( popup === false ) {
 			this._closeActive();
@@ -65,10 +66,6 @@ export class Manager {
 		//this._closeActive();
 		this.create(sz, input, true);
 		//}, 1000);
-	}
-	
-	reset() {
-		this._reset();
 	}
 	
 	countActives() {

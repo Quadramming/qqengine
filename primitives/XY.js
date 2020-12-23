@@ -62,6 +62,10 @@ export class XY {
 		return this;
 	} // this
 	
+	clear() {
+		return this.set(0, 0);
+	} // this
+	
 	hasNaN() {
 		return Number.isNaN(this.#x) || Number.isNaN(this.#y);
 	} // boolean

@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 import {Sprite} from '../Sprite/Sprite.js';
 import {ClipSprite} from '../Sprite/ClipSprite.js';

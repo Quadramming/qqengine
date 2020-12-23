@@ -13,11 +13,11 @@ export class Subject extends
 	QQ.mixins(MatrixMix, SortByZMix, RelationshipMix, Pack.Pack)
 {
 	
-	_bgColor; // Background color
-	_tickFn; // Tick function
-	_onClick; // On click
-	_isClickable; // Is clickable
-	_isDrawDebug; // Draw debug shapes
+	#bgColor; // Background color
+	#tickFn; // Tick function
+	#onClickFn; // On click function
+	#isClickable; // Is clickable
+	#isDrawDebug; // Draw debug shapes
 	
 	constructor(options) {
 		super(options);
@@ -30,43 +30,42 @@ export class Subject extends
 	}
 	
 	#reset(options = {}) {
-		this._bgColor = options.bgColor ?? null;
-		this._isDrawDebug = options.isDrawDebug ?? false;
-		this._tickFn = options.tickFn ?? null;
+		this.#bgColor = options.bgColor ?? null;
+		this.#isDrawDebug = options.isDrawDebug ?? false;
+		this.#tickFn = options.tickFn ?? null;
 		if ( options.onClick ) {
-			this._onClick = options.onClick;
-			this._isClickable = true;
+			this.#onClickFn = options.onClick;
+			this.#isClickable = true;
 		} else {
-			this._onClick = null;
-			this._isClickable = options.isClickable ?? false;
+			this.#onClickFn = null;
+			this.#isClickable = options.isClickable ?? false;
 		}
 		options.init?.call(this);
 		if ( options.selfAdd === true ) {
 			this.parent().addSubject(this);
 		}
 	}
-
 	
 	tick(delta) {
 		super.tick(delta);
-		this._tickFn?.(delta);
+		this.#tickFn?.(delta);
 		this.forSubjects( subj => subj.tick(delta) );
 	}
 
 	bgColor(color) { // {F} Set background color
 		if ( color !== undefined ) {
-			this._bgColor = color;
+			this.#bgColor = color;
 		}
-		return this._bgColor;
+		return this.#bgColor;
 	} // string
 	
 	draw(context) {
-		if ( this._isDrawDebug ) {
-			this._drawWorldBorder(context);
-			this._drawLocalBorder(context);
-			this._drawCenter(context);
+		if ( this.#isDrawDebug ) {
+			this.#drawWorldBorder(context);
+			this.#drawLocalBorder(context);
+			this.#drawCenter(context);
 		}
-		if ( this._bgColor ) {
+		if ( this.#bgColor ) {
 			this.#drawBgColor(context);
 		}
 		this.forSubjects( subj => subj.draw(context) );
@@ -90,27 +89,25 @@ export class Subject extends
 	}
 	
 	onClick(worldPoint) {
-		if ( this._onClick ) {
-			this._onClick(worldPoint);
-		}
+		this.#onClickFn?.(worldPoint);
 	}
 	
 	isClickable() {
-		return this._isClickable;
+		return this.#isClickable;
 	}
 	
 	isHit(worldPoint) {
-		if ( ! this._isClickable ) {
+		if ( ! this.#isClickable ) {
 			// TOFIX why isClickable affects result?
 			return false;
 		}
 		const local = this.worldToLocal(worldPoint);
-		const rect = this._getLocalRect();
+		const rect = this.#getLocalRect();
 		return rect.isContains(local);
 	}
 	
 	getWorldPosition() {
-		return this.localToWorld(new Point(0, 0));
+		return this.localToWorld(Point.ZERO());
 	}
 	
 	getWorld() {
@@ -118,7 +115,7 @@ export class Subject extends
 	}
 	
 	getBounds() {
-		const rect = this._getLocalRect();
+		const rect = this.#getLocalRect();
 		return Rect.fromPoints(
 			this.localToWorld(new Point(rect.left(), rect.top())),
 			this.localToWorld(new Point(rect.right(), rect.top())),
@@ -146,16 +143,16 @@ export class Subject extends
 		this.scale().set(1, 1);
 	}
 	
-	_getLocalRect() {
+	#getLocalRect() {
 		return new Rect(
 			-this.size().x()*this.anchor().x(),
 			-this.size().y()*this.anchor().y(),
-			this._size.w(),
-			this._size.h()
+			this.size().w(),
+			this.size().h()
 		);
 	}
 	
-	_drawWorldBorder(context) {
+	#drawWorldBorder(context) {
 		context.cleanTransform();
 		const rect = this.getBounds();
 		const ctx = context.get();
@@ -171,9 +168,9 @@ export class Subject extends
 		ctx.stroke();
 	}
 	
-	_drawLocalBorder(context) {
+	#drawLocalBorder(context) {
 		context.transform( this.getMatrix() );
-		const rect = this._getLocalRect();
+		const rect = this.#getLocalRect();
 		const ctx = context.get();
 		ctx.beginPath();
 		ctx.rect(
@@ -187,7 +184,7 @@ export class Subject extends
 		ctx.stroke();
 	}
 	
-	_drawCenter(context) {
+	#drawCenter(context) {
 		context.cleanTransform();
 		let point = this.localToWorld(Point.ZERO());
 		const ctx = context.get();
@@ -201,8 +198,8 @@ export class Subject extends
 	#drawBgColor(context) {
 		context.transform( this.getMatrix() );
 		const ctx = context.get();
-		const rect = this._getLocalRect();
-		ctx.fillStyle = this._bgColor;
+		const rect = this.#getLocalRect();
+		ctx.fillStyle = this.#bgColor;
 		ctx.fillRect(rect.x(), rect.y(), rect.w(), rect.h());
 	}
 	
