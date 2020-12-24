@@ -1,61 +1,88 @@
 // QQDOC
 
 import * as QQ from '../QQ.js';
+import * as matrix from '../matrix.js';
+import * as maths from '../maths.js';
+import {ORDER} from '../CONST/index.js';
 import {Sprite} from '../Sprite/Sprite.js';
 import {ClipSprite} from '../Sprite/ClipSprite.js';
 import {AnimateSprite} from '../Sprite/AnimateSprite.js';
 import {LayersSprite} from '../Sprite/LayersSprite.js';
 import {TileSprite} from '../Sprite/TileSprite.js';
 import {Point, Size, Scale} from '../primitives/index.js';
-import * as matrix from '../matrix.js';
-import * as maths from '../maths.js';
 
 // TOFIX: maybe some how split diffrent sprites?
+
+function fixOptions(options) {
+	if ( ! options.image ) {
+		const memoryImage = QQ.makeCanvas( new Size(1, 1) );
+		memoryImage.ctx.fillStyle = 'red';
+		memoryImage.ctx.fillRect(0, 0, 1, 1);
+		options.image = memoryImage.cvs;
+	}
+}
 
 export function SpriteMix(base) {
 	return class SpriteMix extends base {
 		
+		#drawOrder;
+		#image;
+		#sprite;
+		#alpha;
+		
 		constructor(options = {}) {
+			fixOptions(options);
 			super(options);
-			this.fixImage(options);
-			this._image = options.image;
-			this._sprite = null;
-			this._alpha = QQ.useDefault(options.alpha, 1);
+			this.#reset(options);
+		}
+		
+		reset(options = {}) {
+			fixOptions(options);
+			super.reset(options);
+			this.#reset(options);
+		}
+		
+		#reset(options) {
+			this.#drawOrder = options.spriteDrawOrder ?? ORDER.FIRST;
+			this.#image = options.image;
+			this.#sprite = null;
+			this.#alpha = options.alpha ?? 1;
 			this.setStaticSprite();
 		}
 		
-		fixImage(options) {
-			if ( options.image === undefined ) {
-				const memoryImage = QQ.makeCanvas( new Size(1, 1) );
-				memoryImage.ctx.fillStyle = 'red';
-				memoryImage.ctx.fillRect(0, 0, 1, 1);
-				options.image = memoryImage.cvs;
-			}
-		}
-		
 		setSpriteImage(image) {
-			this._image = image;
-			this._sprite.setImage(
+			this.#image = image;
+			this.#sprite.setImage(
 				QQ.APP.getImg(image)
 			);
 		}
 		
 		getSprite() {
-			return this._sprite;
+			return this.#sprite;
 		}
 		
 		getImage() {
-			return this._image;
+			return this.#image;
 		}
 		
 		tick(delta) {
 			super.tick(delta);
-			this._sprite.tick(delta);
+			this.#sprite.tick(delta);
 		}
 		
 		draw(context) {
+			if ( this.#drawOrder === ORDER.FIRST ) {
+				this.#draw(context);
+			}
+			super.draw(context);
+			if ( this.#drawOrder === ORDER.LAST ) {
+				this.#draw(context);
+			}
+		}
+		
+		#draw(context) {
 			// TOFIX need cache
-			const spriteSize = this._sprite.getFrameSize();
+			const spriteSize = this.#sprite.getFrameSize();
 			const size = this.size();
 			const scale = new Scale(
 				size.x()/spriteSize.x(),
@@ -71,77 +98,76 @@ export function SpriteMix(base) {
 			context.transform(M);
 			
 			const ctx = context.get();
-			const changeAlpha = (this._alpha !== 1);
+			const changeAlpha = (this.#alpha !== 1);
 			if ( changeAlpha ) {
-				ctx.globalAlpha = this._alpha;
+				ctx.globalAlpha = this.#alpha;
 			}
-			this._sprite.draw(ctx);
+			this.#sprite.draw(ctx);
 			if ( changeAlpha ) {
 				ctx.globalAlpha = 1;
 			}
-			super.draw(context);
 		}
 		
 		setStaticSprite() {
-			this._sprite = new Sprite(
-				QQ.APP.getImg(this._image)
+			this.#sprite = new Sprite(
+				QQ.APP.getImg(this.#image)
 			);
 		}
 		
 		setClipSprite(...args) {
-			this._sprite = new ClipSprite(
-				QQ.APP.getImg(this._image),
+			this.#sprite = new ClipSprite(
+				QQ.APP.getImg(this.#image),
 				...args
 			);
 		}
 		
 		setAnimateSprite(...args) {
-			this._sprite = new AnimateSprite(
-				QQ.APP.getImg(this._image),
+			this.#sprite = new AnimateSprite(
+				QQ.APP.getImg(this.#image),
 				...args
 			);
 		}
 		
 		setClipSprite(...args) {
-			this._sprite = new ClipSprite(
-				QQ.APP.getImg(this._image),
+			this.#sprite = new ClipSprite(
+				QQ.APP.getImg(this.#image),
 				...args
 			);
 		}
 		
 		setLayersSprite(...args) {
-			this._sprite = new LayersSprite(
-				QQ.APP.getImg(this._image),
+			this.#sprite = new LayersSprite(
+				QQ.APP.getImg(this.#image),
 				...args
 			);
 		}
 		
 		setTileSprite(...args) {
-			this._sprite = new TileSprite(
-				QQ.APP.getImg(this._image),
+			this.#sprite = new TileSprite(
+				QQ.APP.getImg(this.#image),
 				...args
 			);
 		}
 		
 		setTileOffset(offset) {
-			if ( this._sprite instanceof TileSprite ) {
-				this._sprite.setTileOffset(offset);
+			if ( this.#sprite instanceof TileSprite ) {
+				this.#sprite.setTileOffset(offset);
 			} else {
 				throw new Error('Wrong sprite type');
 			}
 		}
 		
 		setTileSize(size) {
-			if ( this._sprite instanceof TileSprite ) {
-				this._sprite.setTileSize(size);
+			if ( this.#sprite instanceof TileSprite ) {
+				this.#sprite.setTileSize(size);
 			} else {
 				throw new Error('Wrong sprite type');
 			}
 		}
 		
 		addSpriteLayer(layer) {
-			if ( this._sprite instanceof LayersSprite ) {
-				this._sprite.addLayer(layer);
+			if ( this.#sprite instanceof LayersSprite ) {
+				this.#sprite.addLayer(layer);
 			} else {
 				throw new Error('Wrong sprite type');
 			}
@@ -149,9 +175,9 @@ export function SpriteMix(base) {
 		
 		alpha(alpha) {
 			if ( alpha !== undefined ) {
-				this._alpha = alpha;
+				this.#alpha = alpha;
 			}
-			return this._alpha;
+			return this.#alpha;
 		}
 		
 	}

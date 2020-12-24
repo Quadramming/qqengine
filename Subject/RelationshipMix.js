@@ -11,8 +11,6 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		
 		constructor(options = {}) {
 			super(options);
-			this.#parent = undefined;
-			this.#subjects = undefined;
 			this.#reset(options);
 		}
 		
@@ -26,12 +24,12 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			this.#reset(options);
 		}
 		
-		#reset(options) {
+		#reset(options = {}) {
 			this.parent(options.parent ?? null);
 			this.#subjects = [];
 		}
 		
-		parent(parent) {
+		parent(parent) { // {F}
 			if ( parent !== undefined ) {
 				if ( parent instanceof Seizure.Seizure ) {
 					parent = parent.getWorld().getStage();
@@ -78,7 +76,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 				subj => subj.cleanRelationships()
 			);
 			this.#parent?.spliceSubject(this);
-			this.#reset({});
+			this.#reset();
 		}
 		
 		forAllSubjects(fn) {

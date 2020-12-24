@@ -17,21 +17,21 @@ export class Subject extends
 	#tickFn; // Tick function
 	#onClickFn; // On click function
 	#isClickable; // Is clickable
-	#isDrawDebug; // Draw debug shapes
+	#doDebugDraw; // Draw debug shapes
 	
-	constructor(options) {
+	constructor(options = {}) {
 		super(options);
 		this.#reset(options);
 	}
 	
-	reset(options) {
+	reset(options = {}) {
 		super.reset(options);
 		this.#reset(options);
 	}
 	
-	#reset(options = {}) {
+	#reset(options) {
 		this.#bgColor = options.bgColor ?? null;
-		this.#isDrawDebug = options.isDrawDebug ?? false;
+		this.#doDebugDraw = options.doDebugDraw ?? false;
 		this.#tickFn = options.tickFn ?? null;
 		if ( options.onClick ) {
 			this.#onClickFn = options.onClick;
@@ -60,19 +60,19 @@ export class Subject extends
 	} // string
 	
 	draw(context) {
-		if ( this.#isDrawDebug ) {
-			this.#drawWorldBorder(context);
-			this.#drawLocalBorder(context);
-			this.#drawCenter(context);
-		}
 		if ( this.#bgColor ) {
 			this.#drawBgColor(context);
 		}
 		this.forSubjects( subj => subj.draw(context) );
+		if ( this.#doDebugDraw ) {
+			this.#drawWorldBorder(context);
+			this.#drawLocalBorder(context);
+			this.#drawCenter(context);
+		}
 	}
 	
-	onClickDown(worldPoint) {
-		//* DEBUG
+	onClickDown(worldPoint) { // {V}
+		/* DEBUG
 		c("World:" + worldPoint);
 		let local = this.worldToLocal(worldPoint);
 		c("worldToLocal:" + local);
@@ -85,10 +85,10 @@ export class Subject extends
 		//*/
 	}
 	
-	onClickUp(worldPoint) {
+	onClickUp(worldPoint) { // {V}
 	}
 	
-	onClick(worldPoint) {
+	onClick(worldPoint) { // {V}
 		this.#onClickFn?.(worldPoint);
 	}
 	
@@ -98,9 +98,12 @@ export class Subject extends
 	
 	isHit(worldPoint) {
 		if ( ! this.#isClickable ) {
-			// TOFIX why isClickable affects result?
 			return false;
 		}
+		return this.isHere(worldPoint);
+	}
+	
+	isHere(worldPoint) {
 		const local = this.worldToLocal(worldPoint);
 		const rect = this.getLocalRect();
 		return rect.isContains(local);

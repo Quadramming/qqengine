@@ -43,8 +43,25 @@ export class Text extends Subject.Subject {
 		this._hidden = true;
 	}
 	
-	setAlpha(a) {
-		this._alpha = a;
+	font(f) { // {F}
+		if ( f !== undefined ) {
+			this._font = f;
+		}
+		return this._font;
+	}
+	
+	color(c) { // {F}
+		if ( c !== undefined ) {
+			this._color = c;
+		}
+		return this._color;
+	}
+	
+	alpha(a) { // {F}
+		if ( a !== undefined ) {
+			this._alpha = a;
+		}
+		return this._alpha;
 	}
 	
 	draw(ctxWrap) {

@@ -23,7 +23,8 @@ export class Application {
 	//================================================================
 	
 	#fpsCounter = new FpsCounter(); // Fps counter
-	#time = new Time();
+	#time = new Time(); // Time handler
+	#startSeizure; // First seizure to start
 	
 	constructor(config = {}) {
 		QQ.setApp(this);
@@ -44,6 +45,7 @@ export class Application {
 		if ( config.showFps ) {
 			this.#fpsCounter.toggleShow();
 		}
+		this.#startSeizure = config.startSeizure ?? 'Main';
 		this._game = QQ.useDefault(config.game, null);
 		this._loadResources(this._init);
 	}
@@ -58,7 +60,7 @@ export class Application {
 			this._game.init(this);
 		}
 		this._seizures.init();
-		this._seizures.set('Main');
+		this._seizures.set(this.#startSeizure);
 		this.initMouseEvents();
 		this._gameLoop();
 	}
@@ -176,7 +178,7 @@ export class Application {
 		} else if ( this._imgs.has(imageSource) ) {
 			return this.getImgByUrl(this._imgs.get(imageSource));
 		} else {
-			throw new Error('Application.getImg(): no such img');
+			throw new Error(`Application.getImg(): no such img ${imageSource}`);
 		}
 	}
 	

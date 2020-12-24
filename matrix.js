@@ -133,3 +133,22 @@ export function mul(A, B) {
 	}
 	return result;
 }
+
+export function iterate(array, fn) { // Iter 2D array
+	for ( const [y, line] of array.entries() ) {
+		for ( const [x, value] of line.entries() ) {
+			fn(value, x, y);
+		}
+	}
+} // void
+
+export function rotate(array) {
+	const rotated = [];
+	array.forEach(function (a, i, A) {
+		a.forEach(function (b, j) {
+			rotated[j] = rotated[j] || [];
+			rotated[j][A.length-i-1] = b;
+		});
+	});
+	return rotated;
+}

@@ -4,3 +4,4 @@ export * from './PIVOT.js';
 export * from './FN.js';
 export * from './SOLID.js';
 export * from './TOUCH.js';
+export * from './ORDER.js';

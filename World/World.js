@@ -140,7 +140,7 @@ export class World {
 	
 	getAllSubjectsAtPoint(point) {
 		return this.getSubjects((subj) => {
-			return subj instanceof Subject.Subject && subj.isHit(point);
+			return subj instanceof Subject.Subject && subj.isHere(point);
 		});
 	}
 	
