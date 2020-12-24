@@ -5,7 +5,7 @@ import {Rect, Scale, Size} from '../primitives/index.js';
 
 export class Text extends Subject.Subject {
 	
-	constructor(options) {
+	constructor(options = {}) {
 		super(options);
 		this._originalString = '';
 		this._strings = '';
@@ -64,7 +64,7 @@ export class Text extends Subject.Subject {
 		ctxWrap.transform(
 			Matrix.mul(this.getMatrix(), Matrix.getScale(this._textScale))
 		);
-		const localRect = this._getLocalRect();
+		const localRect = this.getLocalRect();
 		const rectScaled = new Rect(
 			localRect.x() / this._textScale.x(),
 			localRect.y() / this._textScale.y(),

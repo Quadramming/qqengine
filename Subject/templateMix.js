@@ -6,7 +6,7 @@ function fixOptions(options) {
 export function nameMix(base) {
 	return class nameMix extends base {
 		
-		constructor(options) {
+		constructor(options = {}) {
 			fixOptions(options);
 			super(options);
 			this.#reset(options);
@@ -16,7 +16,7 @@ export function nameMix(base) {
 			super.destructor();
 		}
 		
-		reset(options) {
+		reset(options = {}) {
 			fixOptions(options);
 			super.reset(options);
 			this.#reset(options);

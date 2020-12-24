@@ -91,9 +91,9 @@ export class World {
 	//================================================================
 	
 	background(background) {
-		if ( typeof background === 'string' ) {
+		if ( typeof background === 'string' && background[0] === '#') {
 			this._background = background;
-		} else if ( background instanceof Image ) {
+		} else if ( typeof background === 'string' ) {
 			this._background = new Subject.Sprite({
 				image: background
 			});

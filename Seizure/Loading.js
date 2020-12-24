@@ -8,7 +8,7 @@ class Loading extends Seizure {
 	
 	constructor(options) {
 		super(options);
-		this.setBackground('black');
+		this.setBackground('#000000');
 	}
 	
 }

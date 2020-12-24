@@ -3,19 +3,17 @@
 import * as QQ from '../QQ.js';
 import * as Seizure from '../Seizure/index.js';
 
-function reset(options = {}) { // Reset
-	this.parent(QQ.useDefault(options.parent, null));
-	this._subjects = [];
-} // void
-
 export function RelationshipMix(base) { // Mix Relationship to base
 	return class RelationshipMix extends base {
 		
-		constructor(options) {
+		#parent;
+		#subjects;
+		
+		constructor(options = {}) {
 			super(options);
-			this._parent = undefined;
-			this._subjects = undefined;
-			reset.call(this, options);
+			this.#parent = undefined;
+			this.#subjects = undefined;
+			this.#reset(options);
 		}
 		
 		destructor() {
@@ -23,9 +21,14 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			this.cleanRelationships();
 		}
 		
-		reset(options) {
+		reset(options = {}) {
 			super.reset(options);
-			reset.call(this, options);
+			this.#reset(options);
+		}
+		
+		#reset(options) {
+			this.parent(options.parent ?? null);
+			this.#subjects = [];
 		}
 		
 		parent(parent) {
@@ -33,18 +36,18 @@ export function RelationshipMix(base) { // Mix Relationship to base
 				if ( parent instanceof Seizure.Seizure ) {
 					parent = parent.getWorld().getStage();
 				}
-				this._parent = parent;
+				this.#parent = parent;
 			}
-			return this._parent;
+			return this.#parent;
 		}
 		
 		subjects() {
-			return this._subjects;
+			return this.#subjects;
 		}
 		
 		addSubject(subj) {
 			subj.parent(this);
-			this._subjects.push(subj);
+			this.#subjects.push(subj);
 		}
 		
 		deleteSubjects() {
@@ -54,9 +57,9 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		}
 		
 		stealSubject(subj) {
-			const i = this._subjects.indexOf(subj);
+			const i = this.#subjects.indexOf(subj);
 			if ( i >= 0 ) {
-				let what = this._subjects.splice(i, 1).pop();
+				let what = this.#subjects.splice(i, 1).pop();
 				what.parent(null);
 				return what;
 			}
@@ -64,9 +67,9 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		}
 		
 		spliceSubject(subj) {
-			const i = this._subjects.indexOf(subj);
+			const i = this.#subjects.indexOf(subj);
 			if ( i >= 0 ) {
-				this._subjects.splice(i, 1);
+				this.#subjects.splice(i, 1);
 			}
 		}
 		
@@ -74,10 +77,8 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			this.forSubjects(
 				subj => subj.cleanRelationships()
 			);
-			if ( this._parent ) {
-				this._parent.spliceSubject(this);
-			}
-			reset.call(this);
+			this.#parent?.spliceSubject(this);
+			this.#reset({});
 		}
 		
 		forAllSubjects(fn) {
@@ -90,7 +91,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		forSubjects(fn) {
 			// destructor() in fn can change subjects array
 			// that why copy first
-			for ( const subj of [...this._subjects] ) {
+			for ( const subj of [...this.#subjects] ) {
 				fn(subj);
 			}
 		}

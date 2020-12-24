@@ -54,7 +54,6 @@ export function SpriteMix(base) {
 		}
 		
 		draw(context) {
-			super.draw(context);
 			// TOFIX need cache
 			const spriteSize = this._sprite.getFrameSize();
 			const size = this.size();
@@ -80,6 +79,7 @@ export function SpriteMix(base) {
 			if ( changeAlpha ) {
 				ctx.globalAlpha = 1;
 			}
+			super.draw(context);
 		}
 		
 		setStaticSprite() {

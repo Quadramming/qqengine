@@ -102,7 +102,7 @@ export class Subject extends
 			return false;
 		}
 		const local = this.worldToLocal(worldPoint);
-		const rect = this.#getLocalRect();
+		const rect = this.getLocalRect();
 		return rect.isContains(local);
 	}
 	
@@ -115,7 +115,7 @@ export class Subject extends
 	}
 	
 	getBounds() {
-		const rect = this.#getLocalRect();
+		const rect = this.getLocalRect();
 		return Rect.fromPoints(
 			this.localToWorld(new Point(rect.left(), rect.top())),
 			this.localToWorld(new Point(rect.right(), rect.top())),
@@ -143,7 +143,7 @@ export class Subject extends
 		this.scale().set(1, 1);
 	}
 	
-	#getLocalRect() {
+	getLocalRect() {
 		return new Rect(
 			-this.size().x()*this.anchor().x(),
 			-this.size().y()*this.anchor().y(),
@@ -170,7 +170,7 @@ export class Subject extends
 	
 	#drawLocalBorder(context) {
 		context.transform( this.getMatrix() );
-		const rect = this.#getLocalRect();
+		const rect = this.getLocalRect();
 		const ctx = context.get();
 		ctx.beginPath();
 		ctx.rect(
@@ -198,7 +198,7 @@ export class Subject extends
 	#drawBgColor(context) {
 		context.transform( this.getMatrix() );
 		const ctx = context.get();
-		const rect = this.#getLocalRect();
+		const rect = this.getLocalRect();
 		ctx.fillStyle = this.#bgColor;
 		ctx.fillRect(rect.x(), rect.y(), rect.w(), rect.h());
 	}

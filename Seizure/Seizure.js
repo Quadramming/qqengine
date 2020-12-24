@@ -103,20 +103,20 @@ export class SeizureBase {
 	//================================================================
 	
 	onClickDown(point, pointer) {
-		const isHit = this._doWithSubjIfHits(point, subj => {
+		const isHit = this.#doWithSubjIfHits(point, subj => {
 			subj.onClickDown(point, pointer);
 		});
 		return isHit;
 	}
 	
 	onClickUp(point, pointer) {
-		return this._doWithSubjIfHits(point, subj => {
+		return this.#doWithSubjIfHits(point, subj => {
 			subj.onClickUp(point, pointer);
 		});
 	}
 	
 	onClick(point, pointer) {
-		return this._doWithSubjIfHits(point, subj => {
+		return this.#doWithSubjIfHits(point, subj => {
 			subj.onClick(point, pointer);
 		});
 	}
@@ -136,7 +136,7 @@ export class SeizureBase {
 		return this._world.getSubjectAtPoint(worldPoint);
 	}
 	
-	_doWithSubjIfHits(point, fn) {
+	#doWithSubjIfHits(point, fn) {
 		const hited = this._world.getSubjectAtPoint(point);
 		if ( hited ) {
 			fn(hited);
