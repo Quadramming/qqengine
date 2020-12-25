@@ -9,16 +9,23 @@ import {ClipSprite} from '../Sprite/ClipSprite.js';
 import {AnimateSprite} from '../Sprite/AnimateSprite.js';
 import {LayersSprite} from '../Sprite/LayersSprite.js';
 import {TileSprite} from '../Sprite/TileSprite.js';
+import {WCanvas} from '../WCanvas.js';
 import {Point, Size, Scale} from '../primitives/index.js';
 
 // TOFIX: maybe some how split diffrent sprites?
 
 function fixOptions(options) {
-	if ( ! options.image ) {
-		const memoryImage = QQ.makeCanvas( new Size(1, 1) );
-		memoryImage.ctx.fillStyle = 'red';
-		memoryImage.ctx.fillRect(0, 0, 1, 1);
-		options.image = memoryImage.cvs;
+	if ( options.imageId && options.image ) {
+		throw Error('Soulde be only one image source');
+	} if ( options.imageId ) {
+		options.image = QQ.APP.getImageById(options.imageId);
+	} else if ( options.image ) {
+		check(typeof options.image !== 'string', 'image should has content');
+	} else { // No any source
+		const wcanvas = new WCanvas(1, 1);
+		wcanvas.fillStyle('#FF0000');
+		wcanvas.fillRect(0, 0, 1, 1);
+		options.image = wcanvas.getCanvas();
 	}
 }
 
@@ -26,7 +33,8 @@ export function SpriteMix(base) {
 	return class SpriteMix extends base {
 		
 		#drawOrder;
-		#image;
+		#imageId; // Image ID
+		#image; // Image content (HTMLImageElement, Canvas)
 		#sprite;
 		#alpha;
 		
@@ -34,6 +42,12 @@ export function SpriteMix(base) {
 			fixOptions(options);
 			super(options);
 			this.#reset(options);
+		}
+		
+		destructor() { // {O}
+			this.#image = null;
+			this.#sprite.destructor();
+			this.#sprite = null;
 		}
 		
 		reset(options = {}) {
@@ -44,17 +58,10 @@ export function SpriteMix(base) {
 		
 		#reset(options) {
 			this.#drawOrder = options.spriteDrawOrder ?? ORDER.FIRST;
+			this.#imageId = options.imageId ?? null;
 			this.#image = options.image;
-			this.#sprite = null;
 			this.#alpha = options.alpha ?? 1;
-			this.setStaticSprite();
-		}
-		
-		setSpriteImage(image) {
-			this.#image = image;
-			this.#sprite.setImage(
-				QQ.APP.getImg(image)
-			);
+			this.setStaticSprite(); // Will set this.#sprite
 		}
 		
 		getSprite() {
@@ -65,12 +72,12 @@ export function SpriteMix(base) {
 			return this.#image;
 		}
 		
-		tick(delta) {
+		tick(delta) { // {O}
 			super.tick(delta);
 			this.#sprite.tick(delta);
 		}
 		
-		draw(context) {
+		draw(context) { // {O}
 			if ( this.#drawOrder === ORDER.FIRST ) {
 				this.#draw(context);
 			}
@@ -109,75 +116,54 @@ export function SpriteMix(base) {
 		}
 		
 		setStaticSprite() {
-			this.#sprite = new Sprite(
-				QQ.APP.getImg(this.#image)
-			);
-		}
-		
-		setClipSprite(...args) {
-			this.#sprite = new ClipSprite(
-				QQ.APP.getImg(this.#image),
-				...args
-			);
+			this.#sprite = new Sprite(this.#image);
 		}
 		
 		setAnimateSprite(...args) {
-			this.#sprite = new AnimateSprite(
-				QQ.APP.getImg(this.#image),
-				...args
-			);
+			this.#sprite = new AnimateSprite(this.#image, ...args);
 		}
 		
 		setClipSprite(...args) {
-			this.#sprite = new ClipSprite(
-				QQ.APP.getImg(this.#image),
-				...args
-			);
+			this.#sprite = new ClipSprite(this.#image, ...args);
 		}
 		
 		setLayersSprite(...args) {
-			this.#sprite = new LayersSprite(
-				QQ.APP.getImg(this.#image),
-				...args
-			);
+			this.#sprite = new LayersSprite(this.#image, ...args);
 		}
 		
 		setTileSprite(...args) {
-			this.#sprite = new TileSprite(
-				QQ.APP.getImg(this.#image),
-				...args
-			);
+			this.#sprite = new TileSprite(this.#image, ...args);
 		}
 		
 		setTileOffset(offset) {
-			if ( this.#sprite instanceof TileSprite ) {
-				this.#sprite.setTileOffset(offset);
-			} else {
-				throw new Error('Wrong sprite type');
-			}
+			check(this.#sprite instanceof TileSprite);
+			this.#sprite.setTileOffset(offset);
 		}
 		
 		setTileSize(size) {
-			if ( this.#sprite instanceof TileSprite ) {
-				this.#sprite.setTileSize(size);
-			} else {
-				throw new Error('Wrong sprite type');
-			}
+			check(this.#sprite instanceof TileSprite);
+			this.#sprite.setTileSize(size);
 		}
 		
 		addSpriteLayer(layer) {
-			if ( this.#sprite instanceof LayersSprite ) {
-				this.#sprite.addLayer(layer);
-			} else {
-				throw new Error('Wrong sprite type');
-			}
+			check(this.#sprite instanceof LayersSprite);
+			this.#sprite.addLayer(layer);
 		}
 		
-		alpha(alpha) {
+		alpha(alpha) { // {F}
 			if ( alpha !== undefined ) {
 				this.#alpha = alpha;
 			}
 			return this.#alpha;
+		}
+		
+		imageId(imageId) { // {F} Set image by id to sprite
+			if ( imageId !== undefined ) {
+				this.#imageId = imageId;
+				this.#image = QQ.APP.getImageById(imageId);
+				this.#sprite.image(this.#image);
+			}
+			return this.#imageId;
 		}
 		
 	}

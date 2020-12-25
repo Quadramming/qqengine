@@ -2,42 +2,38 @@ import {Point, Size} from '../primitives/index.js';
 
 export class Sprite {
 	
+	#alpha = 1; // Alpha channel
+	#isDisabled = false; // Can hide show
+	_image = null; // Image content
+	_size = new Size(); // Size of image
+	
 	constructor(image) {
-		this._alpha = 1;
-		this._isDisabled = false;
+		this.image(image);
+	}
+	
+	destructor() { // {V}
 		this._image = null;
-		this._size = new Size();
-		
-		this.setImage(image);
+		this._size = null;
 	}
 	
-	alpha(alpha) {
-		if ( alpha !== undefined ) {
-			this._alpha = alpha;
+	tick(delta) { // {V}
+	}
+	
+	draw(ctx) {
+		if ( ! this.#isDisabled ) {
+			this.drawImage(ctx);
 		}
-		return this._alpha;
 	}
 	
-	disabled(disabled) {
-		if ( disabled !== undefined ) {
-			this._isDisabled = disabled;
-		}
-		return this._isDisabled;
+	drawImage(ctx) { // {V}
+		ctx.drawImage(
+			this._image,
+			0, 0,
+			this._size.w(), this._size.h()
+		);
 	}
 	
-	size() {
-		return this._size;
-	}
-	
-	setImage(image) {
-		if ( image.complete === false ) {
-			alert('Sprite: image must be completed');
-		}
-		this._image = image;
-		this._size.set(this._image.width, this._image.height);
-	}
-	
-	getFrameSize() {
+	getSize() {
 		return this._size;
 	}
 	
@@ -45,22 +41,31 @@ export class Sprite {
 		return this._size.getRatio();
 	}
 	
-	tick(delta) {
-		// Override me
+	getFrameSize() { // {V}
+		return this._size;
 	}
 	
-	draw(ctx) {
-		if ( ! this._isDisabled ) {
-			this.drawImage(ctx);
+	alpha(alpha) { // {F}
+		if ( alpha !== undefined ) {
+			this.#alpha = alpha;
 		}
+		return this.#alpha;
 	}
 	
-	drawImage(ctx) {
-		ctx.drawImage(
-			this._image,
-			0, 0,
-			this._size.w(), this._size.h()
-		);
+	disabled(disabled) { // {F}
+		if ( disabled !== undefined ) {
+			this.#isDisabled = disabled;
+		}
+		return this.#isDisabled;
+	}
+	
+	image(image) { // {F}
+		if ( image !== undefined ) {
+			check(image.complete !== false, 'Sprite: image must be completed');
+			this._image = image;
+			this._size.set(image.width, image.height);
+		}
+		return this._image;
 	}
 	
 }

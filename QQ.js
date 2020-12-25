@@ -2,7 +2,9 @@ import {Application} from './Application.js';
 
 globalThis.a = a;
 globalThis.c = c;
+globalThis.d = d;
 globalThis.check = check;
+globalThis.dump = dump;
 
 export function a(message) {
 	alert(message);
@@ -22,9 +24,13 @@ export function c(variable, ...rest) {
 	console.log(output);
 }
 
-export function check(condition, message = 'Error') {
-	if (!condition) {
-		throw new Error(message);
+export function d() {
+	debugger;
+}
+
+export function check(condition, message = 'Check error') {
+	if ( ! condition ) {
+		throw Error(message);
 	}
 }
 
@@ -37,9 +43,7 @@ export function dump(...rest) {
 export let APP = null;
 
 export function setApp(app) {
-	if ( APP !== null ) {
-		throw new Error('Only one application can be created');
-	}
+	check( ! APP, 'Only one application can be created');
 	APP = app;
 }
 
@@ -53,7 +57,7 @@ export function start(cfg) {
 }
 
 export function initApp(cfg) {
-	while ( document.body.firstChild ) {
+	while ( document.body.firstChild ) { // Clean all on page (Font loaders)
 		document.body.removeChild( document.body.firstChild );
 	}
 	new Application(cfg);
@@ -119,7 +123,7 @@ export function setTransform(ctx, matrix) {
 }
 
 export function cleanTransform(ctx) {
-	ctx.setTransform(1,0,0,1,0,0);
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 export function getPixel(data, size, point) {
@@ -133,20 +137,11 @@ export function getPixel(data, size, point) {
 		b: data[index+2],
 		a: data[index+3]
 	};
-}
+} // null | {r, g, b, a}
 
 export function getPixelQuick(data, size, x, y) {
 	const index = (y*size.x() + x)*4;
 	return (data[index+3]<<24) + (data[index]<<16) + (data[index+1]<<8) + data[index+2];
-}
-
-export function makeCanvas(size) {
-	const cvs = document.createElement('canvas');
-	cvs.width = size.w();
-	cvs.height = size.h();
-	const ctx = cvs.getContext('2d');
-	const getPixels = () => ctx.getImageData(0, 0, size.w(), size.h()).data;
-	return {cvs, size, ctx, getPixels};
 }
 
 export function getLast(array) {

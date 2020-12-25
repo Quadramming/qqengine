@@ -24,6 +24,11 @@ export class Subject extends
 		this.#reset(options);
 	}
 	
+	destructor() { // {O}
+		this.#tickFn = null; // Tick function
+		this.#onClickFn = null; // On click function
+	}
+	
 	reset(options = {}) {
 		super.reset(options);
 		this.#reset(options);

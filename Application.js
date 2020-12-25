@@ -7,9 +7,9 @@ import {Point, Size} from './primitives/index.js';
 import {FpsCounter} from './FpsCounter.js';
 import {Time} from './Time.js';
 import {Storage} from './Storage.js';
-import {ImgManager} from './ImgManager.js';
+import {ImageManager} from './ImageManager.js';
 import {Sound} from './Sound.js';
-import {Canvas} from './Canvas.js';
+import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
 import {Sprite} from './Sprite/index.js';
 import {S} from './style/index.js';
@@ -18,69 +18,59 @@ import {Input} from './Input.js';
 
 export class Application {
 	
-	//================================================================
-	// Constructor
-	//================================================================
-	
 	#fpsCounter = new FpsCounter(); // Fps counter
 	#time = new Time(); // Time handler
-	#startSeizure; // First seizure to start
+	#startSeizure = 'Main'; // First seizure to start
+	#storage = new Storage();
+	#onResizeHandler = new OnResizeHandler();
+	#seizures = new Seizure.Manager();
+	#sound = new Sound();
+	#game = null;
+	#imageManager;
+	#canvas; // Global canvas
 	
 	constructor(config = {}) {
 		QQ.setApp(this);
-		this._onResizeHandler = new OnResizeHandler();
-		this._canvas = new Canvas('QQ.Application.Canvas',
+		this.#canvas = new GCanvas('QQ.Application.Canvas',
 			config.size,
 			config.maximize
 		);
+		
 		this._inputQueue = [];
-		this._input = new Input(this._canvas.getCanvas(), this._inputQueue);
-		this._storage = new Storage();
-		this._imgManager = new ImgManager();
-		this._seizures = new Seizure.Manager(this);
-		this._imgs = new Map(config.images);
-		this._canvases = new Map();
-		this._sound = new Sound();
-		this._sound.set(config.sounds);
-		if ( config.showFps ) {
-			this.#fpsCounter.toggleShow();
-		}
-		this.#startSeizure = config.startSeizure ?? 'Main';
-		this._game = QQ.useDefault(config.game, null);
-		this._loadResources(this._init);
+		this._input = new Input(this.#canvas.getCanvas(), this._inputQueue);
+		
+		
+		this.#imageManager = new ImageManager(config.images);
+		this.#sound.set(config.sounds);
+		this.#loadResources(() => this.#init());
+		
+		if ( config.game ) this.#game = config.game;
+		if ( config.showFps ) this.#fpsCounter.toggleShow();
+		if ( config.startSeizure ) this.#startSeizure = config.startSeizure;
 	}
 	
-	_init() {
+	#init() {
 		window.document.addEventListener(
 			'backbutton',
-			this.onBackButton.bind(this),
-			false
+			() => this.onBackButton(),
+			false // useCapture
 		);
-		if ( this._game ) {
-			this._game.init(this);
-		}
-		this._seizures.init();
-		this._seizures.set(this.#startSeizure);
+		this.#game?.init?.(this);
+		this.#seizures.init();
+		this.#seizures.set(this.#startSeizure);
 		this.initMouseEvents();
-		this._gameLoop();
+		this.#gameLoop(0);
 	}
 	
 	//================================================================
 	// Load resources
 	//================================================================
 	
-	_loadResources(cb) {
-		for ( const [name, url] of this._imgs ) {
-			this._imgManager.get(url);
-		}
-		this._waitResources(cb);
-	}
-	
-	_waitResources(cb) {
-		if ( this._imgManager.isAllReady() ) {
-			cb.call(this);
+	#loadResources(cb) {
+		if ( this.#imageManager.isReady() ) {
+			cb();
 		} else {
-			setTimeout(this._waitResources.bind(this, cb), 10);
+			setTimeout(() => this.#loadResources(cb), 100);
 		}
 	}
 	
@@ -115,8 +105,8 @@ export class Application {
 	}
 	
 	_getPointerOnCanvas() {
-		const rect = this._canvas.getSizeRect();
-		const canvasOffset = this._canvas.getCanvasOffset();
+		const rect = this.#canvas.getSizeRect();
+		const canvasOffset = this.#canvas.getCanvasOffset();
 		const mouse = this._mouse.getPoint();
 		const point = new Point(
 			mouse.x() - canvasOffset.x(),
@@ -132,32 +122,32 @@ export class Application {
 	// Storage
 	//================================================================
 	
-	storage(key, value) {
-		return this._storage.store(key, value);
-	}
+	storage(key, value) { // {F} Proxy to storage
+		return this.#storage.store(key, value);
+	} // string | null
 	
 	//================================================================
 	// Seizure
 	//================================================================
 	
 	setSz(...args) {
-		this._seizures.set(...args);
+		this.#seizures.set(...args);
 	}
 	
 	pause() {
-		this._seizures.popUp('Pause');
+		this.#seizures.popUp('Pause');
 	}
 	
 	popUp(sz, input) {
-		this._seizures.set(sz, input, true);
+		this.#seizures.set(sz, input, true);
 	}
 	
 	closePopUp() {
-		this._seizures.closePopUp();
+		this.#seizures.closePopUp();
 	}
 	
 	getActiveSz() {
-		return this._seizures.getActive();
+		return this.#seizures.getActive();
 	}
 	
 	//================================================================
@@ -165,51 +155,43 @@ export class Application {
 	//================================================================
 	
 	getResolution() {
-		return new Size(this._canvas.getWidth(), this._canvas.getHeight());
-	}
+		return new Size(this.#canvas.getWidth(), this.#canvas.getHeight());
+	} // new Size
 	
-	getImgByUrl(imgSrc) {
-		return this._imgManager.get(imgSrc);
-	}
+	getImageByUrl(imageUrl) {
+		return this.#imageManager.getImageByUrl(imageUrl);
+	} // HTMLImageElement
 	
-	getImg(imageSource) {
-		if ( imageSource instanceof HTMLCanvasElement ) {
-			return imageSource;
-		} else if ( this._imgs.has(imageSource) ) {
-			return this.getImgByUrl(this._imgs.get(imageSource));
-		} else {
-			throw new Error(`Application.getImg(): no such img ${imageSource}`);
-		}
-	}
+	getImageById(imageId) {
+		return this.#imageManager.getImageById(imageId);
+	} // HTMLImageElement
 	
-	createSprite(img) {
-		return new Sprite( this.getImg(img) );
-	}
+	getImageCanvasByUrl(imageUrl) {
+		return this.#imageManager.getImageCanvasByUrl(imageUrl);
+	} // WCanvas
 	
-	getImgCanvas(image) {
-		image = this.getImg(image);
-		const map = this._canvases;
-		if ( ! map.get(image.src) ) {
-			const canvas = QQ.makeCanvas( new Size(
-				image.width,
-				image.height
-			));
-			canvas.ctx.drawImage(image, 0, 0);
-			map.set(image.src, canvas);
-		}
-		return map.get(image.src);
-	}
+	getImageCanvasById(imageId) {
+		return this.#imageManager.getImageCanvasById(imageId);
+	} // WCanvas
+	
+	createSpriteById(imageId) {
+		return new Sprite( this.#imageManager.getImageById(imageId) );
+	} // new Sprite
+	
+	createSpriteByUrl(imageUrl) {
+		return new Sprite( this.#imageManager.get(imageUrl) );
+	} // new Sprite
 	
 	//================================================================
 	// Common
 	//================================================================
 	
 	getHtmlCanvas() {
-		return this._canvas.getCanvas();
+		return this.#canvas.getCanvas();
 	}
 	
 	getHtmlContext() {
-		return this._canvas.getContext();
+		return this.#canvas.getContext();
 	}
 	
 	showFpsDetails() {
@@ -217,14 +199,18 @@ export class Application {
 	}
 	
 	onBackButton() {
-		if ( this._seizures.countActives() > 0 ) {
-			const sz = this._seizures.getActive();
+		if ( this.#seizures.countActives() > 0 ) {
+			const sz = this.#seizures.getActive();
 			sz.onBackButton();
 		}
 	}
 	
 	addOnResize(fn) {
-		this._onResizeHandler.add(fn);
+		this.#onResizeHandler.add(fn);
+	}
+	
+	removeOnResize(fn) {
+		this.#onResizeHandler.remove(fn);
 	}
 	
 	//================================================================
@@ -232,35 +218,36 @@ export class Application {
 	//================================================================
 	
 	playSound(str, options) {
-		this._sound.play(str);
+		this.#sound.play(str);
 	}
 	
 	controlSound(str, options) {
-		this._sound.control(str, options);
+		this.#sound.control(str, options);
 	}
 	
 	//================================================================
 	// Game loop
 	//================================================================
 	
-	_gameLoop(time) {
-		this._tick();
-		this._draw();
-		requestAnimationFrame((time) => this._gameLoop(time));
-		// setTimeout(() => this._gameLoop(1), 1); // Debug
+	#gameLoop(time) {
+		this.#tick();
+		this.#draw();
+		requestAnimationFrame( time => this.#gameLoop(time));
+		//setTimeout(() => this.#gameLoop(1), 1); // Debug
 	}
 	
-	_tick() {
+	#tick() {
 		const delta = this.#time.update();
 		this.#fpsCounter.tick(delta);
-		this._seizures.forActive( sz => sz.handleInput(this._inputQueue) );
-		this._seizures.tick(delta);
+		this.#game?.tick?.(delta);
+		this.#seizures.forActive( sz => sz.handleInput(this._inputQueue) );
+		this.#seizures.tick(delta);
 	}
 	
-	_draw() {
-		this._seizures.draw();
-		//this._canvas.drawBorder();
-		this.#fpsCounter.show(this._canvas.getContext());
+	#draw() {
+		this.#seizures.draw();
+		//this.#canvas.drawBorder();
+		this.#fpsCounter.show(this.#canvas.getContext());
 	}
 	
 }

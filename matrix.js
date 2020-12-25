@@ -134,7 +134,7 @@ export function mul(A, B) {
 	return result;
 }
 
-export function iterate(array, fn) { // Iter 2D array
+export function iterate(array, fn) { // Iterate 2D array
 	for ( const [y, line] of array.entries() ) {
 		for ( const [x, value] of line.entries() ) {
 			fn(value, x, y);

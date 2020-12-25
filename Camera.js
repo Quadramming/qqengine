@@ -9,26 +9,28 @@ import {Point, Size, Rect, Scale} from './primitives/index.js';
 export class Camera {
 	
 	#isDrawAxis = false; // Is draw axis
-	
-	//================================================================
-	// Constructor
-	//================================================================
+	#canvas;
+	#world;
+	#onResizeFn;
 	
 	constructor(canvas, world) {
-		this._canvas = canvas;
-		this._world = world;
+		this.#canvas = canvas;
+		this.#world = world;
 		this._mainMatrix = null;
 		this._clip = null;
 		this._initViewSize = new Size(20, 20);
 		this._viewSize = this._initViewSize.clone();
 		this._position = new Point(0, 0);
 		this._ctx = canvas.getContext('2d');
-		this._calcMainMatrix();
-		QQ.APP.addOnResize( () => this._calcMainMatrix() );
+		this.#calcMainMatrix();
+		this.#onResizeFn = () => this.#calcMainMatrix();
+		QQ.APP.addOnResize( this.#onResizeFn );
 	}
 	
 	destructor() {
-		this._world = null;
+		QQ.APP.removeOnResize( this.#onResizeFn );
+		this.#canvas = null;
+		this.#world = null;
 	}
 	
 	//================================================================
@@ -36,19 +38,19 @@ export class Camera {
 	//================================================================
 	
 	widthToPercent(x) {
-		return x / (this._canvas.width/100);
+		return x / (this.#canvas.width/100);
 	}
 	
 	heightToPercent(y) {
-		return y / (this._canvas.height/100);
+		return y / (this.#canvas.height/100);
 	}
 	
 	widthPercentsToPx(x) {
-		return this._canvas.width*x / 100;
+		return this.#canvas.width*x / 100;
 	}
 	
 	heightPercentsToPx(y) {
-		return this._canvas.height*y / 100;
+		return this.#canvas.height*y / 100;
 	}
 	
 	//================================================================
@@ -115,7 +117,7 @@ export class Camera {
 			transform: this.setTransform.bind(this),
 			cleanTransform: () => QQ.setTransform(this._ctx, this._mainMatrix)
 		};
-		const bg = this._world.background();
+		const bg = this.#world.background();
 		if ( bg && typeof bg === 'string' ) {
 			this.#cleanCanvas(bg);
 		} else if ( bg && bg instanceof Subject.Subject ) {
@@ -125,7 +127,7 @@ export class Camera {
 		if ( this.#isDrawAxis ) {
 			this.#drawAxis();
 		}
-		this._world.getStage().draw(ctxObj);
+		this.#world.getStage().draw(ctxObj);
 	}
 	
 	tick() {
@@ -174,9 +176,9 @@ export class Camera {
 		}
 	}
 	
-	_calcMainMatrix() {
+	#calcMainMatrix() {
 		// Prepare
-		const canvasRatio = (this._canvas.width / this._canvas.height);
+		const canvasRatio = (this.#canvas.width / this.#canvas.height);
 		this._viewSize = Maths.increaseToRatio(
 			this._initViewSize,
 			canvasRatio
@@ -196,12 +198,12 @@ export class Camera {
 		
 		// Screen settings
 		M = Matrix.mul( Matrix.getScale(new Scale(
-				this._canvas.width / this._viewSize.width(),
-				this._canvas.height / this._viewSize.height()
+				this.#canvas.width / this._viewSize.width(),
+				this.#canvas.height / this._viewSize.height()
 		)), M);
 		M = Matrix.mul(Matrix.getMove(new Point(
-			this._canvas.width / 2,
-			this._canvas.height / 2
+			this.#canvas.width / 2,
+			this.#canvas.height / 2
 		)), M);
 		
 		this._mainMatrix = M;
@@ -239,7 +241,7 @@ export class Camera {
 	#cleanCanvas(color = 'gray') {
 		QQ.cleanTransform(this._ctx);
 		this._ctx.fillStyle = color;
-		this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+		this._ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
 	}
 	
 }

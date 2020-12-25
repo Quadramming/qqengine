@@ -1,7 +1,9 @@
 import * as QQ from './QQ.js';
 import {Size, Point, Rect} from './primitives/index.js';
 
-export class Canvas {
+export class GCanvas {
+	
+	#onResizeFn;
 	
 	constructor(id, size, maximize = false) {
 		this._fullscreen = (size === undefined);
@@ -19,13 +21,14 @@ export class Canvas {
 		
 		this._calcSize();
 		document.body.appendChild(this._canvas);
-		QQ.APP.addOnResize( () => this._calcSize() );
+		this.#onResizeFn = () => this._calcSize();
+		QQ.APP.addOnResize( this.#onResizeFn );
 	}
 	
 	destructor() {
+		QQ.APP.removeOnResize( this.#onResizeFn );
 		document.body.removeChild(this._canvas);
 	}
-	
 	
 	getSizeRect() {
 		return new Rect(0, 0,

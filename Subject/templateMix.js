@@ -6,6 +6,8 @@ function fixOptions(options) {
 export function nameMix(base) {
 	return class nameMix extends base {
 		
+		#variable; // no "=". Should be in reset
+		
 		constructor(options = {}) {
 			fixOptions(options);
 			super(options);

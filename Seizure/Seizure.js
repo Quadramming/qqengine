@@ -21,7 +21,7 @@ export class SeizureBase {
 	constructor(options) {
 		this._szManager = options.szManager;
 		this._hud = new FakeHud();
-		this._parent = QQ.useDefault(options.parent, null);
+		this._parent = options.parent ?? null;
 		this._hudRedirect = false;
 		options.isPauseable = QQ.useDefault(options.isPauseable, false);
 		const worldInput = {

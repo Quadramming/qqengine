@@ -1,21 +1,29 @@
 export class OnResizeHandler {
 	
+	#actions = [];
+	#listnerFn = () => this.#onResize();
+	
 	constructor() {
-		this._actions = [];
-		this._listnerFn = () => this._onResize();
-		window.addEventListener('resize', this._listnerFn);
+		window.addEventListener('resize', this.#listnerFn);
 	}
 	
 	destructor() {
-		window.removeEventListener('resize', this._listnerFn);
+		window.removeEventListener('resize', this.#listnerFn);
 	}
 	
 	add(fn) {
-		this._actions.push(fn);
+		this.#actions.push(fn);
 	}
 	
-	_onResize() {
-		for ( const action of this._actions ) {
+	remove(fn) {
+		const index = this.#actions.indexOf(fn);
+		if ( index >= 0 ) {
+			this.#actions.splice(index, 1);
+		}
+	}
+	
+	#onResize() {
+		for ( const action of this.#actions ) {
 			action();
 		}
 	}

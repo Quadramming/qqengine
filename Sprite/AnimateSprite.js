@@ -1,36 +1,53 @@
+// QQDOC
+
 import {Sprite} from './Sprite.js';
-import {Point} from '../primitives/index.js';
+import {Size} from '../primitives/index.js';
 
 export class AnimateSprite extends Sprite {
 	
+	#fps;
+	#tpf; // Time per frame
+	#frames;
+	#frameSize = new Size();
+	#frameWidth;
+	#currentFrame;
+	#passedTime;
+	
 	constructor(image, frames, fps) {
 		super(image);
-		this._fps = fps;
-		this._tpf = 1 / this._fps; // Time per frame
-		this._frames = frames;
-		this._passedTime = 0;
-		this._currentFrame = 0;
-		this._frameWidth = this._size.x()/this._frames;
+		this.#fps = fps;
+		this.#tpf = 1 / fps;
+		this.#frames = frames;
+		this.#passedTime = 0;
+		this.#currentFrame = 0;
+		this.#frameWidth = this._size.x() / frames;
+		this.#frameSize.set(this.#frameWidth, this._size.y());
+	}
+	
+	destructor() { // {O}
+		super.destructor();
+		this.#frameSize = null;
 	}
 	
 	getFrameSize() {
-		return new Point(this._frameWidth, this._size.y());
+		return this.#frameSize;
 	}
 	
-	drawImage(ctx) {
-		const passedFrames = Math.round(this._passedTime / this._tpf);
-		this._currentFrame = passedFrames % this._frames;
+	tick(delta) { // {O}
+		super.tick(delta);
+		this.#passedTime += delta;
+	}
+	
+	drawImage(ctx) { // {O}
+		const passedFrames = Math.round(this.#passedTime / this.#tpf);
+		this.#currentFrame = passedFrames % this.#frames;
 		ctx.drawImage(
 			this._image,
-			this._frameWidth * this._currentFrame, 0,
-			this._frameWidth, this._size.h(),
+			this.#frameWidth * this.#currentFrame, 0,
+			this.#frameWidth, this._size.h(),
 			0, 0,
-			this._frameWidth, this._size.h()
+			this.#frameWidth, this._size.h()
 		);
-	}
-	
-	tick(delta) {
-		this._passedTime += delta;
 	}
 	
 }

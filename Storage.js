@@ -8,11 +8,19 @@ export class Storage {
 		this.#storage = window.localStorage;
 	}
 	
-	remove(key) {
-		this.#storage.removeItem(key);
-	} // void
+	store(key, value) { // {F}
+		check(typeof value === 'string', 'Value should be string');
+		if ( value !== undefined ) {
+			this.set(key, value);
+		}
+		return this.get(key);
+	} // string | null
 	
-	set(key, value) {
+	get(key) {
+		return this.#storage.getItem(key);
+	} // string | null
+	
+	set(key, value) { // Set value to key. Use 'null' to remove
 		if ( value === null ) {
 			this.remove(key);
 		} else {
@@ -20,15 +28,8 @@ export class Storage {
 		}
 	} // void
 	
-	get(key) {
-		return this.#storage.getItem(key);
-	} // string | null
-	
-	store(key, value) { // {F}
-		if ( value !== undefined ) {
-			this.set(key, value);
-		}
-		return this.get(key);
-	} // string | null
+	remove(key) {
+		this.#storage.removeItem(key);
+	} // void
 	
 }
