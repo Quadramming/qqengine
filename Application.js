@@ -11,7 +11,6 @@ import {ImageManager} from './ImageManager.js';
 import {Sound} from './Sound.js';
 import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
-import {Sprite} from './Sprite/index.js';
 import {S} from './style/index.js';
 import {T} from './i18n.js';
 import {Input} from './Input.js';
@@ -173,13 +172,9 @@ export class Application {
 		return this.#imageManager.getImageCanvasById(imageId);
 	} // WCanvas
 	
-	createSpriteById(imageId) {
-		return new Sprite( this.#imageManager.getImageById(imageId) );
-	} // new Sprite
-	
-	createSpriteByUrl(imageUrl) {
-		return new Sprite( this.#imageManager.get(imageUrl) );
-	} // new Sprite
+	getImageManager() {
+		return this.#imageManager;
+	}
 	
 	//================================================================
 	// Common

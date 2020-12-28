@@ -16,6 +16,13 @@ export class XY {
 		this.set(x, y)
 	}
 	
+	static NIL() {
+		if ( this.NIL_VALUE === undefined ) {
+			this.NIL_VALUE = this.ZERO();
+		}
+		return this.NIL_VALUE;
+	}
+	
 	static ZERO() {
 		return this.spawn(0, 0);
 	} // new XY

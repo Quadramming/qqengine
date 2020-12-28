@@ -168,5 +168,14 @@ export function SpriteMix(base) {
 			return this.#imageId;
 		}
 		
+		image(image) {
+			if ( image !== undefined ) {
+				this.#imageId = null;
+				this.#image = image;
+				this.#sprite.image(this.#image);
+			}
+			return this.#image;
+		}
+		
 	}
 }

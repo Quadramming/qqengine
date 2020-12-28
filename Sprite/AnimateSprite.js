@@ -33,10 +33,10 @@ export class AnimateSprite extends Sprite {
 		this.#passedTime += delta;
 	}
 	
-	drawImage(ctx) { // {O}
+	drawImage(context) { // {O}
 		const passedFrames = Math.round(this.#passedTime / this.#tpf);
 		this.#currentFrame = passedFrames % this.#frames;
-		ctx.drawImage(
+		context.drawImage(
 			this._image,
 			this.#frameWidth * this.#currentFrame, 0,
 			this.#frameWidth, this._size.h(),

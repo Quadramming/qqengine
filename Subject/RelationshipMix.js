@@ -24,9 +24,16 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			this.#reset(options);
 		}
 		
-		#reset(options = {}) {
+		#reset(options) {
 			this.parent(options.parent ?? null);
 			this.#subjects = [];
+			if ( options.selfAdd === true ) {
+				this.parent().addSubject(this);
+			}
+		}
+		
+		getWorld() {
+			return this.parent().getWorld();
 		}
 		
 		parent(parent) { // {F}
@@ -76,7 +83,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 				subj => subj.cleanRelationships()
 			);
 			this.#parent?.spliceSubject(this);
-			this.#reset();
+			this.#reset({});
 		}
 		
 		forAllSubjects(fn) {

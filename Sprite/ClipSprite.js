@@ -21,8 +21,8 @@ export class ClipSprite extends Sprite {
 		}
 	}
 	
-	drawImage(ctx) { // {O}
-		ctx.drawImage(
+	drawImage(context) { // {O}
+		context.drawImage(
 			this._image,
 			this.#clip.x(), this.#clip.y(),
 			this.#clip.w(), this.#clip.h(),

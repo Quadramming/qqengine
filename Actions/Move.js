@@ -5,23 +5,23 @@ import {Idle} from './Idle.js';
 
 export class Move extends Idle {
 	
+	#from;
+	#to;
+	#distance;
+	
 	constructor(options) {
 		super(options);
-		this._from = options.from.clone();
-		this._to = options.to.clone();
-		this._distance = new Point(
-			this._to.x() - this._from.x(),
-			this._to.y() - this._from.y()
-		);
+		this.#from = options.from.clone();
+		this.#to = options.to.clone();
+		this.#distance = Point.subtraction(this.#to, this.#from);
 	}
 	
 	tick(delta) {
 		super.tick(delta);
-		this._subj.position(new Point(
-			this._from.x() + this._progress * this._distance.x(),
-			this._from.y() + this._progress * this._distance.y()
-		));
-		c(this._progress);
+		this._subj.position().set(
+			this.#from.x() + this._progress * this.#distance.x(),
+			this.#from.y() + this._progress * this.#distance.y()
+		);
 	}
 	
 }

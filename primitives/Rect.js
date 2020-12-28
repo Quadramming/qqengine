@@ -73,7 +73,7 @@ export class Rect {
 		if ( ! this.isIntersect(rect) ) {
 			return false;
 		}
-		const value = new Point(0, 0);
+		const value = Point.ZERO();
 		let x1 = this.right() - rect.left();
 		let x2 = this.left() - rect.right();
 		if ( maths.getSign(x1) !== maths.getSign(x2) ) {

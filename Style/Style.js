@@ -1,3 +1,5 @@
+//QQDOC
+
 import * as QQ from '../QQ.js';
 
 const map = new Map();
@@ -10,7 +12,7 @@ function merge(...objs) {
 
 function apply(...styles) {
 	let result = {
-		_usedStyles: []
+		usedStyles: []
 	};
 	for ( const style of styles ) {
 		if ( style === undefined ) {
@@ -21,8 +23,8 @@ function apply(...styles) {
 			if ( style.includes(' ') ) {
 				result = apply(result, style.split(' '));
 			} else {
-				if ( ! result._usedStyles.includes(style) ) {
-					result._usedStyles.push(style);
+				if ( ! result.usedStyles.includes(style) ) {
+					result.usedStyles.push(style);
 					result = apply(result, map.get(style));
 				}
 			}
@@ -42,7 +44,7 @@ export function set(name, obj) {
 
 export function use(...styles) {
 	const result = apply('default', styles);
-	delete result._usedStyles;
+	delete result.usedStyles;
 	return result;
 }
 

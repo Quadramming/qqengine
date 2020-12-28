@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as style from './style.js';
 import {styles} from '../../styles/styles.js';
 
@@ -9,9 +11,7 @@ function add(out, text) {
 	text = text.trim();
 	text = text.split(' ');
 	for ( const name of text ) {
-		if ( name ) {
-			out.push(name);
-		}
+		if ( name ) out.push(name);
 	}
 }
 

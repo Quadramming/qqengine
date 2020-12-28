@@ -31,6 +31,11 @@ export class Actionable extends
 {
 }
 
+export class ActionableGroup extends
+	QQ.mixins(ActionableMix, Group)
+{
+}
+
 export class Solid extends
 	QQ.mixins(SolidMix, Sprite)
 {

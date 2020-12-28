@@ -1,6 +1,7 @@
 // QQDOC
 
 import {Point, Size} from '../primitives/index.js';
+import {WCanvas} from '../WCanvas.js';
 
 export class Sprite {
 	
@@ -16,14 +17,17 @@ export class Sprite {
 	tick(delta) { // {V}
 	}
 	
-	draw(ctx) {
+	draw(context) {
+		if ( context instanceof WCanvas ) {
+			context = context.getContext();
+		}
 		if ( ! this.#isDisabled ) {
-			this.drawImage(ctx);
+			this.drawImage(context);
 		}
 	}
 	
-	drawImage(ctx) { // {V}
-		ctx.drawImage(
+	drawImage(context) { // {V}
+		context.drawImage(
 			this._image,
 			0, 0,
 			this._size.w(), this._size.h()
@@ -57,6 +61,9 @@ export class Sprite {
 	}
 	
 	image(image) { // {F}
+		if ( image instanceof WCanvas ) {
+			image = image.getCanvas();
+		}
 		if ( image !== undefined ) {
 			check(image.complete !== false, 'Sprite: image must be completed');
 			this._image = image;

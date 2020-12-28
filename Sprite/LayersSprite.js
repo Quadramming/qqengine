@@ -33,9 +33,9 @@ export class LayersSprite extends Sprite {
 		}
 	}
 	
-	drawImage(ctx) { // {O}
+	drawImage(context) { // {O}
 		for ( const layer of this.#layers ) {
-			ctx.drawImage(
+			context.drawImage(
 				this._image,
 				layer.x(), layer.y(),
 				layer.width(), layer.height(),

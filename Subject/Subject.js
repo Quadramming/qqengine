@@ -47,9 +47,6 @@ export class Subject extends
 			this.#isClickable = options.isClickable ?? false;
 		}
 		options.init?.call(this);
-		if ( options.selfAdd === true ) {
-			this.parent().addSubject(this);
-		}
 	}
 	
 	tick(delta) {
@@ -116,11 +113,7 @@ export class Subject extends
 	}
 	
 	getWorldPosition() {
-		return this.localToWorld(Point.ZERO());
-	}
-	
-	getWorld() {
-		return this.parent().getWorld();
+		return this.localToWorld(Point.NIL());
 	}
 	
 	getBounds() {

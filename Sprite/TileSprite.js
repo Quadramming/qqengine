@@ -29,16 +29,16 @@ export class TileSprite extends Sprite {
 		);
 	}
 	
-	drawImage(ctx) { // {O}
-		ctx.save(); // save for resetore
-		ctx.beginPath(); // clean before clip
-		ctx.rect(0, 0, this._size.w(), this._size.h());
-		ctx.clip();
+	drawImage(context) { // {O}
+		context.save(); // save for resetore
+		context.beginPath(); // clean before clip
+		context.rect(0, 0, this._size.w(), this._size.h());
+		context.clip();
 		let coveredX = this.#tileOffset.x();
 		let coveredY = this.#tileOffset.y();
 		while ( coveredY < this._size.h() ) {
 			while ( coveredX < this._size.w() ) {
-				ctx.drawImage(
+				context.drawImage(
 					this._image,
 					coveredX, coveredY,
 					this.#tileSize.w(), this.#tileSize.h()
@@ -48,8 +48,8 @@ export class TileSprite extends Sprite {
 			coveredX = this.#tileOffset.x();
 			coveredY += this.#tileSize.h();
 		}
-		ctx.beginPath(); // reset path
-		ctx.restore(); // reset clip
+		context.beginPath(); // reset path
+		context.restore(); // reset clip
 	}
 	
 }
