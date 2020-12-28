@@ -39,11 +39,14 @@ export class FpsCounter {
 				if ( slot > 60 ) {
 					ctx.fillStyle = 'white';
 				}
-				if ( slot < 25 ) {
+				if ( slot < 50 ) {
 					ctx.fillStyle = 'yellow';
 				}
-				if ( slot < 15 ) {
+				if ( slot < 40 ) {
 					ctx.fillStyle = 'red';
+				}
+				if ( slot < 15 ) {
+					ctx.fillStyle = 'black';
 				}
 				ctx.fillText( slot + ' FPS', 20, 20 + 15*i);
 				++i;

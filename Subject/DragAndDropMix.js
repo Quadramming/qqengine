@@ -57,15 +57,22 @@ export function DragAndDropMix(base) {
 			this.#isActive = true;
 		}
 		
-		onDragUp(point) { // {V}
+		onDragUp(worldPoint) { // {V}
 			// May be to onClickDown
 		}
 		
-		onDragMove(point) { // {V}
+		onDragMove(worldPoint, offset) { // {V}
+			const position = Point.addition(this.position(), offset);
+			this.#clampToClip(position);
+			this.position(position);
 		}
 		
-		onDragDrop(point) { // {V}
+		onDragDrop(worldPoint) { // {V}
 			// May be to onClickUp
+		}
+		
+		getDragStart() {
+			return this.#start;
 		}
 		
 		tick(delta) { // {O}
@@ -76,10 +83,7 @@ export function DragAndDropMix(base) {
 					this.worldToLocal(pointer.getWorldPoint()),
 					this.#start
 				);
-				const position = Point.addition(this.position(), offset);
-				this.#clampToClip(position);
-				this.position(position);
-				this.onDragMove();
+				this.onDragMove(pointer.getWorldPoint(), offset);
 			} else if ( this.#isActive ) {
 				this.#isActive = false;
 				this.#pointer = null;

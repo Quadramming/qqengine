@@ -34,7 +34,7 @@ export function SpriteMix(base) {
 		
 		#drawOrder;
 		#imageId; // Image ID
-		#image; // Image content (HTMLImageElement, Canvas)
+		#image; // Image content (HTMLImageElement, Canvas, ...)
 		#sprite;
 		#alpha;
 		
@@ -44,13 +44,7 @@ export function SpriteMix(base) {
 			this.#reset(options);
 		}
 		
-		destructor() { // {O}
-			this.#image = null;
-			this.#sprite.destructor();
-			this.#sprite = null;
-		}
-		
-		reset(options = {}) {
+		reset(options = {}) { // {O}
 			fixOptions(options);
 			super.reset(options);
 			this.#reset(options);
@@ -115,6 +109,8 @@ export function SpriteMix(base) {
 			}
 		}
 		
+		// set Sprites
+		
 		setStaticSprite() {
 			this.#sprite = new Sprite(this.#image);
 		}
@@ -127,9 +123,18 @@ export function SpriteMix(base) {
 			this.#sprite = new ClipSprite(this.#image, ...args);
 		}
 		
+		// LayerSprite
+		
 		setLayersSprite(...args) {
 			this.#sprite = new LayersSprite(this.#image, ...args);
 		}
+		
+		addSpriteLayer(layer) {
+			check(this.#sprite instanceof LayersSprite);
+			this.#sprite.addLayer(layer);
+		}
+		
+		// TileSprite
 		
 		setTileSprite(...args) {
 			this.#sprite = new TileSprite(this.#image, ...args);
@@ -145,10 +150,7 @@ export function SpriteMix(base) {
 			this.#sprite.setTileSize(size);
 		}
 		
-		addSpriteLayer(layer) {
-			check(this.#sprite instanceof LayersSprite);
-			this.#sprite.addLayer(layer);
-		}
+		// Fields
 		
 		alpha(alpha) { // {F}
 			if ( alpha !== undefined ) {

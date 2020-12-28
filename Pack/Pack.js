@@ -3,85 +3,84 @@
 import * as QQ from '../QQ.js';
 import {Point, Size, Scale, Anchor} from '../primitives/index.js';
 
-function reset(options = {}) {
-	this._size.copyOrSet(options.size, 1, 1);
-	this._scale.copyOrSet(options.scale, 1, 1);
-	this._position.copyOrSet(options.position, 0, 0);
-	this._anchor.copyOrSet(options.anchor, 0.5, 0.5);
-	this._angle = options.angle ?? 0;
-	this._z = options.z ?? 0;
-}
-
 export class Pack {
 	
-	_size = new Size;
-	_scale = new Scale;
-	_position = new Point;
-	_anchor = new Anchor;
-	_angle;
-	_z;
+	#size = new Size();
+	#scale = new Scale();
+	#position = new Point();
+	#anchor = new Anchor();
+	#angle;
+	#z;
 	
-	constructor(options) {
-		reset.call(this, options);
+	constructor(options = {}) {
+		this.#reset(options);
 	}
 	
-	destructor() {
+	destructor() { // {V}
 	}
 	
-	reset(options) {
-		reset.call(this, options);
+	reset(options = {}) { // {V}
+		this.#reset(options);
+	}
+	
+	#reset(options) {
+		this.#size.copyOrSet(options.size, 1, 1);
+		this.#scale.copyOrSet(options.scale, 1, 1);
+		this.#position.copyOrSet(options.position, 0, 0);
+		this.#anchor.copyOrSet(options.anchor, 0.5, 0.5);
+		this.#angle = options.angle ?? 0;
+		this.#z = options.z ?? 0;
 	}
 	
 	size(size) { // {F}
 		if ( size !== undefined ) {
-			this._size.copy(size);
-			this._packUpdate();
+			this.#size.copy(size);
+			this.packUpdate();
 		}
-		return this._size;
+		return this.#size;
 	}
 	
 	scale(scale) { // {F}
 		if ( scale !== undefined ) {
-			this._scale.copy(scale);
-			this._packUpdate();
+			this.#scale.copy(scale);
+			this.packUpdate();
 		}
-		return this._scale;
+		return this.#scale;
 	}
 	
 	position(position) { // {F}
 		if ( position !== undefined ) {
-			this._position.copy(position);
-			this._packUpdate();
+			this.#position.copy(position);
+			this.packUpdate();
 		}
-		return this._position;
+		return this.#position;
 	}
 	
 	anchor(anchor) { // {F}
 		if ( anchor !== undefined ) {
-			this._anchor.copy(anchor);
-			this._packUpdate();
+			this.#anchor.copy(anchor);
+			this.packUpdate();
 		}
-		return this._anchor;
+		return this.#anchor;
 	}
 	
 	angle(angle) { // {F}
 		if ( angle !== undefined ) {
-			this._angle = angle;
-			this._packUpdate();
+			this.#angle = angle;
+			this.packUpdate();
 		}
-		return this._angle;
+		return this.#angle;
 	}
 	
 	z(z) { // {F}
 		if ( z !== undefined ) {
-			this._z = z;
-			this._packUpdate();
+			this.#z = z;
+			this.packUpdate();
 		}
-		return this._z;
+		return this.#z;
 	}
 	
-	_packUpdate() {
-		// Override me
+	packUpdate() { // {V}
 	}
 	
 }

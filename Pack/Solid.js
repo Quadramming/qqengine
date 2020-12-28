@@ -1,54 +1,57 @@
+// QQDOC
+
 import {Pack} from './Pack.js';
 import {Point, Size, Rect, Offset} from '../primitives/index.js';
-import * as CONST from '../CONST/index.js';
+import {SOLID} from '../CONST/index.js';
 import * as QQ from '../QQ.js';
-
-function reset(options = {}) {
-	this._offset.copyOrSet(options.offset, 0, 0);
-	this._getBasis = QQ.useDefault(options.getBasis, null);
-	this._type = QQ.useDefault(options.type, CONST.SOLID.STATIC);
-	this._weight = QQ.useDefault(options.weight, 1);
-}
 
 export class Solid extends Pack {
 	
+	#offset = new Offset();
+	#getBasis;
+	#type;
+	#weight;
+
 	constructor(options) {
 		super(options);
-		this._offset = new Offset;
-		this._getBasis = undefined;
-		this._type = undefined;
-		this._weight = undefined;
-		reset.call(this, options);
+		this.#reset(options);
 	}
 	
-	reset(options) {
+	reset(options) { // {O}
 		super.reset(options);
-		reset.call(this, options);
+		this.#reset(options);
 	}
 	
-	position(position) { // override
-		if ( this._getBasis ) {
-			const basis = this._getBasis().clone();
-			basis.add(this._offset);
+	#reset(options) {
+		this.#offset.copyOrSet(options.offset, 0, 0);
+		this.#getBasis = options.getBasis ?? null;
+		this.#type = options.type ?? SOLID.STATIC;
+		this.#weight = options.weight ?? 1;
+	}
+	
+	position(position) { // {O}
+		if ( this.#getBasis ) {
+			const basis = this.#getBasis().clone();
+			basis.add(this.#offset);
 			return basis;
 		}
 		return super.position(position);
 	}
 	
-	weight(weight) {
+	weight(weight) { // {F}
 		if ( weight !== undefined ) {
-			this._weight = weight;
-			this._packUpdate();
+			this.#weight = weight;
+			this.packUpdate();
 		}
-		return this._weight;
+		return this.#weight;
 	}
 	
-	type(type) {
+	type(type) { // {F}
 		if ( type !== undefined ) {
-			this._type = type;
-			this._packUpdate();
+			this.#type = type;
+			this.packUpdate();
 		}
-		return this._type;
+		return this.#type;
 	}
 	
 	rect() {
@@ -61,6 +64,6 @@ export class Solid extends Pack {
 			size.w(),
 			size.h()
 		);
-	}
+	} // new Rect
 	
 }

@@ -1,7 +1,7 @@
+// QQDOC
+
 import {Sprite} from './Sprite.js';
 import {Rect} from '../primitives/index.js';
-
-// TOFIX? avoid real pixels
 
 export class ClipSprite extends Sprite {
 	
@@ -21,12 +21,7 @@ export class ClipSprite extends Sprite {
 		}
 	}
 	
-	destructor() { // {O}
-		super.destructor();
-		this.#clip = null;
-	}
-	
-	drawImage(ctx) {
+	drawImage(ctx) { // {O}
 		ctx.drawImage(
 			this._image,
 			this.#clip.x(), this.#clip.y(),

@@ -141,8 +141,8 @@ export class Text extends Subject.Subject {
 	
 	_calculate(ctx) {
 		const size = this._measureText(ctx);
-		const w = this._size.w() / size.w();
-		const h = this._size.h() / size.h();
+		const w = this.size().w() / size.w();
+		const h = this.size().h() / size.h();
 		this._textScale.set(Math.min(w, h, 1));
 	}
 	

@@ -38,8 +38,8 @@ export class SeizureBase {
 			this._world = new World.World(worldInput);
 		}
 		this.camera = new Camera(
-			QQ.APP.getHtmlCanvas(),
-			this._world
+			this._world,
+			QQ.APP.getHtmlCanvas()
 		);
 		this._cameraFollow = null;
 	}

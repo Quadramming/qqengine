@@ -24,12 +24,7 @@ export class AnimateSprite extends Sprite {
 		this.#frameSize.set(this.#frameWidth, this._size.y());
 	}
 	
-	destructor() { // {O}
-		super.destructor();
-		this.#frameSize = null;
-	}
-	
-	getFrameSize() {
+	getFrameSize() { // {O}
 		return this.#frameSize;
 	}
 	

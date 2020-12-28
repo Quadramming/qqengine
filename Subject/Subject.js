@@ -25,6 +25,7 @@ export class Subject extends
 	}
 	
 	destructor() { // {O}
+		super.destructor();
 		this.#tickFn = null; // Tick function
 		this.#onClickFn = null; // On click function
 	}

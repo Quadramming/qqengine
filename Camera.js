@@ -8,29 +8,27 @@ import {Point, Size, Rect, Scale} from './primitives/index.js';
 
 export class Camera {
 	
-	#isDrawAxis = false; // Is draw axis
-	#canvas;
 	#world;
-	#onResizeFn;
+	#canvas;
+	#context;
+	#mainMatrix;
+	#initViewSize = new Size(20, 20);
+	#viewSize = this.#initViewSize.clone();
+	#position = new Point(0, 0);
+	#clip = null;
+	#onResizeFn = () => this.#calcMainMatrix();
+	#isDrawAxis = false; // Is draw axis
 	
-	constructor(canvas, world) {
-		this.#canvas = canvas;
+	constructor(world, canvas) {
 		this.#world = world;
-		this._mainMatrix = null;
-		this._clip = null;
-		this._initViewSize = new Size(20, 20);
-		this._viewSize = this._initViewSize.clone();
-		this._position = new Point(0, 0);
-		this._ctx = canvas.getContext('2d');
+		this.#canvas = canvas;
+		this.#context = canvas.getContext('2d');
 		this.#calcMainMatrix();
-		this.#onResizeFn = () => this.#calcMainMatrix();
 		QQ.APP.addOnResize( this.#onResizeFn );
 	}
 	
 	destructor() {
 		QQ.APP.removeOnResize( this.#onResizeFn );
-		this.#canvas = null;
-		this.#world = null;
 	}
 	
 	//================================================================
@@ -58,45 +56,53 @@ export class Camera {
 	//================================================================
 	
 	getViewSize() {
-		return this._viewSize;
+		return this.#viewSize;
 	}
 	
 	getViewRect() {
 		return new Rect(
-			this._position.x() - this._viewSize.w()/2,
-			this._position.y() - this._viewSize.h()/2,
-			this._viewSize.w(),
-			this._viewSize.h()
+			this.#position.x() - this.#viewSize.w()/2,
+			this.#position.y() - this.#viewSize.h()/2,
+			this.#viewSize.w(),
+			this.#viewSize.h()
 		);
 	}
 	
 	getPosition() {
-		return this._position;
+		return this.#position;
 	}
 	
 	addPosition(offset) {
-		this._position.translate(offset);
-		this._calcMainMatrix();
+		this.#position.translate(offset);
+		this.#calcMainMatrix();
 	}
 	
 	addView(addition) {
-		this._initViewSize.add(addition);
-		this._calcMainMatrix();
+		this.#initViewSize.add(addition);
+		this.#calcMainMatrix();
 	}
 	
 	setPosition(point) {
-		this._position = point;
-		this._calcMainMatrix();
+		this.#position = point;
+		this.#calcMainMatrix();
 	}
 	
 	setClip(rect) {
-		this._clip.copy(rect);
-		this._calcMainMatrix();
+		if ( rect instanceof Rect ) {
+			if ( clip ) {
+				this.#clip.copy(rect);
+			} else {
+				this.#clip = rect.clone();
+			}
+		} else {
+			this.#clip = null;
+		}
+		this.#calcMainMatrix();
 	}
 	
 	setView(size) {
-		this._initViewSize.copy(size);
-		this._calcMainMatrix();
+		this.#initViewSize.copy(size);
+		this.#calcMainMatrix();
 	}
 	
 	//================================================================
@@ -105,52 +111,52 @@ export class Camera {
 	
 	getWorldFromScreen(point) {
 		const M = Matrix.mul(
-			Matrix.inverse(this._mainMatrix),
+			Matrix.inverse(this.#mainMatrix),
 			[[point.x()],[point.y()],[1]]
 		);
 		return new Point(M[0][0], M[1][0]);
 	}
 	
 	draw() {
-		const ctxObj = {
-			get: () => this._ctx,
-			transform: this.setTransform.bind(this),
-			cleanTransform: () => QQ.setTransform(this._ctx, this._mainMatrix)
+		const contextWrapper = {
+			get: () => this.#context,
+			transform: (matrix, context) => this.setTransform(matrix, context),
+			cleanTransform: () => QQ.setTransform(this.#context, this.#mainMatrix)
 		};
 		const bg = this.#world.background();
 		if ( bg && typeof bg === 'string' ) {
 			this.#cleanCanvas(bg);
 		} else if ( bg && bg instanceof Subject.Subject ) {
 			bg.fitInRect(this.getViewRect());
-			bg.draw(ctxObj);
+			bg.draw(contextWrapper);
 		}
 		if ( this.#isDrawAxis ) {
 			this.#drawAxis();
 		}
-		this.#world.getStage().draw(ctxObj);
+		this.#world.getStage().draw(contextWrapper);
 	}
 	
 	tick() {
 	}
 	
 	drawRect(rect) {
-		QQ.setTransform(this._ctx, this._mainMatrix);
-		this._ctx.beginPath();
-		this._ctx.rect(
+		QQ.setTransform(this.#context, this.#mainMatrix);
+		this.#context.beginPath();
+		this.#context.rect(
 			rect.x(),
 			rect.y(),
 			rect.width(),
 			rect.height()
 		);
-		this._ctx.lineWidth = 1;
-		this._ctx.strokeStyle = '#00FFFF';
-		this._ctx.stroke();
+		this.#context.lineWidth = 1;
+		this.#context.strokeStyle = '#00FFFF';
+		this.#context.stroke();
 	}
 	
-	setTransform(matrix, ctx = this._ctx) {
+	setTransform(matrix, context = this.#context) {
 		QQ.setTransform(
-			ctx,
-			Matrix.mul(this._mainMatrix, matrix)
+			context,
+			Matrix.mul(this.#mainMatrix, matrix)
 		);
 	}
 	
@@ -159,19 +165,19 @@ export class Camera {
 	//================================================================
 	
 	
-	_fixClip() {
-		if ( this._clip !== null ) {
-			if ( this._position.x() > this._clip.right() ) {
-				this._position.x( this._clip.right() );
+	#fixClip() {
+		if ( this.#clip !== null ) {
+			if ( this.#position.x() > this.#clip.right() ) {
+				this.#position.x( this.#clip.right() );
 			}
-			if ( this._position.x() < this._clip.left() ) {
-				this._position.x( this._clip.left() );
+			if ( this.#position.x() < this.#clip.left() ) {
+				this.#position.x( this.#clip.left() );
 			}
-			if ( this._position.y() < this._clip.top() ) {
-				this._position.y( this._clip.top() );
+			if ( this.#position.y() < this.#clip.top() ) {
+				this.#position.y( this.#clip.top() );
 			}
-			if ( this._position.y() > this._clip.bottom() ) {
-				this._position.y( this._clip.bottom() );
+			if ( this.#position.y() > this.#clip.bottom() ) {
+				this.#position.y( this.#clip.bottom() );
 			}
 		}
 	}
@@ -179,34 +185,34 @@ export class Camera {
 	#calcMainMatrix() {
 		// Prepare
 		const canvasRatio = (this.#canvas.width / this.#canvas.height);
-		this._viewSize = Maths.increaseToRatio(
-			this._initViewSize,
+		this.#viewSize = Maths.increaseToRatio(
+			this.#initViewSize,
 			canvasRatio
 		);
-		this._fixClip();
+		this.#fixClip();
 		
 		// Camera settings
-		/*
+		/* DEBUG EXAMPLE
 		let M = Matrix.getReflect();
-		M = Matrix.mul(Matrix.getScale(new Scale(2, 2)), M);
+		M = Matrix.mul(Matrix.getScale(new Scale(1, 1)), M);
 		M = Matrix.mul(Matrix.getRotate(0.1), M);
-		M = Matrix.mul(Matrix.getMove(this._position), M);
+		M = Matrix.mul(Matrix.getMove(this.#position), M);
 		M = Matrix.inverse(M);
-		*/
+		//*/
 		// Or simple
-		let M = Matrix.getMove( this._position.cloneInverted() );
+		let M = Matrix.getMove( this.#position.cloneInverted() );
 		
 		// Screen settings
 		M = Matrix.mul( Matrix.getScale(new Scale(
-				this.#canvas.width / this._viewSize.width(),
-				this.#canvas.height / this._viewSize.height()
+				this.#canvas.width / this.#viewSize.width(),
+				this.#canvas.height / this.#viewSize.height()
 		)), M);
 		M = Matrix.mul(Matrix.getMove(new Point(
 			this.#canvas.width / 2,
 			this.#canvas.height / 2
 		)), M);
 		
-		this._mainMatrix = M;
+		this.#mainMatrix = M;
 	}
 	
 	toggleDrawAxis() {
@@ -214,34 +220,34 @@ export class Camera {
 	}
 	
 	#drawAxis() {
-		const ctx = this._ctx;
-		QQ.setTransform(ctx, this._mainMatrix);
+		const context = this.#context;
+		QQ.setTransform(context, this.#mainMatrix);
 		for ( let i = -10; i <= 10; i++ ) {
-			ctx.beginPath();
-			ctx.moveTo(-10, i);
-			ctx.lineTo( 10, i);
-			ctx.lineWidth = 0.1;
-			ctx.strokeStyle = '#00ff00';
-			ctx.stroke();
+			context.beginPath();
+			context.moveTo(-10, i);
+			context.lineTo( 10, i);
+			context.lineWidth = 0.1;
+			context.strokeStyle = '#00ff00';
+			context.stroke();
 		}
 		for ( let i = -10; i <= 10; i++ ) {
-			ctx.beginPath();
-			ctx.moveTo(i, -10);
-			ctx.lineTo(i, 10);
-			ctx.lineWidth = 0.1;
-			ctx.strokeStyle = '#00ff00';
-			ctx.stroke();
+			context.beginPath();
+			context.moveTo(i, -10);
+			context.lineTo(i, 10);
+			context.lineWidth = 0.1;
+			context.strokeStyle = '#00ff00';
+			context.stroke();
 		}
-		ctx.fillStyle = "#FF0000";
-		ctx.fillRect(-0.1, -0.1, 0.2, 0.2);
-		ctx.fillStyle = "#0000FF";
-		ctx.fillRect(10, 10, 0.2, 0.2);
+		context.fillStyle = "#FF0000";
+		context.fillRect(-0.1, -0.1, 0.2, 0.2);
+		context.fillStyle = "#0000FF";
+		context.fillRect(10, 10, 0.2, 0.2);
 	}
 	
 	#cleanCanvas(color = 'gray') {
-		QQ.cleanTransform(this._ctx);
-		this._ctx.fillStyle = color;
-		this._ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
+		QQ.cleanTransform(this.#context);
+		this.#context.fillStyle = color;
+		this.#context.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
 	}
 	
 }

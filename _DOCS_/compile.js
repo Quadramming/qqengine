@@ -9,7 +9,8 @@ const reClassPrivateMethod = /^(?<tabs>\s*)(?<method>#[_a-zA-Z0-9]+)\((?<args>.*
 const reMethodFlags = /{(?<flags>[^{]*)}/;
 const reMethodEnd = /^(?<tabs>\s*)} \/\/ (?<end>.*)/;
 const rePrivateField = /^(?<tabs>\s*)(?<field>#[_a-zA-Z0-9]+)(;| )[^\/]*(\/\/ (?<description>.*))?/;
-const rePublicField = /^(?<tabs>\s*)(?<field>[_a-zA-Z0-9]+)(;| )[^\/]*(\/\/ (?<description>.*))?/;
+const reProtectedField = /^(?<tabs>\s*)(?<field>_[_a-zA-Z0-9]+)(;| )[^\/]*(\/\/ (?<description>.*))?/;
+const rePublicField = /^(?<tabs>\s*)(?<field>([a-zA-Z0-9][_a-zA-Z0-9]*))(;| )[^\/]*(\/\/ (?<description>.*))?/;
 
 const reFunction = /^(?<tabs>\s*)(export )?function (?<function>[_a-zA-Z0-9]+)\((?<args>.*?)\) {( \/\/( {[^}]*})?( (?<options>.*))?)?/;
 const reFunctionEnd = /^(?<tabs>\s*)} \/\/ (?<end>.*)/;
@@ -103,6 +104,7 @@ function processFile(lines, module) {
 				staticMethods: [],
 				privateMethods: [],
 				privateFields: [],
+				protectedFields: [],
 				publicFields: [],
 				module: module
 			});
@@ -114,6 +116,13 @@ function processFile(lines, module) {
 				currentClass.privateFields.push({
 					name: privateField.groups.field,
 					description: privateField.groups.description || ''
+				});
+			}
+			const protectedField = line.match(reProtectedField);
+			if ( protectedField ) {
+				currentClass.protectedFields.push({
+					name: protectedField.groups.field,
+					description: protectedField.groups.description || ''
 				});
 			}
 			const publicField = line.match(rePublicField);
@@ -185,6 +194,13 @@ function outputClass(classObj) {
 	if ( classObj.publicFields.length > 0 ) {
 		htm += 'PUBLIC FIELDS <br>';
 		for ( const field of classObj.publicFields ) {
+			htm += `<b>${field.name}</b> <span class='description'>${field.description}</span><br>`;
+		}
+		htm += '<br>';
+	}
+	if ( classObj.protectedFields.length > 0 ) {
+		htm += 'PROTECTED FIELDS <br>';
+		for ( const field of classObj.protectedFields ) {
 			htm += `<b>${field.name}</b> <span class='description'>${field.description}</span><br>`;
 		}
 		htm += '<br>';

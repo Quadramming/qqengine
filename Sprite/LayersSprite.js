@@ -1,32 +1,40 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 import {Sprite} from './Sprite.js';
 import {Point, Rect} from '../primitives/index.js';
 
-// TOFIX avoid real pixels
 export class LayersSprite extends Sprite {
+	
+	#layers = [];
 	
 	constructor(image, layer) {
 		super(image);
-		this._layers = [];
 		this.addLayer(layer);
 	}
 	
-	addLayer(layer) {
+	addLayer(layer) { // Rect or Point (will get previous layer size) as anchors
 		if ( layer instanceof Rect ) {
-			this._layers.push(layer.clone());
+			this.#layers.push(new Rect(
+				this._size.x()*layer.x(),
+				this._size.y()*layer.y(),
+				this._size.x()*layer.w(),
+				this._size.y()*layer.h()
+			));
 		} else if ( layer instanceof Point ) {
-			const previous = QQ.getLast(this._layers);
-			this._layers.push(new Rect(
-				layer.x(), layer.y(),
-				previous.w(), previous.h())
-			);
+			const previous = QQ.getLast(this.#layers);
+			this.#layers.push(new Rect(
+				this._size.x()*layer.x(),
+				this._size.y()*layer.y(),
+				previous.w(), previous.h()
+			));
 		} else {
-			throw new Error('Wrong layer type');
+			throw Error('Wrong layer type');
 		}
 	}
 	
-	drawImage(ctx) {
-		for ( const layer of this._layers ) {
+	drawImage(ctx) { // {O}
+		for ( const layer of this.#layers ) {
 			ctx.drawImage(
 				this._image,
 				layer.x(), layer.y(),

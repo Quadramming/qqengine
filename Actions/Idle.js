@@ -68,7 +68,7 @@ export class Idle {
 		this.onEnd();
 	}
 	
-	tick(delta) {
+	tick(delta) { // {V}
 		this._lasting += delta;
 		if ( this._duration !== null ) {
 			this._progress = this._lasting / this._duration;

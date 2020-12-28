@@ -5,7 +5,7 @@ import {SpriteMix} from './SpriteMix.js';
 import {SolidMix} from './SolidMix.js';
 import {ActionableMix} from './ActionableMix.js';
 import {DragAndDropMix} from './DragAndDropMix.js';
-import {ElasticMix} from './ElasticMix.js';
+import {ElasticDnDMix} from './ElasticDnDMix.js';
 import {Subject} from './Subject.js';
 import {Group} from './Group.js';
 import {Stage} from './Stage.js';
@@ -18,7 +18,7 @@ export {
 	SolidMix,
 	ActionableMix,
 	DragAndDropMix,
-	ElasticMix
+	ElasticDnDMix
 };
 
 export class Sprite extends
@@ -52,7 +52,7 @@ export class DnD extends
 }
 
 export function make(options = {}) { // Create new subject
-	if ( options.image ) {
+	if ( options.image || options.imageId ) {
 		let subj = null;
 		if ( options.isActor === true ) {
 			if ( options.solid ) {

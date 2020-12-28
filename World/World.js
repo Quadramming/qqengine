@@ -13,11 +13,11 @@ export class World {
 		this._seizure = options.seizure;
 		this._background = null;
 		this._deltaAccum = 0;
-		this._maxTicks = QQ.useDefault(options.maxTicks, 1);
+		this._maxTicks = QQ.useDefault(options.maxTicks, 10);
 		this._timeStep = QQ.useDefault(options.timeStep, 0.0166);
 		this._pauseTime = QQ.useDefault(options.pauseTime, 0.5);
 		this._isPauseable = QQ.useDefault(options.isPauseable, false);
-		this._tickType = QQ.useDefault(options.tickType, 'const');
+		this._tickType = QQ.useDefault(options.tickType, 'var');
 		if ( options.stageConstructor ) {
 			this._stage = new options.stageConstructor({
 				isSortByZOnTick: options.isSortByZOnTick,
@@ -95,7 +95,7 @@ export class World {
 			this._background = background;
 		} else if ( typeof background === 'string' ) {
 			this._background = new Subject.Sprite({
-				image: background
+				imageId: background
 			});
 		} else if ( background === null ) {
 			this._background = null;

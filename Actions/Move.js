@@ -1,3 +1,5 @@
+// QQDOC
+
 import {Point} from '../primitives/index.js';
 import {Idle} from './Idle.js';
 

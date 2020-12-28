@@ -7,7 +7,7 @@ export class XY {
 	#x; // X value
 	#y; // Y value
 	
-	constructor(x = 0, y = x) { // Or constructor(vector)
+	constructor(x = NaN, y = x) { // Or constructor(vector)
 		// We need y = x for new XY(NaN);
 		if ( x instanceof Array ) {
 			y = x[1][0];
@@ -82,7 +82,7 @@ export class XY {
 		}
 	} // boolean
 	
-	isNear(xy, epsilon = 0) {
+	isNear(xy, epsilon = 0.001) {
 		if ( xy.hasNaN() || this.hasNaN() ) {
 			return false;
 		}

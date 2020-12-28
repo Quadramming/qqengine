@@ -1,19 +1,16 @@
+// QQDOC
+
 import {Point, Size} from '../primitives/index.js';
 
 export class Sprite {
 	
 	#alpha = 1; // Alpha channel
 	#isDisabled = false; // Can hide show
-	_image = null; // Image content
+	_image; // Image content
 	_size = new Size(); // Size of image
 	
 	constructor(image) {
 		this.image(image);
-	}
-	
-	destructor() { // {V}
-		this._image = null;
-		this._size = null;
 	}
 	
 	tick(delta) { // {V}

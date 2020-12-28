@@ -145,6 +145,7 @@ export function getPixelQuick(data, size, x, y) {
 }
 
 export function getLast(array) {
+	check(array.length > 0, 'Array is empty');
 	return array[array.length-1];
 }
 

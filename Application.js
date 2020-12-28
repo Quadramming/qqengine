@@ -39,7 +39,6 @@ export class Application {
 		this._inputQueue = [];
 		this._input = new Input(this.#canvas.getCanvas(), this._inputQueue);
 		
-		
 		this.#imageManager = new ImageManager(config.images);
 		this.#sound.set(config.sounds);
 		this.#loadResources(() => this.#init());

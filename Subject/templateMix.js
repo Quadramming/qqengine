@@ -14,11 +14,11 @@ export function nameMix(base) {
 			this.#reset(options);
 		}
 		
-		destructor() {
+		destructor() { // {O}
 			super.destructor();
 		}
 		
-		reset(options = {}) {
+		reset(options = {}) { // {O}
 			fixOptions(options);
 			super.reset(options);
 			this.#reset(options);

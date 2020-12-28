@@ -1,3 +1,5 @@
+// QQDOC
+
 import {dictionary as dictionary_RU} from '../language/RU.js';
 
 const language = 'RU';
@@ -8,19 +10,17 @@ if ( language === 'EN' ) {
 } else if ( language === 'RU' ) {
 	dictionary = dictionary_RU;
 } else {
-	throw new Error('Wrong language');
+	throw Error('Wrong language');
 }
 
 export function T(strs, ...substs) {
 	let text = strs[0];
-	for ( const [i] of substs.entries() ) {
-		text += '%v' + strs[i+1];
+	for ( const index of substs.keys() ) {
+		text += '$v' + strs[index+1];
 	}
-	if ( dictionary !== null ) {
-		text = dictionary[text] || text;
-	}
+	text = dictionary?.get(text) ?? text;
 	for ( const v of substs ) {
-		text = text.replace('%v', v);
+		text = text.replace('$v', v); // Replace first
 	}
 	return text;
 }

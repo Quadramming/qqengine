@@ -1,26 +1,31 @@
+// QQDOC
+
 import {Point} from '../primitives/index.js';
 import {Idle} from './Idle.js';
 
 export class WalkTo extends Idle {
 	
+	_to = new Point();
+	#prevPosition;
+	
 	constructor(options) {
 		super(options);
-		this._to = options.to.clone();
-		this._prevPosition = this._subj.position();
+		this._to.copy(options.to);
+		this.#prevPosition = new Point(NaN);
 	}
 	
 	setTarget(to) {
-		this._to = to;
-	}
+		this._to.copy(to);
+	} // void
 	
 	getTarget() {
 		return this._to;
-	}
+	} // subj
 	
-	tick(delta) {
-		if ( this._prevPosition.isEquals(this._subj.position()) ) {
-			c('stop');
+	tick(delta) { // {O}
+		if ( this.#prevPosition.isNear(this._subj.position()) ) {
 			this.finishAction();
+			return;
 		}
 		const walked = this._subj.getSpeed() * delta;
 		const from = this._subj.position();
@@ -33,8 +38,8 @@ export class WalkTo extends Idle {
 		const a = cos * walked;
 		const b = sin * walked;
 		if ( walked < C ) {
+			this.#prevPosition.copy(this._subj.position());
 			this._subj.addPosition(new Point(a, b));
-			this._prevPosition.copy(this._subj.position());
 		} else {
 			this._subj.position(to);
 			this.finishAction();
