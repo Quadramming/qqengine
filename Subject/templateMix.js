@@ -22,11 +22,11 @@ export function nameMix(base) {
 			fixOptions(options);
 			super.reset(options);
 			this.#reset(options);
-		}
+		} // Void
 		
 		#reset(options) {
 			// Do reset
-		}
+		} // Void
 		
 	}
 }

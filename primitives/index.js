@@ -5,3 +5,4 @@ export * from './Scale.js';
 export * from './Size.js';
 export * from './Value.js';
 export * from './Anchor.js';
+export * from './XY.js';

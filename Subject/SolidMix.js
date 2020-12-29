@@ -1,15 +1,32 @@
-import * as QQ from '../QQ.js';
+// QQDOC
+
 import * as Pack from '../Pack/index.js';
-import * as CONST from '../CONST/index.js';
-import {Point, Size, Rect} from '../primitives/index.js';
 
 export function SolidMix(base) {
 	return class SolidMix extends base {
 		
-		constructor(options) {
+		#solid = new Pack.Solid();
+		
+		constructor(options = {}) {
 			super(options);
-			this._solidPack = new Pack.Solid(options.solid);
+			this.#reset(options);
 		}
+		
+		reset(options = {}) { // {O}
+			super.reset(options);
+			this.#reset(options.solid);
+		} // Void
+		
+		#reset(solid) {
+			this.#solid.reset(solid);
+		} // Void
+		
+		solid(solid) { // {F}
+			if ( solid !== undefined ) {
+				this.#solid.reset(solid);
+			}
+			return this.#solid;
+		} // Solid
 		
 		getDistance(solid) {
 			return solid.getSolidPosition().getDistance(this.getSolidPosition());
@@ -22,37 +39,37 @@ export function SolidMix(base) {
 		}
 		
 		getSolidRect() {
-			return this._solidPack.rect();
+			return this.#solid.rect();
 		}
 		
 		getSolidWeight() {
-			return this._solidPack.weight();
+			return this.#solid.weight();
 		}
 		
 		getSolidType() {
-			return this._solidPack.type();
+			return this.#solid.type();
 		}
 		
 		getSolidPosition() {
-			return this._solidPack.position();
+			return this.#solid.position();
 		}
 		
 		isSolid() {
 			return true;
 		}
 		
-		/*
-		draw(ctx) {
-			super.draw(ctx);
-			this._drawSolidBorder(ctx);
-			this._drawSolidCenter(ctx);
+		//*
+		draw(wcontext) {
+			super.draw(wcontext);
+			this.#drawSolidBorder(wcontext);
+			this.#drawSolidCenter(wcontext);
 		}
 		//*/
 		
-		_drawSolidBorder(ctx) {
-			ctx.cleanTransform();
-			const rect = this._solidPack.rect();
-			const context = ctx.get();
+		#drawSolidBorder(wcontext) {
+			wcontext.cleanTransform();
+			const rect = this.#solid.rect();
+			const context = wcontext.get();
 			context.beginPath();
 			context.rect(
 				rect.x(),
@@ -65,10 +82,10 @@ export function SolidMix(base) {
 			context.stroke();
 		}
 		
-		_drawSolidCenter(ctx) {
-			ctx.cleanTransform();
-			const point = this._solidPack.position();;
-			const context = ctx.get();
+		#drawSolidCenter(wcontext) {
+			wcontext.cleanTransform();
+			const point = this.#solid.position();
+			const context = wcontext.get();
 			context.beginPath();
 			context.arc(point.x(), point.y(), 0.1, 0, 2 * Math.PI);
 			context.lineWidth = 0.05;

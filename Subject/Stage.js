@@ -1,24 +1,27 @@
-import {Group} from './Group.js';
+// QQDOC
 
-function reset(options = {}) {
-	this._world = options.world;
-}
+import {Group} from './Group.js';
 
 export class Stage extends Group {
 	
-	constructor(options) {
+	#world;
+	
+	constructor(options = {}) {
 		super(options);
-		this._world = undefined;
-		reset.call(this, options);
+		this.#reset(options);
 	}
 	
-	reset(options) {
+	reset(options = {}) {
 		super.reset(options);
-		reset.call(this, options);
+		this.#reset(options);
+	}
+	
+	#reset(options) {
+		this.#world = options.world;
 	}
 	
 	getWorld() {
-		return this._world;
+		return this.#world;
 	}
 	
 }

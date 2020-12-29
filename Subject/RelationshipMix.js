@@ -45,6 +45,10 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			}
 			return this.#parent;
 		}
+	
+		getFilteredSubjects(condition) {
+			return this.#subjects.filter(condition);
+		}
 		
 		subjects() {
 			return this.#subjects;

@@ -1,9 +1,7 @@
 // QQDOC
 
-import * as QQ from '../QQ.js';
 import * as matrix from '../matrix.js';
 import {Pack} from './Pack.js';
-import {Point, Size, Rect, Offset} from '../primitives/index.js';
 
 export class MatrixCache extends Pack {
 	
@@ -15,20 +13,20 @@ export class MatrixCache extends Pack {
 		this.#reset(options);
 	}
 	
-	reset(options = {}) {
+	reset(options = {}) { // {O}
 		super.reset(options);
 		this.#reset(options);
-	}
+	} // Void
 	
 	#reset(options) {
-	this.#parent = options.parent;
-	if ( this.#parent ) {
-		this.#matrix = this.#parent.calcMatrix();
-	} else {
-		// In case when parent will be set latter
-		this.#matrix = matrix.getIdentity();
-	}
-}
+		this.#parent = options.parent;
+		if ( this.#parent ) {
+			this.#matrix = this.#parent.calcMatrix();
+		} else {
+			// In case when parent will be set latter
+			this.#matrix = matrix.getIdentity();
+		}
+	} // Void
 
 	get() {
 		if ( this.isChanged() ) {
@@ -40,7 +38,7 @@ export class MatrixCache extends Pack {
 			this.angle(this.#parent.angle());
 		}
 		return this.#matrix;
-	}
+	} // Matrix
 	
 	isChanged() {
 		if ( ! this.position().isEquals(this.#parent.position()) ) {
@@ -59,6 +57,6 @@ export class MatrixCache extends Pack {
 			return true;
 		}
 		return false;
-	}
+	} // Boolean
 	
 }

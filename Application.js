@@ -180,11 +180,11 @@ export class Application {
 	// Common
 	//================================================================
 	
-	getHtmlCanvas() {
+	getMainCanvas() {
 		return this.#canvas.getCanvas();
 	}
 	
-	getHtmlContext() {
+	getMainContext() {
 		return this.#canvas.getContext();
 	}
 	

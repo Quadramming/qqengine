@@ -1,7 +1,5 @@
 // QQDOC
 
-import * as QQ from '../QQ.js';
-
 export class Idle {
 	
 	_subj; // Subject of action
@@ -12,16 +10,16 @@ export class Idle {
 	_lasting = 0; // How long is action active
 	_progress = 0; // Progress of action [0, 1]
 	
-	constructor(input = {}) {
-		this._subj = input.subj ?? null;
-		this._duration = input.duration ?? null;
-		this._isAbortable = input.isAbortable ?? true;
-		this._next = input.next ?? null;
-		if ( input.isRestoreOnFinish ) {
+	constructor(options = {}) {
+		this._subj = options.subj ?? null;
+		this._duration = options.duration ?? null;
+		this._isAbortable = options.isAbortable ?? true;
+		this._next = options.next ?? null;
+		if ( options.isRestoreOnFinish ) {
 			this._toRestore = this._subj.getAction();
 		}
-		if ( input.onEnd ) {
-			this.onEnd = input.onEnd;
+		if ( options.onEnd ) {
+			this.onEnd = options.onEnd;
 		}
 	}
 	

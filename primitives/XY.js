@@ -136,14 +136,19 @@ export class XY {
 		return this;
 	} // this
 	
-	translate(xy) {
-		this.x(this.#x + xy.#x);
-		this.y(this.#y + xy.#y);
+	translate(x, y) { // (x, y) or (XY)
+		if ( x instanceof XY ) {
+			this.x(this.#x + x.#x);
+			this.y(this.#y + x.#y);
+		} else {
+			this.x(this.#x + x);
+			this.y(this.#y + y);
+		}
 		return this;
 	} // this
 	
-	add(xy) {
-		return this.translate(xy);
+	add(...args) { // (x, y) or (XY)
+		return this.translate(...args);
 	} // this
 	
 	sub(xy) {

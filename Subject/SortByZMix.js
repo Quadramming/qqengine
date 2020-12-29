@@ -1,52 +1,48 @@
-import * as QQ from '../QQ.js';
-
-function reset(options = {}) {
-	this._isSortByZOnAddSubject = QQ.useDefault(options.isSortByZOnAdd, true);
-	this._isSortByZOnTick = QQ.useDefault(options.isSortByZOnTick, false);
-}
+// QQDOC
 
 export function SortByZMix(base) {
 	return class SortByZMix extends base {
+	
+		#isSortByZOnAddSubject;
+		#isSortByZOnTick;
 		
-		constructor(options) {
+		constructor(options = {}) {
 			super(options);
-			this._isSortByZOnAddSubject = undefined;
-			this._isSortByZOnTick = undefined;
-			reset.call(this, options);
+			this.#reset(options);
 		}
 		
-		reset(options) {
+		reset(options = {}) {
 			super.reset(options);
-			reset.call(this, options);
+			this.#reset(options);
+		} // Void
+		
+		#reset(options) {
+			this.#isSortByZOnAddSubject = options.isSortByZOnAdd ?? true;
+			this.#isSortByZOnTick = options.isSortByZOnTick ?? false;
+		} // Void
+		
+		tick(delta) { // {O}
+			super.tick(delta);
+			if ( this.#isSortByZOnTick ) this.sortByZ();
 		}
 		
-		tick(delta) {
-			if ( this._isSortByZOnTick ) {
-				this._sortByZ();
-			}
-		}
-		
-		addSubject(subj) {
+		addSubject(subj) { // {O}
 			super.addSubject(subj);
-			if ( this._isSortByZOnAddSubject ) {
-				this._sortByZ();
-			}
-		}
+			if ( this.#isSortByZOnAddSubject ) this.#sortByZ();
+		} // Void
 		
-		sortByZ() {
+		sortByZ() { // {V}
 			this.forChildren( subj => subj.sortByZ() );
-			this._sortByZ();
-		}
+			this.#sortByZ();
+		} // Void
 		
-		_sortByZ() {
+		#sortByZ() {
 			const copy = [...this.subjects()];
 			this.subjects().sort( (a, b) => {
-				if ( a.z() === b.z() ) {
-					return copy.indexOf(a) - copy.indexOf(b);
-				}
-				return a.z() - b.z();
+				const cmp = a.z() - b.z();
+				return cmp !== 0 ? cmp : copy.indexOf(a) - copy.indexOf(b);
 			});
-		}
+		} // Void
 		
 	}
 }

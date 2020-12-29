@@ -1,6 +1,5 @@
 // QQDOC
 
-import * as QQ from '../QQ.js';
 import {Point, Size, Scale, Anchor} from '../primitives/index.js';
 
 export class Pack {
@@ -21,7 +20,7 @@ export class Pack {
 	
 	reset(options = {}) { // {V}
 		this.#reset(options);
-	}
+	} // Void
 	
 	#reset(options) {
 		this.#size.copyOrSet(options.size, 1, 1);
@@ -30,6 +29,9 @@ export class Pack {
 		this.#anchor.copyOrSet(options.anchor, 0.5, 0.5);
 		this.#angle = options.angle ?? 0;
 		this.#z = options.z ?? 0;
+	} // Void
+	
+	tick(delta) { // {V}
 	}
 	
 	size(size) { // {F}
@@ -38,7 +40,7 @@ export class Pack {
 			this.packUpdate();
 		}
 		return this.#size;
-	}
+	} // Size
 	
 	scale(scale) { // {F}
 		if ( scale !== undefined ) {
@@ -46,7 +48,7 @@ export class Pack {
 			this.packUpdate();
 		}
 		return this.#scale;
-	}
+	} // Scale
 	
 	position(position) { // {F}
 		if ( position !== undefined ) {
@@ -54,7 +56,7 @@ export class Pack {
 			this.packUpdate();
 		}
 		return this.#position;
-	}
+	} // Point
 	
 	anchor(anchor) { // {F}
 		if ( anchor !== undefined ) {
@@ -62,7 +64,7 @@ export class Pack {
 			this.packUpdate();
 		}
 		return this.#anchor;
-	}
+	} // Anchor
 	
 	angle(angle) { // {F}
 		if ( angle !== undefined ) {
@@ -70,7 +72,7 @@ export class Pack {
 			this.packUpdate();
 		}
 		return this.#angle;
-	}
+	} // Number
 	
 	z(z) { // {F}
 		if ( z !== undefined ) {
@@ -78,9 +80,9 @@ export class Pack {
 			this.packUpdate();
 		}
 		return this.#z;
-	}
+	} // Number
 	
 	packUpdate() { // {V}
-	}
+	} // Void
 	
 }

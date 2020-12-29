@@ -72,6 +72,10 @@ export function devidePeriod(value, period) {
 	return value;
 }
 
+export function getAngle(point) {
+	return Math.atan2(point.x(), point.y());
+}
+
 export function devideAngle(angle) {
 	while ( angle < -Math.PI || Math.PI < angle ) {
 		if ( angle < -Math.PI ) {

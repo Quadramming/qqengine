@@ -149,16 +149,16 @@ export function getPixelQuick(data, size, x, y) {
 	return (data[index+3]<<24) + (data[index]<<16) + (data[index+1]<<8) + data[index+2];
 }
 
-export function getLast(array) {
-	check(array.length > 0, 'Array is empty');
-	return array[array.length-1];
-}
-
 export function getLastIndex(array) {
 	return array.length-1;
 }
 
-export function arrayOfNull(elements) {
+export function getLast(array) {
+	check(array.length > 0, 'Array is empty');
+	return array[getLastIndex(array)];
+}
+
+export function newArrayOfNull(elements) {
 	const result = [];
 	for ( let i = 0; i < elements; ++i ) {
 		result.push(null);

@@ -14,10 +14,6 @@ export class SeizureBase {
 	
 	camera; // Camera
 	
-	//================================================================
-	// Constructor
-	//================================================================
-	
 	constructor(options) {
 		this._szManager = options.szManager;
 		this._hud = new FakeHud();
@@ -39,7 +35,7 @@ export class SeizureBase {
 		}
 		this.camera = new Camera(
 			this._world,
-			QQ.APP.getHtmlCanvas()
+			QQ.APP.getMainCanvas()
 		);
 		this._cameraFollow = null;
 	}

@@ -4,7 +4,7 @@ import * as Pack from '../Pack/index.js';
 import * as QQ from '../QQ.js';
 import * as matrix from '../matrix.js';
 import * as maths from '../maths.js';
-import {Rect, Point} from '../primitives/index.js';
+import {Rect, Point, XY} from '../primitives/index.js';
 import {RelationshipMix} from './RelationshipMix.js';
 import {SortByZMix} from './SortByZMix.js';
 import {MatrixMix} from './MatrixMix.js';
@@ -74,7 +74,7 @@ export class Subject extends
 		}
 	}
 	
-	onClickDown(worldPoint) { // {V}
+	onClickDown(worldPoint, pointer) { // {V}
 		/* DEBUG
 		c("World:" + worldPoint);
 		let local = this.worldToLocal(worldPoint);
@@ -88,10 +88,10 @@ export class Subject extends
 		//*/
 	}
 	
-	onClickUp(worldPoint) { // {V}
+	onClickUp(worldPoint, pointer) { // {V}
 	}
 	
-	onClick(worldPoint) { // {V}
+	onClick(worldPoint, pointer) { // {V}
 		this.#onClickFn?.(worldPoint);
 	}
 	
@@ -126,8 +126,12 @@ export class Subject extends
 		);
 	}
 	
-	addPosition(offset) {
-		this.position().add(offset);
+	addPosition(x, y) { // or (XY)
+		if ( x instanceof XY ) {
+			this.position().add(x);
+		} else {
+			this.position().add(new XY(x, y));
+		}
 	}
 	
 	movePosition(offset) {

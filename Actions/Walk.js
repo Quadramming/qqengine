@@ -3,9 +3,11 @@ import {Idle} from './Idle.js';
 
 export class Walk extends Idle {
 	
-	constructor(direction) {
-		super();
-		this._direction = direction.clone();
+	#direction = new Point();
+	
+	constructor(options = {}) {
+		super(options);
+		this.#direction.copy(options.direction);
 	}
 	
 	tick(delta) {
@@ -13,7 +15,7 @@ export class Walk extends Idle {
 		const walked = subj.getSpeed() * delta;
 		
 		const from = subj.position();
-		const to = from.clone().add(this._direction);
+		const to = from.clone().add(this.#direction);
 		
 		const A = to.y() - from.y();
 		const B = to.x() - from.x();
@@ -23,7 +25,7 @@ export class Walk extends Idle {
 		const a = cos * walked;
 		const b = sin * walked;
 		
-		this._subj.addPosition(new Point(a, b));
+		subj.addPosition(a, b);
 	}
 	
 }

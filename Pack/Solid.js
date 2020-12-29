@@ -7,27 +7,27 @@ import * as QQ from '../QQ.js';
 
 export class Solid extends Pack {
 	
-	#offset = new Offset();
-	#getBasis;
+	#offset = new Offset(); // Offset form basis is basis exists
+	#getBasis; // Function to get current position
 	#type;
 	#weight;
 
-	constructor(options) {
+	constructor(options = {}) {
 		super(options);
 		this.#reset(options);
 	}
 	
-	reset(options) { // {O}
+	reset(options = {}) { // {O}
 		super.reset(options);
 		this.#reset(options);
-	}
+	} // Void
 	
 	#reset(options) {
 		this.#offset.copyOrSet(options.offset, 0, 0);
 		this.#getBasis = options.getBasis ?? null;
 		this.#type = options.type ?? SOLID.STATIC;
 		this.#weight = options.weight ?? 1;
-	}
+	} // Void
 	
 	position(position) { // {O}
 		if ( this.#getBasis ) {
@@ -36,7 +36,7 @@ export class Solid extends Pack {
 			return basis;
 		}
 		return super.position(position);
-	}
+	} // Point
 	
 	weight(weight) { // {F}
 		if ( weight !== undefined ) {
@@ -44,7 +44,7 @@ export class Solid extends Pack {
 			this.packUpdate();
 		}
 		return this.#weight;
-	}
+	} // Number
 	
 	type(type) { // {F}
 		if ( type !== undefined ) {
@@ -52,7 +52,7 @@ export class Solid extends Pack {
 			this.packUpdate();
 		}
 		return this.#type;
-	}
+	} // CONST.SOLID
 	
 	rect() {
 		const position = this.position();
