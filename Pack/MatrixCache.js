@@ -5,7 +5,7 @@ import {Pack} from './Pack.js';
 
 export class MatrixCache extends Pack {
 	
-	#parent;
+	#target;
 	#matrix;
 	
 	constructor(options = {}) {
@@ -19,41 +19,41 @@ export class MatrixCache extends Pack {
 	} // Void
 	
 	#reset(options) {
-		this.#parent = options.parent;
-		if ( this.#parent ) {
-			this.#matrix = this.#parent.calcMatrix();
+		this.#target = options.parent;
+		if ( this.#target ) {
+			this.#matrix = this.#target.calcMatrix();
 		} else {
-			// In case when parent will be set latter
+			// In case when target will be set latter
 			this.#matrix = matrix.getIdentity();
 		}
 	} // Void
 
 	get() {
 		if ( this.isChanged() ) {
-			this.#matrix = this.#parent.calcMatrix();
-			this.position().copy(this.#parent.position());
-			this.size().copy(this.#parent.size());
-			this.scale().copy(this.#parent.scale());
-			this.anchor().copy(this.#parent.anchor());
-			this.angle(this.#parent.angle());
+			this.#matrix = this.#target.calcMatrix();
+			this.position().copy(this.#target.position());
+			this.size().copy(this.#target.size());
+			this.scale().copy(this.#target.scale());
+			this.anchor().copy(this.#target.anchor());
+			this.angle(this.#target.angle());
 		}
 		return this.#matrix;
 	} // Matrix
 	
 	isChanged() {
-		if ( ! this.position().isEquals(this.#parent.position()) ) {
+		if ( ! this.position().isEquals(this.#target.position()) ) {
 			return true;
 		}
-		if ( ! this.size().isEquals(this.#parent.size()) ) {
+		if ( ! this.size().isEquals(this.#target.size()) ) {
 			return true;
 		}
-		if ( ! this.scale().isEquals(this.#parent.scale()) ) {
+		if ( ! this.scale().isEquals(this.#target.scale()) ) {
 			return true;
 		}
-		if ( ! this.anchor().isEquals(this.#parent.anchor()) ) {
+		if ( ! this.anchor().isEquals(this.#target.anchor()) ) {
 			return true;
 		}
-		if ( this.angle() !== this.#parent.angle() ) {
+		if ( this.angle() !== this.#target.angle() ) {
 			return true;
 		}
 		return false;

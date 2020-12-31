@@ -2,8 +2,6 @@
 
 import * as Pack from '../Pack/index.js';
 import * as QQ from '../QQ.js';
-import * as matrix from '../matrix.js';
-import * as maths from '../maths.js';
 import {Rect, Point, XY} from '../primitives/index.js';
 import {RelationshipMix} from './RelationshipMix.js';
 import {SortByZMix} from './SortByZMix.js';

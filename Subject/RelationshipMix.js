@@ -1,13 +1,14 @@
 // QQDOC
 
-import * as QQ from '../QQ.js';
 import * as Seizure from '../Seizure/index.js';
+
+// TOFIX think destructor reset clean etc
 
 export function RelationshipMix(base) { // Mix Relationship to base
 	return class RelationshipMix extends base {
 		
 		#parent;
-		#subjects;
+		#subjects = [];
 		
 		constructor(options = {}) {
 			super(options);
@@ -26,7 +27,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		
 		#reset(options) {
 			this.parent(options.parent ?? null);
-			this.#subjects = [];
+			this.#subjects.length = 0;
 			if ( options.selfAdd === true ) {
 				this.parent().addSubject(this);
 			}
@@ -63,7 +64,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			this.forSubjects(
 				subj => subj.destructor()
 			);
-		}
+		} // Void
 		
 		stealSubject(subj) {
 			const i = this.#subjects.indexOf(subj);
@@ -87,7 +88,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 				subj => subj.cleanRelationships()
 			);
 			this.#parent?.spliceSubject(this);
-			this.#reset({});
+			this.#reset({})
 		}
 		
 		forAllSubjects(fn) {

@@ -1,9 +1,8 @@
 // QQDOC
 
 import {Pack} from './Pack.js';
-import {Point, Size, Rect, Offset} from '../primitives/index.js';
+import {Rect, Offset} from '../primitives/index.js';
 import {SOLID} from '../CONST/index.js';
-import * as QQ from '../QQ.js';
 
 export class Solid extends Pack {
 	

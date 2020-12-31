@@ -9,12 +9,13 @@ export class ClipSprite extends Sprite {
 	
 	constructor(image, rect, anchors = true) {
 		super(image);
+		const size = this.size();
 		if ( anchors ) {
 			this.#clip.set(
-				this._size.x()*rect.x(),
-				this._size.y()*rect.y(),
-				this._size.x()*rect.w(),
-				this._size.y()*rect.h()
+				size.x()*rect.x(),
+				size.y()*rect.y(),
+				size.x()*rect.w(),
+				size.y()*rect.h()
 			);
 		} else {
 			this.#clip.copy(rect);
@@ -22,13 +23,15 @@ export class ClipSprite extends Sprite {
 	}
 	
 	drawImage(context) { // {O}
+		const size = this.size();
+		const image = this.image();
 		context.drawImage(
-			this._image,
+			image,
 			this.#clip.x(), this.#clip.y(),
 			this.#clip.w(), this.#clip.h(),
 			0, 0,
-			this._size.w(), this._size.h()
+			size.w(), size.h()
 		);
-	}
+	} // Void
 	
 }

@@ -7,6 +7,7 @@ export function nameMix(base) {
 	return class nameMix extends base {
 		
 		#variable; // no "=" allowed. It Should be in reset method
+		#point = new Point(); // But can be allocation
 		
 		constructor(options = {}) {
 			fixOptions(options);

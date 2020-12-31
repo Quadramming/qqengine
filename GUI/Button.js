@@ -1,34 +1,50 @@
-import * as QQ from '../QQ.js';
+// QQDOC
+
 import * as Subject from '../Subject/index.js';
 import * as Text from '../Text/index.js';
 
+function fixOptions(options) {
+	options.isClickable = true;
+}
+
 export class Button extends Subject.Sprite {
 	
-	#onButtonClickDown = () => {};
-	#onButtonClick = () => {};
+	#text = new Text.Text();
+	#onButtonClickDown;
+	#onButtonClick;
 
-	constructor(options) {
-		options.isClickable = true;
+	constructor(options = {}) {
+		fixOptions(options);
 		super(options);
+		this.#reset(options);
+	}
+	
+	reset(options = {}) { // {O}
+		fixOptions(options);
+		super.reset(options);
+		this.#reset(options);
+	} // Void
+	
+	#reset(options) {
 		if ( options.text ) {
-			const text = new Text.Text({
+			this.#text.reset({
 				text: options.text,
 				size: this.size()
 			});
-			this.addSubject(text);
+			this.addSubject(this.#text);
 		}
-		if ( options.onButtonClickDown ) this.#onButtonClickDown = options.onButtonClickDown;
-		if ( options.onButtonClick ) this.#onButtonClick = options.onButtonClick;
-	}
+		this.#onButtonClickDown = options.onButtonClickDown ?? null;
+		this.#onButtonClick = options.onButtonClick ?? null;
+	} // Void
 	
 	onClickDown(worldPoint) { // {O}
 		super.onClickDown(worldPoint);
-		this.#onButtonClickDown(worldPoint);
-	}
+		this.#onButtonClickDown?.(worldPoint);
+	} // Void
 	
 	onClick(worldPoint) { // {O}
 		super.onClick(worldPoint);
-		this.#onButtonClick(worldPoint);
-	}
+		this.#onButtonClick?.(worldPoint);
+	} // Void
 	
 }

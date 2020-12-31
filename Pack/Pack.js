@@ -32,7 +32,7 @@ export class Pack {
 	} // Void
 	
 	tick(delta) { // {V}
-	}
+	} // Void
 	
 	size(size) { // {F}
 		if ( size !== undefined ) {

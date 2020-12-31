@@ -3,8 +3,10 @@ import * as CONST from '../../qqengine/CONST/index.js';
 export function collisionSolver(a, b, value) {
 	const aType = a.getSolidType();
 	const bType = b.getSolidType();
-	if ( aType === CONST.SOLID.SLIM || bType === CONST.SOLID.SLIM ) {
-		// Nothing
+	if ( aType === CONST.SOLID.SLIM ) {
+		a.onPickUp?.(b);
+	} else if ( bType === CONST.SOLID.SLIM ) {
+		b.onPickUp?.(a);
 	} else if ( aType === CONST.SOLID.STATIC ) {
 		b.addPosition(value);
 	} else if ( bType === CONST.SOLID.STATIC ) {

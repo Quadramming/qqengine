@@ -16,30 +16,34 @@ export class TileSprite extends Sprite {
 	}
 	
 	setTileSize(tileSize) {
+		const size = this.size();
 		this.#tileSize.set(
-			this._size.x()*tileSize.x(),
-			this._size.y()*tileSize.y()
+			size.x()*tileSize.x(),
+			size.y()*tileSize.y()
 		);
-	}
+	} // Void
 	
 	setTileOffset(offset) {
+		const size = this.size();
 		this.#tileOffset.set(
-			this._size.x()*(offset.x() % this.#tileSize.x()) - this.#tileSize.x(),
-			this._size.y()*(offset.y() % this.#tileSize.y()) - this.#tileSize.y()
+			size.x()*(offset.x() % this.#tileSize.x()) - this.#tileSize.x(),
+			size.y()*(offset.y() % this.#tileSize.y()) - this.#tileSize.y()
 		);
-	}
+	} // Void
 	
 	drawImage(context) { // {O}
+		const size = this.size();
+		const image = this.image();
 		context.save(); // save for resetore
 		context.beginPath(); // clean before clip
-		context.rect(0, 0, this._size.w(), this._size.h());
+		context.rect(0, 0, size.w(), size.h());
 		context.clip();
 		let coveredX = this.#tileOffset.x();
 		let coveredY = this.#tileOffset.y();
-		while ( coveredY < this._size.h() ) {
-			while ( coveredX < this._size.w() ) {
+		while ( coveredY < size.h() ) {
+			while ( coveredX < size.w() ) {
 				context.drawImage(
-					this._image,
+					image,
 					coveredX, coveredY,
 					this.#tileSize.w(), this.#tileSize.h()
 				);
@@ -50,6 +54,6 @@ export class TileSprite extends Sprite {
 		}
 		context.beginPath(); // reset path
 		context.restore(); // reset clip
-	}
+	} // Void
 	
 }

@@ -1,40 +1,60 @@
-import * as QQ from '../QQ.js';
 import * as Text from '../Text/index.js';
 import * as Subject from '../Subject/index.js';
 import * as style from '../style/index.js';
-import {Point, Size} from '../primitives/index.js';
+import {Point} from '../primitives/index.js';
+
+function fixOptions(options) {
+	options.imageId ??= 'bar';
+	options.anchor ??= new Point(0.5, 0.5);
+}
 
 export class Bar extends Subject.Sprite {
 	
-	constructor(options) {
-		options.img = QQ.useDefault(options.image, 'bar');
-		options.anchor = QQ.useDefault(options.anchor, new Point(0.5, 0.5));
+	#text = new Text.Text(style.use('bar'));
+	#percent;
+	#maxSize;
+	
+	constructor(options = {}) {
+		fixOptions(options);
 		super(options);
-		this._percent = 0;
-		this._maxSize = QQ.useDefault(options.maxSize, 10);
-		this._text = new Text.Text( style.use('bar', {size: new Size(this._maxSize, 2)}) );
-		this.addSubject(this._text);
-		this.setBarValue(options.percent);
+		this.#reset(options);
 	}
 	
-	setText(percent) {
-		if ( percent > 50 ) {
-			let text = String(percent);
+	reset(options = {}) { // {O}
+		fixOptions(options);
+		super.reset(options);
+		this.#reset(options);
+	} // Void
+	
+	#reset(options) {
+		this.#maxSize = this.size().w();
+		this.#text.reset();
+		this.#text.size(this.size());
+		this.addSubject(this.#text);
+		this.percent(options.percent ?? 0); // Will set #percent
+	} // Void
+	
+	percent(percent) { // {F}
+		if ( percent !== undefined ) {
+			this.#percent = percent;
+			this.#updateText();
+			const width = (this.#maxSize*percent)/100;
+			this.size().w(width);
+		}
+		return this.#percent;
+	} // Void
+	
+	#updateText() {
+		if ( this.#percent > 50 ) {
+			let text = String(this.#percent);
 			if ( text.length > 5 ) {
 				text = text.substring(0, 5);
 			}
-			this._text.setText(text + '%');
-			this._text.show();
+			this.#text.setText(text + '%');
+			this.#text.show();
 		} else {
-			this._text.hide();
+			this.#text.hide();
 		}
-	}
-	
-	setBarValue(percent = 0) {
-		this._percent = percent;
-		this.setText(percent);
-		const width = (this._maxSize*percent)/100;
-		super.setSize(new Size(width, 2));
-	}
+	} // Void
 	
 }

@@ -1,44 +1,59 @@
-import * as QQ from '../QQ.js';
+// QQDOC
+
 import * as Subject from '../Subject/index.js';
+
+function fixOptions(options) {
+	options.imageId = 'checkBoxEmpty';
+	options.isClickable = true;
+}
 
 export class CheckBox extends Subject.Sprite {
 	
-	constructor(options) {
-		options.image = 'checkBoxEmpty';
-		options.isClickable = true;
+	#onChange;
+	#isChecked;
+	#isByTouch;
+	
+	constructor(options = {}) {
+		fixOptions(options);
 		super(options);
-		this._onChange = QQ.useDefault(options.onChange, () => {});
-		this._isChecked = QQ.useDefault(options.isChecked, false);
-		this._isByTouch = QQ.useDefault(options.isTouch, false);
-		this.refreshImage();
+		this.#reset(options);
 	}
 	
-	refreshImage() {
-		if ( this._isChecked ) {
-			this.setSprite('checkBoxChecked');
-		} else {
-			this.setSprite('checkBoxEmpty');
-		}
-	}
+	reset(options = {}) { // {O}
+		fixOptions(options);
+		super.reset(options);
+		this.#reset(options);
+	} // Void
+	
+	#reset(options) {
+		this.#onChange = options.onChange ?? null;
+		this.#isChecked = options.isChecked ?? false;
+		this.#isByTouch = options.isTouch ?? false;
+		this.#refreshImage();
+	} // Void
 	
 	change() {
-		this._isChecked = ! this._isChecked;
-		this._onChange(this._isChecked);
-		this.refreshImage();
-	}
+		this.#isChecked = ! this.#isChecked;
+		this.#onChange?.(this.#isChecked);
+		this.#refreshImage();
+	} // Void
 	
-	onClickDown(worldPoint) {
+	isChecked() {
+		return this.#isChecked;
+	} // Boolean
+	
+	onClickDown(worldPoint) { // {O}
 		super.onClickDown(worldPoint);
-		if ( this._isByTouch ) {
-			this.change();
-		}
-	}
+		if ( this.#isByTouch ) this.change();
+	} // Void
 	
-	onClick(worldPoint) {
+	onClick(worldPoint) { // {O}
 		super.onClick(worldPoint);
-		if ( ! this._isByTouch ) {
-			this.change();
-		}
-	}
+		if ( ! this.#isByTouch ) this.change();
+	} // Void
+	
+	#refreshImage() {
+		this.imageId(this.#isChecked ? 'checkBoxChecked' : 'checkBoxEmpty');
+	} // Void
 	
 };

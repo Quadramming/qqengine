@@ -15,34 +15,37 @@ export class AnimateSprite extends Sprite {
 	
 	constructor(image, frames, fps) {
 		super(image);
+		const size = this.size();
 		this.#fps = fps;
 		this.#tpf = 1 / fps;
 		this.#frames = frames;
 		this.#passedTime = 0;
 		this.#currentFrame = 0;
-		this.#frameWidth = this._size.x() / frames;
-		this.#frameSize.set(this.#frameWidth, this._size.y());
+		this.#frameWidth = size.x() / frames;
+		this.#frameSize.set(this.#frameWidth, size.y());
 	}
 	
 	getFrameSize() { // {O}
 		return this.#frameSize;
-	}
+	} // Size
 	
 	tick(delta) { // {O}
 		super.tick(delta);
 		this.#passedTime += delta;
-	}
+	} // Void
 	
 	drawImage(context) { // {O}
+		const size = this.size();
+		const image = this.image();
 		const passedFrames = Math.round(this.#passedTime / this.#tpf);
 		this.#currentFrame = passedFrames % this.#frames;
 		context.drawImage(
-			this._image,
+			image,
 			this.#frameWidth * this.#currentFrame, 0,
-			this.#frameWidth, this._size.h(),
+			this.#frameWidth, size.h(),
 			0, 0,
-			this.#frameWidth, this._size.h()
+			this.#frameWidth, size.h()
 		);
-	}
+	} // Void
 	
 }

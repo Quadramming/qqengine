@@ -14,35 +14,38 @@ export class LayersSprite extends Sprite {
 	}
 	
 	addLayer(layer) { // Rect or Point (will get previous layer size) as anchors
+		const size = this.size();
 		if ( layer instanceof Rect ) {
 			this.#layers.push(new Rect(
-				this._size.x()*layer.x(),
-				this._size.y()*layer.y(),
-				this._size.x()*layer.w(),
-				this._size.y()*layer.h()
+				size.x()*layer.x(),
+				size.y()*layer.y(),
+				size.x()*layer.w(),
+				size.y()*layer.h()
 			));
 		} else if ( layer instanceof Point ) {
 			const previous = QQ.getLast(this.#layers);
 			this.#layers.push(new Rect(
-				this._size.x()*layer.x(),
-				this._size.y()*layer.y(),
+				size.x()*layer.x(),
+				size.y()*layer.y(),
 				previous.w(), previous.h()
 			));
 		} else {
 			throw Error('Wrong layer type');
 		}
-	}
+	} // Void
 	
 	drawImage(context) { // {O}
+		const size = this.size();
+		const image = this.image();
 		for ( const layer of this.#layers ) {
 			context.drawImage(
-				this._image,
+				image,
 				layer.x(), layer.y(),
 				layer.width(), layer.height(),
 				0, 0,
-				this._size.w(), this._size.h()
+				size.w(), size.h()
 			);
 		}
-	}
+	} // Void
 	
 }
