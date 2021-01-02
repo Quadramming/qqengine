@@ -16,8 +16,10 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		}
 		
 		destructor() {
+			c('destructor');
 			super.destructor();
 			this.cleanRelationships();
+			// TODO destruct All ?
 		}
 		
 		reset(options = {}) {
@@ -84,6 +86,11 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		}
 		
 		cleanRelationships() {
+			this.#parent?.spliceSubject(this);
+			this.#reset({})
+		}
+		
+		cleanRelationshipsHierarchy() {
 			this.forSubjects(
 				subj => subj.cleanRelationships()
 			);

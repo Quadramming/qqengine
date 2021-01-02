@@ -20,12 +20,8 @@ export class MatrixCache extends Pack {
 	
 	#reset(options) {
 		this.#target = options.parent;
-		if ( this.#target ) {
-			this.#matrix = this.#target.calcMatrix();
-		} else {
-			// In case when target will be set latter
-			this.#matrix = matrix.getIdentity();
-		}
+		// #target can be defined latter on addSubject()
+		this.#matrix = this.#target?.calcMatrix() ?? matrix.getIdentity();
 	} // Void
 
 	get() {

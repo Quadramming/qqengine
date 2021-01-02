@@ -1,20 +1,21 @@
 // QQDOC
 
+import * as maths from '../maths.js';
 import {Point} from './Point.js';
 import {Size} from './Size.js';
-import * as maths from '../maths.js';
 
 export class Rect {
 	
-	//================================================================
-	// Constructor
-	//================================================================
+	#x;
+	#y;
+	#width;
+	#height;
 	
 	constructor(x = 0, y = 0, width = 0, height = 0) {
-		this._x = x;
-		this._y = y;
-		this._width = width;
-		this._height = height;
+		this.#x = x;
+		this.#y = y;
+		this.#width = width;
+		this.#height = height;
 	}
 	
 	static fromPoints(...points) {
@@ -25,39 +26,31 @@ export class Rect {
 		return new Rect(left, top, right-left, bottom-top);
 	} // new Rect
 	
-	//================================================================
-	// Copy functions
-	//================================================================
-	
 	clone() {
-		return new Rect(this._x, this._y, this._width, this._height);
+		return new Rect(this.#x, this.#y, this.#width, this.#height);
 	} // new Rect
 	
 	copy(rectangle) {
-		this._x = rectangle._x;
-		this._y = rectangle._y;
-		this._width = rectangle._width;
-		this._height = rectangle._height;
+		this.#x = rectangle._x;
+		this.#y = rectangle._y;
+		this.#width = rectangle._width;
+		this.#height = rectangle._height;
 		return this;
 	} // this
-	
-	//================================================================
-	// Checks
-	//================================================================
 	
 	isContains(point) {
 		let x = point.x();
 		let y = point.y();
-		if ( this._width <= 0 || this._height <= 0 ) {
+		if ( this.#width <= 0 || this.#height <= 0 ) {
 			return false;
 		}
-		if ( this._x <= x && x < this._x + this._width ) {
-			if ( this._y <= y && y < this._y + this._height ) {
+		if ( this.#x <= x && x < this.#x + this.#width ) {
+			if ( this.#y <= y && y < this.#y + this.#height ) {
 				return true;
 			}
 		}
 		return false;
-	} // boolean
+	} // Boolean
 	
 	isIntersect(rect) {
 		if ( this.bottom() <= rect.top() || this.top() >= rect.bottom() ) {
@@ -67,7 +60,7 @@ export class Rect {
 			return false;
 		}
 		return true;
-	} // boolean
+	} // Boolean
 	
 	intersectValue(rect) {
 		if ( ! this.isIntersect(rect) ) {
@@ -99,75 +92,71 @@ export class Rect {
 		return value;
 	} // new Point
 	
-	//================================================================
-	// Get
-	//================================================================
-	
 	set(x, y, width, height) {
-		this._x = x;
-		this._y = y;
-		this._width = width;
-		this._height = height;
-	} // void
+		this.#x = x;
+		this.#y = y;
+		this.#width = width;
+		this.#height = height;
+	} // Void
 	
 	x(x) { // {F}
 		if ( x !== undefined ) {
-			this._x = x;
+			this.#x = x;
 		}
-		return this._x;
-	} // number
+		return this.#x;
+	} // Number
 	
 	y(y) { // {F}
 		if ( y !== undefined ) {
-			this._y = y;
+			this.#y = y;
 		}
-		return this._y;
-	} // number
+		return this.#y;
+	} // Number
 	
 	width(width) { // {F}
 		if ( width !== undefined ) {
-			this._width = width;
+			this.#width = width;
 		}
-		return this._width;
-	} // number
+		return this.#width;
+	} // Number
 	
 	height(height) { // {F}
 		if ( height !== undefined ) {
-			this._height = height;
+			this.#height = height;
 		}
-		return this._height;
-	} // number
+		return this.#height;
+	} // Number
 	
 	w(w) { // {F}
 		return this.width(w);
-	} // number
+	} // Number
 	
 	h(h) { // {F}
 		return this.height(h);
-	} // number
+	} // Number
 	
 	left() {
-		return this._x;
-	} // number
+		return this.#x;
+	} // Number
 	
 	right() {
-		return this._x + this._width;
-	} // number
+		return this.#x + this.#width;
+	} // Number
 	
 	top() {
-		return this._y;
-	} // number
+		return this.#y;
+	} // Number
 	
 	bottom() {
-		return this._y + this._height;
-	} // number
+		return this.#y + this.#height;
+	} // Number
 	
 	size() {
-		return new Size(this._width, this._height);
+		return new Size(this.#width, this.#height);
 	} // new Size
 	
 	center() {
-		return new Point(this._x + this._width/2, this._y + this._height/2);
+		return new Point(this.#x + this.#width/2, this.#y + this.#height/2);
 	} // new Point
 	
 	enclose(point) {
@@ -181,19 +170,15 @@ export class Rect {
 		} else if ( point.y() > this.bottom() ) {
 			point.y( this.bottom() );
 		}
-	} // void
-	
-	//================================================================
-	// Debug
-	//================================================================
+	} // Void
 	
 	debug() {
 		c('Rect: (');
-		c('x: ' + this._x);
-		c('y: ' + this._y);
-		c('width: ' + this._width);
-		c('height: ' + this._height);
+		c('x: ' + this.#x);
+		c('y: ' + this.#y);
+		c('width: ' + this.#width);
+		c('height: ' + this.#height);
 		c(')');
-	} // void
+	} // Void
 	
 }

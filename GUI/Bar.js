@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as Text from '../Text/index.js';
 import * as Subject from '../Subject/index.js';
 import * as style from '../style/index.js';

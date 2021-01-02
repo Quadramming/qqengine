@@ -11,7 +11,7 @@ export class Value {
 	
 	isClear() {
 		return this.#value === 0;
-	} // boolean
+	} // Boolean
 	
 	clear() {
 		this.#value = 0;
@@ -26,15 +26,15 @@ export class Value {
 	value(value) { // {F}
 		if ( value !== undefined ) {
 			if ( typeof value !== 'number' ) {
-				throw new Error('Value should be number');
+				throw Error('Value should be number');
 			}
 			this.#value = value;
 		}
 		return this.#value;
-	} // mixed
+	} // Mixed
 	
 	v(value) { // {F}
 		return this.value(value);
-	} // mixed
+	} // Mixed
 	
 }

@@ -4,13 +4,15 @@ export function collisionSolver(a, b, value) {
 	const aType = a.getSolidType();
 	const bType = b.getSolidType();
 	if ( aType === CONST.SOLID.SLIM ) {
-		a.onPickUp?.(b);
+		a.onTouch?.(b);
 	} else if ( bType === CONST.SOLID.SLIM ) {
-		b.onPickUp?.(a);
+		b.onTouch?.(a);
 	} else if ( aType === CONST.SOLID.STATIC ) {
 		b.addPosition(value);
+		a.onTouch?.(b);
 	} else if ( bType === CONST.SOLID.STATIC ) {
-		a.addPosition(value.oposite());
+		a.addPosition(value.cloneInverted());
+		b.onTouch?.(a);
 	} else if ( aType === CONST.SOLID.DYNAMIC ) {
 		const ratio = a.getSolidWeight()/(a.getSolidWeight() + b.getSolidWeight());
 		

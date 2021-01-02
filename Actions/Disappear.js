@@ -4,7 +4,7 @@ export class Disappear extends Idle {
 	
 	tick(delta) {
 		super.tick(delta);
-		this._subj.setAlpha(1 - this._progress);
+		this._subj.alpha(1 - this._progress);
 	}
 	
 	onEnd() {

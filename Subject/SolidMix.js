@@ -6,6 +6,7 @@ export function SolidMix(base) {
 	return class SolidMix extends base {
 		
 		#solid = new Pack.Solid();
+		#isDraw;
 		
 		constructor(options = {}) {
 			super(options);
@@ -14,11 +15,12 @@ export function SolidMix(base) {
 		
 		reset(options = {}) { // {O}
 			super.reset(options);
-			this.#reset(options.solid);
+			this.#reset(options);
 		} // Void
 		
-		#reset(solid) {
-			this.#solid.reset(solid);
+		#reset(options) {
+			this.#solid.reset(options.solid);
+			this.#isDraw = options.solid?.draw ?? false;
 		} // Void
 		
 		solid(solid) { // {F}
@@ -59,13 +61,13 @@ export function SolidMix(base) {
 			return true;
 		} // Boolean
 		
-		/*
 		draw(wcontext) {
 			super.draw(wcontext);
-			this.#drawSolidBorder(wcontext);
-			this.#drawSolidCenter(wcontext);
+			if ( this.#isDraw ) {
+				this.#drawSolidBorder(wcontext);
+				this.#drawSolidCenter(wcontext);
+			}
 		} // Void
-		//*/
 		
 		#drawSolidBorder(wcontext) {
 			wcontext.cleanTransform();

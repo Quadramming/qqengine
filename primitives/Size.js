@@ -6,18 +6,18 @@ export class Size extends XY {
 	
 	width(value) { // {F}
 		return this.x(value);
-	} // number
+	} // Number
 	
 	height(value) { // {F}
 		return this.y(value);
-	} // number
+	} // Number
 	
 	w(value) { // {F}
 		return this.x(value);
-	} // number
+	} // Number
 	
 	h(value) { // {F}
 		return this.y(value);
-	} // number
+	} // Number
 	
 }
