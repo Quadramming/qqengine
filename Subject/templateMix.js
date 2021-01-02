@@ -17,17 +17,17 @@ export function nameMix(base) {
 		
 		destructor() { // {O}
 			super.destructor();
-		}
+		} // void
 		
 		reset(options = {}) { // {O}
 			fixOptions(options);
 			super.reset(options);
 			this.#reset(options);
-		} // Void
+		} // void
 		
 		#reset(options) {
 			// Do reset
-		} // Void
+		} // void
 		
 	}
 }

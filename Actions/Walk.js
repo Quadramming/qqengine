@@ -4,15 +4,22 @@ import {Idle} from './Idle.js';
 export class Walk extends Idle {
 	
 	#direction = new Point();
+	#power = 1;
 	
 	constructor(options = {}) {
 		super(options);
 		this.#direction.copy(options.direction);
+		if ( options.power ) this.#power = options.power;
+	}
+	
+	set(direction, power) {
+		this.#direction.copy(direction);
+		if ( power ) this.#power = power;
 	}
 	
 	tick(delta) {
 		const subj = this.subject();
-		const walked = subj.getSpeed() * delta;
+		const walked = subj.getSpeed() * delta * this.#power;
 		
 		const from = subj.position();
 		const to = from.clone().add(this.#direction);

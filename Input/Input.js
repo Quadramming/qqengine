@@ -1,17 +1,16 @@
-import * as CONST from './CONST/index.js';
-import {Point} from './primitives/index.js';
+// QQDOC
 
-export class Input {
+import * as CONST from '../CONST/index.js';
+import {InputBase} from './InputBase.js';
+
+export class Input extends InputBase {
 	
-	#target;
-	#queue;
 	#startHandler;
 	#moveHandler;
 	#endHandler;
 	
 	constructor(target, queue) {
-		this.#target = target;
-		this.#queue = queue;
+		super(target, queue);
 		this.#startHandler = this.#handleStart.bind(this);
 		this.#moveHandler = this.#handleMove.bind(this);
 		this.#endHandler = this.#handleEnd.bind(this);
@@ -22,54 +21,41 @@ export class Input {
 	}
 	
 	destructor() {
-		this.#target.removeEventListener('touchstart', this.#startHandler);
-		this.#target.removeEventListener('touchmove', this.#moveHandler);
-		this.#target.removeEventListener('touchend', this.#endHandler);
-		this.#target.removeEventListener('touchcancel', this.#endHandler);
-	}
-	
-	#prevent(event) {
-		if ( event.cancelable ) {
-			event.preventDefault();
-		}
-	}
-	
-	#getPoint(pageX, pageY) {
-		return new Point(
-			pageX - this.#target.offsetLeft,
-			pageY - this.#target.offsetTop,
-		);
+		this._target.removeEventListener('touchstart', this.#startHandler);
+		this._target.removeEventListener('touchmove', this.#moveHandler);
+		this._target.removeEventListener('touchend', this.#endHandler);
+		this._target.removeEventListener('touchcancel', this.#endHandler);
 	}
 	
 	#handleStart(event) {
-		this.#prevent(event);
+		this._prevent(event);
 		for ( const touch of event.changedTouches ) {
-			this.#queue.push({
+			this._queue.push({
 				type: CONST.TOUCH.START,
 				id: touch.identifier,
-				point: this.#getPoint(touch.pageX, touch.pageY)
+				point: this._getPoint(touch.pageX, touch.pageY)
 			});
 		}
 	}
 	
 	#handleMove(event) {
-		this.#prevent(event);
+		this._prevent(event);
 		for ( const touch of event.changedTouches ) {
-			this.#queue.push({
+			this._queue.push({
 				type: CONST.TOUCH.MOVE,
 				id: touch.identifier,
-				point: this.#getPoint(touch.pageX, touch.pageY)
+				point: this._getPoint(touch.pageX, touch.pageY)
 			});
 		}
 	}
 	
 	#handleEnd(event) {
-		this.#prevent(event);
+		this._prevent(event);
 		for ( const touch of event.changedTouches ) {
-			this.#queue.push({
+			this._queue.push({
 				type: CONST.TOUCH.END,
 				id: touch.identifier,
-				point: this.#getPoint(touch.pageX, touch.pageY)
+				point: this._getPoint(touch.pageX, touch.pageY)
 			});
 		}
 	}

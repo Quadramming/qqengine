@@ -80,7 +80,7 @@ export class SeizureBase {
 		this._world.tick(delta);
 		if ( this._cameraFollow ) {
 			this.camera.setPosition(
-				this._cameraFollow.position()
+				this._cameraFollow.getWorldPosition()
 			);
 		}
 	}

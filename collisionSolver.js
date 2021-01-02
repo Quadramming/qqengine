@@ -14,6 +14,8 @@ export function collisionSolver(a, b, value) {
 		a.addPosition(value.cloneInverted());
 		b.onTouch?.(a);
 	} else if ( aType === CONST.SOLID.DYNAMIC ) {
+		a.onTouch?.(b);
+		b.onTouch?.(a);
 		const ratio = a.getSolidWeight()/(a.getSolidWeight() + b.getSolidWeight());
 		
 		const aOffset = value.clone();

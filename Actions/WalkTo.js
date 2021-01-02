@@ -7,15 +7,18 @@ export class WalkTo extends Idle {
 	
 	_to = new Point();
 	#prevPosition;
+	#power = 1;
 	
 	constructor(options) {
 		super(options);
 		this._to.copy(options.to);
 		this.#prevPosition = new Point(NaN);
+		if ( options.power ) this.#power = options.power;
 	}
 	
-	setTarget(to) {
+	setTarget(to, power) {
 		this._to.copy(to);
+		if ( power ) this.#power = power;
 	} // void
 	
 	getTarget() {
@@ -27,7 +30,7 @@ export class WalkTo extends Idle {
 			this.finishAction();
 			return;
 		}
-		const walked = this._subj.getSpeed() * delta;
+		const walked = this._subj.getSpeed() * delta * this.#power;
 		const from = this._subj.position();
 		const to = this._to;
 		const A = to.y() - from.y();

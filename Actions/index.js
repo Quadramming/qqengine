@@ -10,3 +10,4 @@ export * from './Shake.js';
 export * from './WaitFor.js';
 export * from './WalkTo.js';
 export * from './Walk.js';
+export * from './DropOut.js';

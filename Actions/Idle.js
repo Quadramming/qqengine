@@ -29,6 +29,10 @@ export class Idle {
 	}
 	
 	subject(subj) { // {F}
+		return this.subj(subj);
+	}
+	
+	subj(subj) { // {F}
 		if ( subj !== undefined ) {
 			this._subj = subj;
 		}

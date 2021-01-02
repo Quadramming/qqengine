@@ -44,6 +44,10 @@ export function dump(...rest) {
 
 export let APP = null;
 
+export function sz() {
+	return APP?.getActiveSz();
+}
+
 export function setApp(app) {
 	check( ! APP, 'Only one application can be created');
 	APP = app;

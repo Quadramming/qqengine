@@ -15,11 +15,11 @@ export class GCanvas {
 	#canvas = document.createElement('canvas');
 	#context = this.#canvas.getContext('2d');
 	
-	constructor(id, size, maximize) {
+	constructor(id, size, maximize = false) {
 		if ( size ) {
 			this.#fullscreen = false;
 			this.#initSize.copy(size);
-			this.#maximize = maximize ?? false;
+			this.#maximize = maximize;
 		}
 		this.#canvas.id = id;
 		this.#canvas.style.position = 'absolute';
@@ -31,6 +31,9 @@ export class GCanvas {
 	destructor() {
 		QQ.APP.removeOnResize( this.#onResizeFn );
 		document.body.removeChild(this.#canvas);
+	}
+	
+	tick(delta) {
 	}
 	
 	getSizeRect() {

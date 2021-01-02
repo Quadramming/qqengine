@@ -13,7 +13,7 @@ import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
 import {S} from './style/index.js';
 import {T} from './i18n.js';
-import {Input} from './Input.js';
+import {InputAvg} from './Input/InputAvg.js';
 
 export class Application {
 	
@@ -36,7 +36,7 @@ export class Application {
 		);
 		
 		this._inputQueue = [];
-		this._input = new Input(this.#canvas.getCanvas(), this._inputQueue);
+		this._input = new InputAvg(this.#canvas.getCanvas(), this._inputQueue);
 		
 		this.#imageManager = new ImageManager(config.images);
 		this.#sound.set(config.sounds);
@@ -232,6 +232,7 @@ export class Application {
 	
 	#tick() {
 		const delta = this.#time.update();
+		this.#canvas.tick(delta);
 		this.#fpsCounter.tick(delta);
 		this.#game?.tick?.(delta);
 		this.#seizures.forActive( sz => sz.handleInput(this._inputQueue) );

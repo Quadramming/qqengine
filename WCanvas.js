@@ -1,7 +1,6 @@
 // QQDOC
 
-import * as QQ from './QQ.js';
-import {Size, Point, Rect} from './primitives/index.js';
+import {Size} from './primitives/index.js';
 
 export class WCanvas {
 	
@@ -29,11 +28,11 @@ export class WCanvas {
 	
 	getCanvas() {
 		return this.#canvas;
-	}
+	} // canvas
 	
 	getContext() {
 		return this.#context;
-	}
+	} // context
 	
 	getPixels() {
 		return this.#context.getImageData(0, 0, this.#size.x(), this.#size.y()).data;
