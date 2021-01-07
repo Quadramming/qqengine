@@ -52,7 +52,7 @@ export function ActionableMix(base) { // Mix Actionable to base
 		
 		setActionOnEnd(fn) {
 			if ( this.#action === this.#idleAction ) {
-				throw new Error('Do not redefine idle onEnd method');
+				throw Error('Do not redefine idle onEnd method');
 			} else {
 				this.#action.setOnEnd(fn);
 			}

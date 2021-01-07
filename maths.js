@@ -2,6 +2,7 @@
 
 import {Size, Scale, Offset} from './primitives/index.js';
 import {PIVOT} from './CONST/index.js';
+import * as CONST from './CONST/index.js';
 
 export const PIx2 = Math.PI * 2;
 
@@ -148,3 +149,8 @@ export function calcPivotY(pivot, y, h, yAxis = 1) {
 export function clamp(min, max, value) {
   return Math.min(Math.max(value, min), max);
 }
+
+export function msToSeconds(ms) {
+	return ms / CONST.MS_IN_SECOND;
+}
+

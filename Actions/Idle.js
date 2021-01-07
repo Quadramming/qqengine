@@ -59,6 +59,10 @@ export class Idle {
 	onAbort() { // {V}
 	}
 	
+	setNext(next) {
+		this._next = next;
+	}
+	
 	finishAction() {
 		if ( this._next ) {
 			this._subj.forceAction(this._next);

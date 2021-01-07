@@ -1,10 +1,6 @@
 // QQDOC
 
-import * as CONST from './CONST/index.js';
-
-function msToSeconds(ms) {
-	return ms / CONST.MS_IN_SECOND;
-}
+import * as maths from './maths.js';
 
 export class Time {
 	
@@ -22,7 +18,7 @@ export class Time {
 		const previousTime = this.#time;
 		this.#time = Date.now();
 		const diff = this.#time - previousTime;
-		return msToSeconds(diff);
+		return maths.msToSeconds(diff);
 	} // number
 	
 }

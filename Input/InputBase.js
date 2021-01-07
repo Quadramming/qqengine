@@ -4,12 +4,30 @@ import {Point} from '../primitives/index.js';
 
 export class InputBase {
 	
-	_target;
 	_queue;
+	#target;
+	#startHandler = event => this._handleStart(event);
+	#moveHandler = event => this._handleMove(event);
+	#endHandler = event => this._handleEnd(event);
 	
 	constructor(target, queue) {
-		this._target = target;
+		this.#target = target;
 		this._queue = queue;
+		this.#registerListners();
+	}
+	
+	destructor() {
+		this.#target.removeEventListener('touchstart', this.#startHandler);
+		this.#target.removeEventListener('touchmove', this.#moveHandler);
+		this.#target.removeEventListener('touchend', this.#endHandler);
+		this.#target.removeEventListener('touchcancel', this.#endHandler);
+	}
+	
+	#registerListners() {
+		this.#target.addEventListener('touchstart', this.#startHandler, {passive: false});
+		this.#target.addEventListener('touchmove', this.#moveHandler, {passive: false});
+		this.#target.addEventListener('touchend', this.#endHandler, {passive: false});
+		this.#target.addEventListener('touchcancel', this.#endHandler, {passive: false});
 	}
 	
 	_prevent(event) {
@@ -18,8 +36,8 @@ export class InputBase {
 	
 	_getPoint(pageX, pageY) {
 		return new Point(
-			pageX - this._target.offsetLeft,
-			pageY - this._target.offsetTop,
+			pageX - this.#target.offsetLeft,
+			pageY - this.#target.offsetTop,
 		);
 	}
 	

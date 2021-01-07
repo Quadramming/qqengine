@@ -18,6 +18,7 @@ export class Walk extends Idle {
 	}
 	
 	tick(delta) {
+		super.tick(delta);
 		const subj = this.subject();
 		const walked = subj.getSpeed() * delta * this.#power;
 		
