@@ -1,14 +1,20 @@
+// QQDOC
+
 import {Idle} from './Idle.js';
 
 export class Disappear extends Idle {
 	
-	tick(delta) {
-		super.tick(delta);
-		this._subj.alpha(1 - this._progress);
+	constructor(options = {}) {
+		options.duration ??= 1;
+		super(options);
 	}
 	
-	onEnd() {
-		this._subj.destructor();
-	}
+	tickFn(delta) { // {O}
+		this._subject.alpha(1 - this._progress);
+	} // void
+	
+	onEnd() { // {O}
+		this._subject.destructor();
+	} // void
 	
 }

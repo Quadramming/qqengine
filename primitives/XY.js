@@ -64,6 +64,11 @@ export class XY {
 	} // this
 	
 	set(x = 0, y = x) {
+		if ( x instanceof XY ) {
+			return this.set(x.#x, x.#y);
+		} else if ( x instanceof Array ) {
+			return this.set(x[0], x[1]);
+		}
 		this.x(x);
 		this.y(y);
 		return this;
@@ -128,6 +133,14 @@ export class XY {
 	
 	getRatio() {
 		return this.#x / this.#y;
+	} // number
+	
+	getSin() {
+		return this.#y/this.getLength();
+	} // number
+	
+	getCos() {
+		return this.#x/this.getLength();
 	} // number
 	
 	invert() {

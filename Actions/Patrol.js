@@ -1,22 +1,25 @@
 // QQDOC
 
+import {Point} from '../primitives/index.js';
+import {END_STRATEGY} from '../CONST/index.js';
 import {WalkTo} from './WalkTo.js';
 
 export class Patrol extends WalkTo {
 	
-	_from;
+	#from = new Point();
 	
-	constructor(options) {
+	constructor(options = {}) {
 		super(options);
-		this._from = options.from;
+		this.#from.copy(options.from);
 	}
 	
-	finishAction() { // {O}
+	onEnd() { // {O}
 		this.changeDirection();
-	}
+		return END_STRATEGY.PREVENT_END;
+	} // boolean
 	
 	changeDirection() {
-		[this._from, this._to] = [this._to, this._from];
-	}
+		[this.#from, this._to] = [this._to, this.#from];
+	} // void
 	
 }

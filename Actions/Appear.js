@@ -1,14 +1,20 @@
+// QQDOC
+
 import {Idle} from './Idle.js';
 
 export class Appear extends Idle {
 	
-	tick(delta) {
-		super.tick(delta);
-		this._subj.setAlpha(this._progress);
+	constructor(options = {}) {
+		options.duration ??= 1;
+		super(options);
 	}
 	
-	onEnd() {
-		this._subj.setAlpha(1);
-	}
+	tickFn(delta) { // {O}
+		this._subject.alpha(this._progress);
+	} // void
+	
+	onEnd() { // {O}
+		this._subject.alpha(1);
+	} // void
 	
 }

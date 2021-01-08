@@ -1,5 +1,6 @@
 export * from './ANCHOR.js';
 export * from './AXIS.js';
+export * from './END_STRATEGY.js';
 export * from './PIVOT.js';
 export * from './FN.js';
 export * from './SOLID.js';

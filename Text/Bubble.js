@@ -1,6 +1,7 @@
 import * as QQ from '../QQ.js';
 import * as Actions from '../Actions/index.js';
 import * as style from '../style/index.js';
+import {END_STRATEGY} from '../CONST/index.js';
 import {ActionableMix} from '../Subject/ActionableMix.js';
 import {Point} from '../primitives/index.js';
 import {Text} from './Text.js';
@@ -22,11 +23,12 @@ export class Bubble extends
 		const thisPos = this.position();
 		this.setAction(
 			new Actions.MoveTo({
-				subj: this,
+				subject: this,
 				to: new Point(thisPos.x(), thisPos.y() - this._upHeight),
 				duration: this._durationUp,
 				onEnd: () => {
 					this.disappear();
+					return END_STRATEGY.SKIP_NEXT;
 				}
 			})
 		);
@@ -36,7 +38,9 @@ export class Bubble extends
 		this.setAction(
 			new Actions.Disappear({
 				duration: this._durationDisapper,
-				onEnd: () => this.destructor()
+				onEnd: () => {
+					this.destructor();
+				}
 			})
 		);
 	}

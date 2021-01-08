@@ -7,6 +7,7 @@ export function ActionableMix(base) { // Mix Actionable to base
 		
 		#action; // Current action
 		#idleAction = new Idle(); // Instance of Idle action
+		#pendingAction = null;
 		
 		constructor(options) {
 			super(options);
@@ -27,19 +28,27 @@ export function ActionableMix(base) { // Mix Actionable to base
 		}
 		
 		setAction(action) {
-			if ( this.#action.abortable() ) {
-				this.#action.onAbort();
+			if ( this.#action.isAbortable() ) {
+				this.#action.onAbort?.();
 				this.forceAction(action);
 				return true;
 			}
 			return false;
 		}
 		
+		setNextAction(action) {
+			this.#action.setNext(action);
+		}
+		
+		setPendingAction(action) {
+			this.#pendingAction = action;
+		}
+		
 		forceAction(action) { // Enforce action set
 			this.#action = action;
 			this.#action.reset();
 			this.#action.subject(this);
-			this.#action.onStart();
+			this.#action.onBegin?.();
 		} // void
 		
 		setIdleAction() { // Try to set Idle action
@@ -60,12 +69,16 @@ export function ActionableMix(base) { // Mix Actionable to base
 		
 		tick(delta) {
 			super.tick(delta);
+			if ( this.#pendingAction ) {
+				this.setAction(this.#pendingAction);
+				this.#pendingAction = null;
+			}
 			this.#action.tick(delta);
 		}
 		
-		draw(ctx) {
-			super.draw(ctx);
-			this.#action.draw(ctx);
+		draw(context) {
+			super.draw(context);
+			this.#action.draw?.(context);
 		}
 		
 	}

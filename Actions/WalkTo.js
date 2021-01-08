@@ -5,48 +5,37 @@ import {Idle} from './Idle.js';
 
 export class WalkTo extends Idle {
 	
-	_to = new Point();
-	#prevPosition;
+	_to = new Point(); // Protected for Patrol action
+	#prevPosition = new Point(NaN);
 	#power = 1;
 	
 	constructor(options) {
 		super(options);
 		this._to.copy(options.to);
-		this.#prevPosition = new Point(NaN);
 		if ( options.power ) this.#power = options.power;
 	}
 	
-	setTarget(to, power) {
+	set(to, power) {
 		this._to.copy(to);
 		if ( power ) this.#power = power;
 	} // void
 	
-	getTarget() {
-		return this._to;
-	} // subj
-	
-	tick(delta) { // {O}
-		if ( this.#prevPosition.isNear(this._subj.position()) ) {
-			this.finishAction();
+	tickFn(delta) { // {O}
+		const subj = this._subject;
+		const subjPosition = subj.position();
+		if ( this.#prevPosition.isNear(subjPosition) ) { // Stucked
+			this.end();
 			return;
 		}
-		const walked = this._subj.getSpeed() * delta * this.#power;
-		const from = this._subj.position();
-		const to = this._to;
-		const A = to.y() - from.y();
-		const B = to.x() - from.x();
-		const C = Math.sqrt(A*A + B*B);
-		const sin = A/C;
-		const cos = B/C;
-		const a = cos * walked;
-		const b = sin * walked;
-		if ( walked < C ) {
-			this.#prevPosition.copy(this._subj.position());
-			this._subj.addPosition(new Point(a, b));
+		const walked = subj.getSpeed() * this.#power * delta;
+		const remain = Point.subtraction(this._to, subjPosition);
+		if ( walked < remain.getLength() ) {
+			this.#prevPosition.copy(subjPosition);
+			subj.addPosition(remain.getCos()*walked, remain.getSin()*walked);
 		} else {
-			this._subj.position(to);
-			this.finishAction();
+			subj.position(this._to);
+			this.end();
 		}
-	}
+	} // void
 	
 }

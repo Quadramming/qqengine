@@ -8,25 +8,22 @@ export class DropOut extends Idle {
 	
 	#force = new Point();
 	
-	constructor(options) {
-		options.duration = 2;
+	constructor(options = {}) {
+		options.duration ??= 1;
 		super(options);
 		this.#force.set(maths.rand(-0.1, 0.1, false), -0.3);
 	}
 	
-	tick(delta) {
-		const subj = this.subj();
-		super.tick(delta);
-		this.#force.y(this.#force.y()+delta);
-		const position = subj.position();
-		position.add(this.#force);
-		subj.position(position);
-		subj.angle(subj.angle()+delta*20);
+	tickFn(delta) { // {O}
+		const subj = this._subject;
+		this.#force.y(this.#force.y() + delta);
+		subj.position().add(this.#force);
+		subj.angle(subj.angle() + delta*20);
 		subj.alpha(1 - this._progress);
-	}
+	} // void
 	
-	onEnd() {
-		this.subj().destructor();
-	}
+	onEnd() { // {O}
+		this._subject.destructor();
+	} // void
 	
 }

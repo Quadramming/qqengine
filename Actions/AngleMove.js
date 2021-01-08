@@ -1,35 +1,36 @@
-import {Point} from '../primitives/index.js';
+// QQDOC
+
 import {Idle} from './Idle.js';
 
 export class AngleMove extends Idle {
 	
-	constructor(input) {
-		super(input);
-		this._from = input.from;
-		this._to = input.to;
+	#from;
+	#to;
+	#offsetX;
+	#offsetY;
+	#signX;
+	#signY;
+	#distance;
+	
+	constructor(options = {}) {
+		options.duration ??= 1;
+		super(options);
+		this.#from = options.from;
+		this.#to = options.to;
+		this.#offsetX = Math.abs(this.#to.x() - this.#from.x());
+		this.#offsetY = Math.abs(this.#to.y() - this.#from.y());
+		this.#signX = this.#to.x() < this.#from.x() ? -1 : 1;
+		this.#signY = this.#to.y() < this.#from.y() ? -1 : 1;
+		this.#distance = this.#offsetX + this.#offsetY;
 	}
 	
-	/*
-	tick(delta) {
-		super.tick(delta);
-		const s = Math.sign;
-		const a = Math.abs;
-		const dist = new Point(
-			this._to.x() - this._from.x(),
-			this._to.y() - this._from.y()
-		);
-		let dist = a(dist.x()) + a(dist.y());
-		dist *= this._progress;
-		const progress = new Point(
-			dist > a(xDist) ? a(xDist) : dist,
-			dist - a(xDist) < 0 ? 0 : dist - a(xDist)
-		);
-		const point = new Point(
-			this._from.x() + progress.x() * s(dist.x()),
-			this._from.y() + progress.y() * s(dist.y())
-		);
-		this._subj.setPosition(point);
-	}
-	*/
+	tickFn(delta) { // {O}
+		const passed = this.#distance * this._progress;
+		const progressX = passed < this.#offsetX ? passed : this.#offsetX;
+		const progressY = passed < this.#offsetX ? 0 : passed - this.#offsetX;
+		const position = this._subject.position();
+		position.x(this.#from.x() + progressX*this.#signX);
+		position.y(this.#from.y() + progressY*this.#signY);
+	} // void
 	
 }
