@@ -28,9 +28,10 @@ export class AngleMove extends Idle {
 		const passed = this.#distance * this._progress;
 		const progressX = passed < this.#offsetX ? passed : this.#offsetX;
 		const progressY = passed < this.#offsetX ? 0 : passed - this.#offsetX;
-		const position = this._subject.position();
-		position.x(this.#from.x() + progressX*this.#signX);
-		position.y(this.#from.y() + progressY*this.#signY);
+		this._subject.position().set(
+			this.#from.x() + progressX*this.#signX,
+			this.#from.y() + progressY*this.#signY
+		);
 	} // void
 	
 }

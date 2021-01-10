@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 import * as Actions from '../Actions/index.js';
 import * as style from '../style/index.js';
@@ -10,40 +12,49 @@ export class Bubble extends
 	QQ.mixins(ActionableMix, Text)
 {
 	
-	constructor(options) {
+	#upHeight;
+	#durationUp;
+	#durationDisapper;
+	
+	constructor(options = {}) {
 		super(options);
-		this._alpha = 1;
-		this._upHeight = 0.5;
-		this._durationUp = 1;
-		this._durationDisapper = 0.5;
-		this.up();
+		this.#reset(options);
 	}
 	
-	up() {
-		const thisPos = this.position();
-		this.setAction(
-			new Actions.MoveTo({
-				subject: this,
-				to: new Point(thisPos.x(), thisPos.y() - this._upHeight),
-				duration: this._durationUp,
-				onEnd: () => {
-					this.disappear();
-					return END_STRATEGY.SKIP_NEXT;
-				}
-			})
-		);
-	}
+	reset(options = {}) { // {O}
+		super.reset(options);
+		this.#reset(options);
+	} // void
 	
-	disappear() {
-		this.setAction(
-			new Actions.Disappear({
-				duration: this._durationDisapper,
-				onEnd: () => {
-					this.destructor();
-				}
-			})
-		);
-	}
+	#reset(options) {
+		this.#upHeight = 0.5;
+		this.#durationUp = 1;
+		this.#durationDisapper = 0.5;
+		this.#up();
+	} // void
+		
+	#up() {
+		new Actions.MoveTo({
+			applyTo: this,
+			to: new Point(this.position().x(), this.position().y() - this.#upHeight),
+			duration: this.#durationUp,
+			onEnd: () => {
+				this.#disappear();
+				return END_STRATEGY.SKIP_NEXT;
+			}
+		});
+	} // void
+	
+	#disappear() {
+		new Actions.Disappear({
+			applyTo: this,
+			duration: this.#durationDisapper,
+			onEnd: () => {
+				this.destructor();
+				return END_STRATEGY.SKIP_NEXT;
+			}
+		});
+	} // void
 	
 	static make(options) {
 		const bubble = new Bubble(
@@ -53,6 +64,6 @@ export class Bubble extends
 			options.world.addSubject(bubble);
 		}
 		return bubble;
-	}
+	} // Text.Bubble
 	
 }

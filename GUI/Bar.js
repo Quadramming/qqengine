@@ -13,8 +13,8 @@ function fixOptions(options) {
 export class Bar extends Subject.Sprite {
 	
 	#text = new Text.Text(style.use('bar'));
-	#percent;
 	#maxSize;
+	#percent;
 	
 	constructor(options = {}) {
 		fixOptions(options);
@@ -26,25 +26,15 @@ export class Bar extends Subject.Sprite {
 		fixOptions(options);
 		super.reset(options);
 		this.#reset(options);
-	} // Void
+	} // void
 	
 	#reset(options) {
-		this.#maxSize = this.size().w();
 		this.#text.reset();
 		this.#text.size(this.size());
 		this.addSubject(this.#text);
+		this.#maxSize = this.size().w();
 		this.percent(options.percent ?? 0); // Will set #percent
-	} // Void
-	
-	percent(percent) { // {F}
-		if ( percent !== undefined ) {
-			this.#percent = percent;
-			this.#updateText();
-			const width = (this.#maxSize*percent)/100;
-			this.size().w(width);
-		}
-		return this.#percent;
-	} // Void
+	} // void
 	
 	#updateText() {
 		if ( this.#percent > 50 ) {
@@ -57,6 +47,15 @@ export class Bar extends Subject.Sprite {
 		} else {
 			this.#text.hide();
 		}
-	} // Void
+	} // void
+	
+	percent(percent) { // {F}
+		if ( percent !== undefined ) {
+			this.#percent = percent;
+			this.#updateText();
+			this.size().w( this.#maxSize*(percent/100) );
+		}
+		return this.#percent;
+	} // void
 	
 }

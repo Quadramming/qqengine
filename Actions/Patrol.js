@@ -1,7 +1,7 @@
 // QQDOC
 
-import {Point} from '../primitives/index.js';
 import {END_STRATEGY} from '../CONST/index.js';
+import {Point} from '../primitives/index.js';
 import {WalkTo} from './WalkTo.js';
 
 export class Patrol extends WalkTo {
@@ -16,7 +16,7 @@ export class Patrol extends WalkTo {
 	onEnd() { // {O}
 		this.changeDirection();
 		return END_STRATEGY.PREVENT_END;
-	} // boolean
+	} // CONST.END_STRATEGY
 	
 	changeDirection() {
 		[this.#from, this._to] = [this._to, this.#from];

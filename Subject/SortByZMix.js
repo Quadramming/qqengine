@@ -26,8 +26,8 @@ export function SortByZMix(base) {
 			if ( this.#isSortByZOnTick ) this.sortByZ();
 		}
 		
-		addSubject(subj) { // {O}
-			super.addSubject(subj);
+		addSubject(...subj) { // {O}
+			super.addSubject(...subj);
 			if ( this.#isSortByZOnAddSubject ) this.#sortByZ();
 		} // Void
 		
@@ -37,8 +37,8 @@ export function SortByZMix(base) {
 		} // Void
 		
 		#sortByZ() {
-			const copy = [...this.subjects()];
-			this.subjects().sort( (a, b) => {
+			const copy = [...this.getSubjects()];
+			this.getSubjects().sort( (a, b) => {
 				const cmp = a.z() - b.z();
 				return cmp !== 0 ? cmp : copy.indexOf(a) - copy.indexOf(b);
 			});

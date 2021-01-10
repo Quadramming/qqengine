@@ -32,7 +32,7 @@ export class LayersSprite extends Sprite {
 		} else {
 			throw Error('Wrong layer type');
 		}
-	} // Void
+	} // void
 	
 	drawImage(context) { // {O}
 		const size = this.size();
@@ -46,6 +46,6 @@ export class LayersSprite extends Sprite {
 				size.w(), size.h()
 			);
 		}
-	} // Void
+	} // void
 	
 }

@@ -11,8 +11,8 @@ export class InputBase {
 	#endHandler = event => this._handleEnd(event);
 	
 	constructor(target, queue) {
-		this.#target = target;
 		this._queue = queue;
+		this.#target = target;
 		this.#registerListners();
 	}
 	
@@ -28,17 +28,17 @@ export class InputBase {
 		this.#target.addEventListener('touchmove', this.#moveHandler, {passive: false});
 		this.#target.addEventListener('touchend', this.#endHandler, {passive: false});
 		this.#target.addEventListener('touchcancel', this.#endHandler, {passive: false});
-	}
+	} // void
 	
 	_prevent(event) {
 		if ( event.cancelable ) event.preventDefault();
-	}
+	} // void
 	
 	_getPoint(pageX, pageY) {
 		return new Point(
 			pageX - this.#target.offsetLeft,
 			pageY - this.#target.offsetTop,
 		);
-	}
+	} // new Point
 	
 }

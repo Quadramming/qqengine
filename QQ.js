@@ -1,46 +1,7 @@
+import './global.js';
 import {Application} from './Application.js';
 import {Sprite} from './Sprite/index.js';
-import { WCanvas } from './WCanvas.js';
-
-globalThis.a = a;
-globalThis.c = c;
-globalThis.d = d;
-globalThis.check = check;
-globalThis.dump = dump;
-
-export function a(message) {
-	alert(message);
-}
-
-export function c(variable, ...rest) {
-	let output = variable;
-	if ( rest.length > 0 ) {
-		output = String(output);
-		for ( const variable of rest ) {
-			output += ', ' + variable;
-		}
-	}
-	if ( output === undefined ) {
-		debugger;
-	}
-	console.log(output);
-}
-
-export function d() {
-	debugger;
-}
-
-export function check(condition, message = 'Check error') {
-	if ( ! condition ) {
-		throw Error(message);
-	}
-}
-
-export function dump(...rest) {
-	for ( const variable of rest ) {
-		console.log(variable);
-	}
-}
+import {WCanvas} from './WCanvas.js';
 
 export let APP = null;
 

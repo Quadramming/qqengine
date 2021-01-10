@@ -17,7 +17,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		
 		destructor() {
 			c('destructor');
-			super.destructor();
+			super.destructor?.();
 			this.cleanRelationships();
 			// TODO destruct All ?
 		}
@@ -31,6 +31,10 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			this.parent(options.parent ?? null);
 			this.#subjects.length = 0;
 			if ( options.selfAdd === true ) {
+				this.parent().addSubject(this);
+			}
+			if ( options.addTo ) {
+				this.parent(options.addTo);
 				this.parent().addSubject(this);
 			}
 		}
@@ -53,13 +57,11 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			return this.#subjects.filter(condition);
 		}
 		
-		subjects() {
-			return this.#subjects;
-		}
-		
-		addSubject(subj) {
-			subj.parent(this);
-			this.#subjects.push(subj);
+		addSubject(...subjs) {
+			for ( const subj of subjs ) {
+				subj.parent(this);
+				this.#subjects.push(subj);
+			}
 		}
 		
 		deleteSubjects() {
@@ -111,6 +113,27 @@ export function RelationshipMix(base) { // Mix Relationship to base
 			for ( const subj of [...this.#subjects] ) {
 				fn(subj);
 			}
+		}
+		
+		getAllSubjects(predicate = () => true) {
+			const subjs = [];
+			this.forAllSubjects( subj => {
+				if ( predicate(subj) ) subjs.push(subj);
+			});
+			return subjs;
+		}
+		
+		getSubject(predicate = () => true) {
+			for ( const subj of this.#subjects ) {
+				if ( predicate(subj) ) return subj;
+				const found = subj.getSubject(predicate);
+				if ( found ) return found;
+			}
+			return null;
+		} // null | Subject
+		
+		getSubjects() {
+			return this.#subjects;
 		}
 		
 	}

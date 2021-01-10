@@ -8,7 +8,7 @@ function merge(...objs) {
 	const result = QQ.merge(...objs);
 	delete result.styles;
 	return result;
-}
+} // Object
 
 function apply(...styles) {
 	let result = {
@@ -36,15 +36,14 @@ function apply(...styles) {
 		}
 	}
 	return result;
-}
+} // Object
 
 export function set(name, obj) {
 	map.set(name, obj);
-}
+} // void
 
 export function use(...styles) {
 	const result = apply('default', styles);
 	delete result.usedStyles;
 	return result;
-}
-
+} // Object

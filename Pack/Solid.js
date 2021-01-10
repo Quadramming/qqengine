@@ -8,8 +8,8 @@ export class Solid extends Pack {
 	
 	#offset = new Offset(); // Offset form basis is basis exists
 	#getBasis; // Function to get current position
-	#type;
-	#weight;
+	#type; // Type of solid subject CONST.SOLID
+	#weight; // Mass of subject
 
 	constructor(options = {}) {
 		super(options);
@@ -19,14 +19,14 @@ export class Solid extends Pack {
 	reset(options = {}) { // {O}
 		super.reset(options);
 		this.#reset(options);
-	} // Void
+	} // void
 	
 	#reset(options) {
 		this.#offset.copyOrSet(options.offset, 0, 0);
 		this.#getBasis = options.getBasis ?? null;
 		this.#type = options.type ?? SOLID.STATIC;
 		this.#weight = options.weight ?? 1;
-	} // Void
+	} // void
 	
 	position(position) { // {O}
 		if ( this.#getBasis ) {
@@ -40,15 +40,15 @@ export class Solid extends Pack {
 	weight(weight) { // {F}
 		if ( weight !== undefined ) {
 			this.#weight = weight;
-			this.packUpdate();
+			this.packUpdate?.();
 		}
 		return this.#weight;
-	} // Number
+	} // number
 	
 	type(type) { // {F}
 		if ( type !== undefined ) {
 			this.#type = type;
-			this.packUpdate();
+			this.packUpdate?.();
 		}
 		return this.#type;
 	} // CONST.SOLID

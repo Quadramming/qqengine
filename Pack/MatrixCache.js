@@ -16,13 +16,13 @@ export class MatrixCache extends Pack {
 	reset(options = {}) { // {O}
 		super.reset(options);
 		this.#reset(options);
-	} // Void
+	} // void
 	
 	#reset(options) {
 		this.#target = options.parent;
 		// #target can be defined latter on addSubject()
 		this.#matrix = this.#target?.calcMatrix() ?? matrix.getIdentity();
-	} // Void
+	} // void
 
 	get() {
 		if ( this.isChanged() ) {
@@ -34,7 +34,7 @@ export class MatrixCache extends Pack {
 			this.angle(this.#target.angle());
 		}
 		return this.#matrix;
-	} // Matrix
+	} // matrix
 	
 	isChanged() {
 		if ( ! this.position().isEquals(this.#target.position()) ) {
@@ -53,6 +53,6 @@ export class MatrixCache extends Pack {
 			return true;
 		}
 		return false;
-	} // Boolean
+	} // boolean
 	
 }

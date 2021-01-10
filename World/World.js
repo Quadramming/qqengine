@@ -1,190 +1,87 @@
-import * as QQ from '../QQ.js';
+// QQDOC
+
 import * as Subject from '../Subject/index.js';
-import {Size, Point} from '../primitives/index.js';
+import {TickerVary} from './TickerVary.js';
+import {TickerConst} from './TickerConst.js';
+import {TICK_TYPE} from '../CONST/index.js';
 
 export class World {
 	
-	//================================================================
-	// Constructor
-	//================================================================
+	#background = null;
+	#ticker;
+	#stage;
 	
-	constructor(options) {
-		this._app = options.app;
-		this._seizure = options.seizure;
-		this._background = null;
-		this._deltaAccum = 0;
-		this._maxTicks = QQ.useDefault(options.maxTicks, 10);
-		this._timeStep = QQ.useDefault(options.timeStep, 0.0166);
-		this._pauseTime = QQ.useDefault(options.pauseTime, 0.5);
-		this._isPauseable = QQ.useDefault(options.isPauseable, false);
-		this._tickType = QQ.useDefault(options.tickType, 'var');
-		if ( options.stageConstructor ) {
-			this._stage = new options.stageConstructor({
-				isSortByZOnTick: options.isSortByZOnTick,
-				isSortByZOnAdd: options.isSortByZOnAdd,
-				world: this
-			});
-		} else {
-			this._stage = new Subject.Stage({
-				isSortByZOnTick: options.isSortByZOnTick,
-				isSortByZOnAdd: options.isSortByZOnAdd,
-				world: this
-			});
+	constructor(options = {}) {
+		const tickType = options.tickType ?? TICK_TYPE.VARY;
+		if ( tickType === TICK_TYPE.VARY ) {
+			this.#ticker = new TickerVary(options.ticker);
+		} else { // TICK_TYPE.CONST
+			this.#ticker = new TickerConst(options.ticker);
 		}
+		const stageClass = options.stageConstructor ?? Subject.Stage;
+		this.#stage = new stageClass({
+			world: this,
+			isSortByZOnTick: options.isSortByZOnTick,
+			isSortByZOnAdd: options.isSortByZOnAdd,
+		});
 	}
 	
 	destructor() {
-		this._seizure = null;
-		this._stage.destructor();
+		this.#stage.destructor();
 	}
 	
-	//================================================================
-	// Tick
-	//================================================================
-
 	tick(delta) {
-		if ( this._tickType === 'var' ) {
-			this.tickVariableStep(delta);
-		} else { // 'const'
-			this.tickConstantStep(delta);
-		}
-	}
+		this.#ticker.tick(delta, delta => {
+			this.#stage.tick(delta);
+		});
+	} // void
 
-	tickVariableStep(delta) {
-		if ( delta < this._pauseTime ) {
-				this._stage.tick(delta);
-				this.tickStep(delta);
-		} else {
-			if ( this._isPauseable ) {
-				this._app.pause();
-			}
-		}
-	}
+	clearStage() {
+		this.#stage.deleteSubjects();
+	} // void
 	
-	tickConstantStep(delta) {
-		let ticksDone = 0;
-		this._deltaAccum += delta;
-		if ( this._deltaAccum < this._pauseTime ) {
-			while ( this._deltaAccum > this._timeStep) {
-					if ( ticksDone >= this._maxTicks ) {
-						this._deltaAccum = 0;
-						break;
-					}
-					this._stage.tick(this._timeStep);
-					this.tickStep(this._timeStep);
-					this._deltaAccum -= this._timeStep;
-					ticksDone++;
-			}
-		} else {
-			this._deltaAccum = 0;
-			if ( this._isPauseable ) {
-				this._app.pause();
-			}
-		}
-	}
+	addSubject(...subjs) { // Add subject or subjects to stage
+		this.#stage.addSubject(...subjs);
+	} // void
 	
-	tickStep(delta) {
-	}
+	makeSubject(options) { // Make and add object to this world by options
+		options.addTo = this;
+		return Subject.make(options);
+	} // Subject
 	
-	//================================================================
-	// Background
-	//================================================================
+	getStage() {
+		return this.#stage;
+	} // Subject
 	
-	background(background) {
+	getSubjects(predicate) {
+		return this.#stage.getAllSubjects(predicate);
+	} // array of Subjects
+	
+	getSubject(predicate) {
+		return this.#stage.getSubject(predicate);
+	} // Subject | null
+	
+	getSubjectsAtPoint(point) { // Not only hittable
+		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)
+		return this.getSubjects( subj => subj.isHere?.(point) );
+	} // array of Subjects
+	
+	getSubjectAtPoint(point) { // Only hitabble subjects
+		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)
+		return this.getSubject( subj => subj.isHit?.(point) );
+	} // Subject | null
+	
+	background(background) { // {F} Can take '#ffffff', 'imageid' or null
 		if ( typeof background === 'string' && background[0] === '#') {
-			this._background = background;
+			this.#background = background;
 		} else if ( typeof background === 'string' ) {
-			this._background = new Subject.Sprite({
+			this.#background = new Subject.Sprite({
 				imageId: background
 			});
 		} else if ( background === null ) {
-			this._background = null;
+			this.#background = null;
 		}
-		return this._background;
-	}
-	
-	//================================================================
-	// Subjects
-	//================================================================
-	
-	clearStage() {
-		this._stage.deleteSubjects();
-	}
-	
-	addSubject(...subjs) {
-		for ( const subj of subjs ) {
-			this._stage.addSubject(subj);
-		}
-	}
-	
-	makeSubject(options) {
-		const subj = Subject.make(options);
-		this._stage.addSubject(subj);
-		return subj;
-	}
-	
-	getStage() {
-		return this._stage;
-	}
-	
-	getSubjectAtPoint(point) {
-		const subjs = this.getSubjects((subj) => {
-			return subj instanceof Subject.Subject && subj.isHit(point);
-		});
-		if ( subjs.length === 0 ) {
-			return null;
-		} else {
-			return subjs.pop();
-		}
-	}
-	
-	getAllSubjectsAtPoint(point) {
-		return this.getSubjects((subj) => {
-			return subj instanceof Subject.Subject && subj.isHere(point);
-		});
-	}
-	
-	getSubjects(pred = () => true) {
-		const subjs = [];
-		this._stage.forAllSubjects((subj) => {
-			if ( pred(subj) ) {
-				subjs.push(subj);
-			}
-		});
-		return subjs;
-	}
-	
-	getSubject(pred = () => true) {
-		const subjs = [];
-		this._stage.forAllSubjects((subj) => {
-			if ( pred(subj) ) {
-				subjs.push(subj);
-			}
-		});
-		if ( subjs.length === 0 ) {
-			return null;
-		}
-		return subjs.shift();
-	}
-	
-	//================================================================
-	// Common
-	//================================================================
-	
-	getInput() {
-		return this._seizure.getInput();
-	}
-	
-	setPauseable(v) {
-		this._isPauseable = v;
-	}
-	
-	setTickType(type) {
-		this._tickType = type;
-	}
-	
-	setTickTimeStep(time) {
-		this._timeStep = time;
-	}
+		return this.#background;
+	} // string | null | Subject
 	
 }

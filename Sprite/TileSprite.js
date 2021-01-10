@@ -3,7 +3,6 @@
 import {Sprite} from './Sprite.js';
 import {Point, Size} from '../primitives/index.js';
 
-// TOFIX avoid real pixels
 export class TileSprite extends Sprite {
 	
 	#tileSize = new Size(1, 1);
@@ -11,7 +10,7 @@ export class TileSprite extends Sprite {
 	
 	constructor(image, tileSize, tileOffset) {
 		super(image);
-		this.setTileSize(tileSize ?? this.#tileSize); // Will recalc this.#tileSize as anchor
+		this.setTileSize(tileSize ?? this.#tileSize); // Will recalc this.#tileSize from anchor
 		if ( tileOffset ) this.setTileOffset(tileOffset);
 	}
 	
@@ -21,7 +20,7 @@ export class TileSprite extends Sprite {
 			size.x()*tileSize.x(),
 			size.y()*tileSize.y()
 		);
-	} // Void
+	} // void
 	
 	setTileOffset(offset) {
 		const size = this.size();
@@ -29,7 +28,7 @@ export class TileSprite extends Sprite {
 			size.x()*(offset.x() % this.#tileSize.x()) - this.#tileSize.x(),
 			size.y()*(offset.y() % this.#tileSize.y()) - this.#tileSize.y()
 		);
-	} // Void
+	} // void
 	
 	drawImage(context) { // {O}
 		const size = this.size();
@@ -54,6 +53,6 @@ export class TileSprite extends Sprite {
 		}
 		context.beginPath(); // reset path
 		context.restore(); // reset clip
-	} // Void
+	} // void
 	
 }

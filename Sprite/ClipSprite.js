@@ -32,6 +32,6 @@ export class ClipSprite extends Sprite {
 			0, 0,
 			size.w(), size.h()
 		);
-	} // Void
+	} // void
 	
 }

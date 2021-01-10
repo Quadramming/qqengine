@@ -32,7 +32,7 @@ export class AnimateSprite extends Sprite {
 	tick(delta) { // {O}
 		super.tick(delta);
 		this.#passedTime += delta;
-	} // Void
+	} // void
 	
 	drawImage(context) { // {O}
 		const size = this.size();
@@ -46,6 +46,6 @@ export class AnimateSprite extends Sprite {
 			0, 0,
 			this.#frameWidth, size.h()
 		);
-	} // Void
+	} // void
 	
 }

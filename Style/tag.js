@@ -13,7 +13,7 @@ function add(out, text) {
 	for ( const name of text ) {
 		if ( name ) out.push(name);
 	}
-}
+} // void
 
 export function S(strs, ...substs) {
 	const out = [];
@@ -27,4 +27,4 @@ export function S(strs, ...substs) {
 		add(out, strs[i+1]);
 	}
 	return style.use(...out);
-}
+} // Object

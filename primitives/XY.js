@@ -16,14 +16,14 @@ export class XY {
 		this.set(x, y)
 	}
 	
-	static NIL() {
+	static NIL() { // Get static zero-valued XY (don't edit it)
 		if ( this.NIL_VALUE === undefined ) {
 			this.NIL_VALUE = this.ZERO();
 		}
 		return this.NIL_VALUE;
-	}
+	} // XY
 	
-	static ZERO() {
+	static ZERO() { // Create zero-valued XY
 		return this.spawn(0, 0);
 	} // new XY
 	
@@ -98,8 +98,7 @@ export class XY {
 		if ( xy.hasNaN() || this.hasNaN() ) {
 			return false;
 		}
-		return Math.abs(xy.#x - this.#x) <= epsilon
-		    && Math.abs(xy.#y - this.#y) <= epsilon;
+		return Math.abs(xy.#x - this.#x) <= epsilon && Math.abs(xy.#y - this.#y) <= epsilon;
 	} // boolean
 	
 	isCorrect() { // Has no NaN
@@ -207,7 +206,7 @@ export class XY {
 	
 	#check(value) { // Check if value number
 		if ( typeof value !== 'number' ) {
-			throw new Error(`Has to be number`);
+			throw Error(`Has to be number`);
 		}
 	} // void
 	

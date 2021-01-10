@@ -14,7 +14,7 @@ export class Input extends InputBase {
 				point: this._getPoint(touch.pageX, touch.pageY)
 			});
 		}
-	}
+	} // void
 	
 	_handleMove(event) {
 		this._prevent(event);
@@ -25,7 +25,7 @@ export class Input extends InputBase {
 				point: this._getPoint(touch.pageX, touch.pageY)
 			});
 		}
-	}
+	} // void
 	
 	_handleEnd(event) {
 		this._prevent(event);
@@ -36,6 +36,6 @@ export class Input extends InputBase {
 				point: this._getPoint(touch.pageX, touch.pageY)
 			});
 		}
-	}
+	} // void
 	
 }

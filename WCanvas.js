@@ -6,12 +6,12 @@ export class WCanvas {
 	
 	#canvas = document.createElement('canvas');
 	#context = this.#canvas.getContext('2d');
-	#size;
+	#size = new Size();
 	
 	constructor(x, y) {
-		this.#size = new Size(x, y);
 		this.#canvas.width = x;
 		this.#canvas.height = y;
+		this.#size.set(x, y);
 	}
 	
 	drawImage(...args) {

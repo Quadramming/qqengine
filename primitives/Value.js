@@ -2,16 +2,15 @@
 
 export class Value {
 	
-	#value; // Mixed saved value
+	#value; // Saved number
 	
 	constructor(value = 0) {
-		this.#value = 0;
-		this.v(value);
+		this.value(value);
 	}
 	
 	isClear() {
 		return this.#value === 0;
-	} // Boolean
+	} // boolean
 	
 	clear() {
 		this.#value = 0;
@@ -31,10 +30,10 @@ export class Value {
 			this.#value = value;
 		}
 		return this.#value;
-	} // Mixed
+	} // number
 	
 	v(value) { // {F}
 		return this.value(value);
-	} // Mixed
+	} // number
 	
 }

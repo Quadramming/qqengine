@@ -9,7 +9,6 @@ function fixOptions(options) {
 
 export class Button extends Subject.Sprite {
 	
-	#text = new Text.Text();
 	#onButtonClickDown;
 	#onButtonClick;
 
@@ -23,28 +22,28 @@ export class Button extends Subject.Sprite {
 		fixOptions(options);
 		super.reset(options);
 		this.#reset(options);
-	} // Void
+	} // void
 	
 	#reset(options) {
 		if ( options.text ) {
-			this.#text.reset({
+			new Text.Text({
+				addTo: this,
 				text: options.text,
 				size: this.size()
 			});
-			this.addSubject(this.#text);
 		}
 		this.#onButtonClickDown = options.onButtonClickDown ?? null;
 		this.#onButtonClick = options.onButtonClick ?? null;
-	} // Void
+	} // void
 	
 	onClickDown(worldPoint) { // {O}
 		super.onClickDown(worldPoint);
 		this.#onButtonClickDown?.(worldPoint);
-	} // Void
+	} // void
 	
 	onClick(worldPoint) { // {O}
 		super.onClick(worldPoint);
 		this.#onButtonClick?.(worldPoint);
-	} // Void
+	} // void
 	
 }

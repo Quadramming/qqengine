@@ -23,37 +23,37 @@ export class CheckBox extends Subject.Sprite {
 		fixOptions(options);
 		super.reset(options);
 		this.#reset(options);
-	} // Void
+	} // void
 	
 	#reset(options) {
 		this.#onChange = options.onChange ?? null;
 		this.#isChecked = options.isChecked ?? false;
 		this.#isByTouch = options.isTouch ?? false;
 		this.#refreshImage();
-	} // Void
+	} // void
 	
 	change() {
 		this.#isChecked = ! this.#isChecked;
 		this.#onChange?.(this.#isChecked);
 		this.#refreshImage();
-	} // Void
+	} // void
 	
 	isChecked() {
 		return this.#isChecked;
-	} // Boolean
+	} // boolean
 	
 	onClickDown(worldPoint) { // {O}
 		super.onClickDown(worldPoint);
 		if ( this.#isByTouch ) this.change();
-	} // Void
+	} // void
 	
 	onClick(worldPoint) { // {O}
 		super.onClick(worldPoint);
 		if ( ! this.#isByTouch ) this.change();
-	} // Void
+	} // void
 	
 	#refreshImage() {
 		this.imageId(this.#isChecked ? 'checkBoxChecked' : 'checkBoxEmpty');
-	} // Void
+	} // void
 	
-};
+}

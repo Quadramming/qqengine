@@ -14,6 +14,7 @@ export class Idle {
 	#isEnded = false; // End flag
 	
 	// Can be overridden:
+	// tickFn()
 	// draw(context)
 	// onBegin()
 	// onEnd()
@@ -36,7 +37,7 @@ export class Idle {
 		if ( options.onEnd ) this.onEnd = options.onEnd;
 	}
 	
-	reset() {
+	reset() { // {V}
 		this._lasting = 0;
 		this._progress = 0;
 	} // void
@@ -49,7 +50,7 @@ export class Idle {
 		this.#next = next;
 	} // void
 	
-	endAction() { // {V}
+	endAction() {
 		const strategy = this.onEnd?.() ?? END_STRATEGY.NEXT;
 		if ( strategy === END_STRATEGY.PREVENT_END ) {
 			this.#isEnded = false;
@@ -60,12 +61,13 @@ export class Idle {
 				this._subject.forceIdleAction();
 			}
 		} else { // END_STRATEGY.SKIP_NEXT
+			// Nothing
 		}
 	} // void
 	
 	end() {
 		this.#isEnded = true;
-	}
+	} // void
 	
 	tick(delta) {
 		this._lasting += delta;

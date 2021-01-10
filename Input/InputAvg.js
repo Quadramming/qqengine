@@ -17,7 +17,7 @@ export class InputAvg extends InputBase {
 		} else {
 			this._handleMove(event);
 		}
-	}
+	} // void
 	
 	_handleMove(event) {
 		this._prevent(event);
@@ -32,7 +32,7 @@ export class InputAvg extends InputBase {
 			id: 0,
 			point: this._getPoint(point.x()/points, point.y()/points)
 		});
-	}
+	} // void
 	
 	_handleEnd(event) {
 		this._prevent(event);
@@ -45,6 +45,6 @@ export class InputAvg extends InputBase {
 		} else {
 			this._handleMove(event);
 		}
-	}
+	} // void
 	
 }

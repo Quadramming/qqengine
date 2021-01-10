@@ -50,7 +50,7 @@ export class Rect {
 			}
 		}
 		return false;
-	} // Boolean
+	} // boolean
 	
 	isIntersect(rect) {
 		if ( this.bottom() <= rect.top() || this.top() >= rect.bottom() ) {
@@ -60,7 +60,7 @@ export class Rect {
 			return false;
 		}
 		return true;
-	} // Boolean
+	} // boolean
 	
 	intersectValue(rect) {
 		if ( ! this.isIntersect(rect) ) {
@@ -78,7 +78,7 @@ export class Rect {
 			value.y(maths.absMin(y1, y2));
 		}
 		return value;
-	} // new Point
+	} // new Point | boolean
 	
 	intersectResolve(rect) {
 		const value = this.intersectValue(rect);
@@ -97,59 +97,59 @@ export class Rect {
 		this.#y = y;
 		this.#width = width;
 		this.#height = height;
-	} // Void
+	} // void
 	
 	x(x) { // {F}
 		if ( x !== undefined ) {
 			this.#x = x;
 		}
 		return this.#x;
-	} // Number
+	} // number
 	
 	y(y) { // {F}
 		if ( y !== undefined ) {
 			this.#y = y;
 		}
 		return this.#y;
-	} // Number
+	} // number
 	
 	width(width) { // {F}
 		if ( width !== undefined ) {
 			this.#width = width;
 		}
 		return this.#width;
-	} // Number
+	} // number
 	
 	height(height) { // {F}
 		if ( height !== undefined ) {
 			this.#height = height;
 		}
 		return this.#height;
-	} // Number
+	} // number
 	
 	w(w) { // {F}
 		return this.width(w);
-	} // Number
+	} // number
 	
 	h(h) { // {F}
 		return this.height(h);
-	} // Number
+	} // number
 	
 	left() {
 		return this.#x;
-	} // Number
+	} // number
 	
 	right() {
 		return this.#x + this.#width;
-	} // Number
+	} // number
 	
 	top() {
 		return this.#y;
-	} // Number
+	} // number
 	
 	bottom() {
 		return this.#y + this.#height;
-	} // Number
+	} // number
 	
 	size() {
 		return new Size(this.#width, this.#height);
@@ -170,7 +170,7 @@ export class Rect {
 		} else if ( point.y() > this.bottom() ) {
 			point.y( this.bottom() );
 		}
-	} // Void
+	} // void
 	
 	debug() {
 		c('Rect: (');
@@ -179,6 +179,6 @@ export class Rect {
 		c('width: ' + this.#width);
 		c('height: ' + this.#height);
 		c(')');
-	} // Void
+	} // void
 	
 }

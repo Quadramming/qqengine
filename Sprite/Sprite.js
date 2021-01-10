@@ -15,7 +15,7 @@ export class Sprite {
 	}
 	
 	tick(delta) { // {V}
-	} // Void
+	} // void
 	
 	draw(context) {
 		if ( ! this.#isDisabled ) {
@@ -24,7 +24,7 @@ export class Sprite {
 			}
 			this.drawImage(context);
 		}
-	} // Void
+	} // void
 	
 	drawImage(context) { // {V}
 		context.drawImage(
@@ -32,11 +32,11 @@ export class Sprite {
 			0, 0,
 			this.#size.w(), this.#size.h()
 		);
-	} // Void
+	} // void
 	
 	getRatio() {
 		return this.#size.getRatio();
-	} // Number
+	} // number
 	
 	getFrameSize() { // {V}
 		return this.#size;
@@ -47,14 +47,14 @@ export class Sprite {
 			this.#alpha = alpha;
 		}
 		return this.#alpha;
-	} // Number
+	} // number
 	
 	disabled(disabled) { // {F}
 		if ( disabled !== undefined ) {
 			this.#isDisabled = disabled;
 		}
 		return this.#isDisabled;
-	} // Boolean
+	} // boolean
 	
 	image(image) { // {F}
 		if ( image !== undefined ) {

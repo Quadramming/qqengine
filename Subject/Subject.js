@@ -66,9 +66,9 @@ export class Subject extends
 		}
 		this.forSubjects( subj => subj.draw(context) );
 		if ( this.#doDebugDraw ) {
-			this.#drawWorldBorder(context);
-			this.#drawLocalBorder(context);
-			this.#drawCenter(context);
+			this.drawWorldBorder(context);
+			this.drawLocalBorder(context);
+			this.drawCenter(context);
 		}
 	}
 	
@@ -156,7 +156,7 @@ export class Subject extends
 		);
 	}
 	
-	#drawWorldBorder(context) {
+	drawWorldBorder(context) {
 		context.cleanTransform();
 		const rect = this.getBounds();
 		const ctx = context.get();
@@ -172,7 +172,7 @@ export class Subject extends
 		ctx.stroke();
 	}
 	
-	#drawLocalBorder(context) {
+	drawLocalBorder(context) {
 		context.transform( this.getMatrix() );
 		const rect = this.getLocalRect();
 		const ctx = context.get();
@@ -188,7 +188,7 @@ export class Subject extends
 		ctx.stroke();
 	}
 	
-	#drawCenter(context) {
+	drawCenter(context) {
 		context.cleanTransform();
 		let point = this.localToWorld(Point.ZERO());
 		const ctx = context.get();
