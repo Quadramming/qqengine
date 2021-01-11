@@ -156,10 +156,10 @@ export class Subject extends
 		);
 	}
 	
-	drawWorldBorder(context) {
-		context.cleanTransform();
+	drawWorldBorder(wcontext) {
+		wcontext.cleanTransform();
 		const rect = this.getBounds();
-		const ctx = context.get();
+		const ctx = wcontext.get();
 		ctx.beginPath();
 		ctx.rect(
 			rect.x(),
@@ -188,10 +188,10 @@ export class Subject extends
 		ctx.stroke();
 	}
 	
-	drawCenter(context) {
-		context.cleanTransform();
+	drawCenter(wcontext) {
+		wcontext.cleanTransform();
 		let point = this.localToWorld(Point.ZERO());
-		const ctx = context.get();
+		const ctx = wcontext.get();
 		ctx.beginPath();
 		ctx.arc(point.x(), point.y(), 0.1, 0, 2 * Math.PI);
 		ctx.lineWidth = 0.05;

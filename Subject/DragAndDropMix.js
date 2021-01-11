@@ -92,9 +92,7 @@ export function DragAndDropMix(base) {
 		}
 		
 		#clampToClip(position) { // Clamp position in #clip if necessary
-			if ( this.#clip ) {
-				this.#clip.enclose(position);
-			}
+			this.#clip?.enclose(position);
 		}
 		
 		setClip(rect) {

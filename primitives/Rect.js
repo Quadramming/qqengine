@@ -159,7 +159,7 @@ export class Rect {
 		return new Point(this.#x + this.#width/2, this.#y + this.#height/2);
 	} // new Point
 	
-	enclose(point) {
+	enclose(point) { // Clamp
 		if ( point.x() > this.right() ) {
 			point.x( this.right() );
 		} else if ( point.x() < this.left() ) {

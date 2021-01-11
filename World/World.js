@@ -30,6 +30,10 @@ export class World {
 		this.#stage.destructor();
 	}
 	
+	draw(wcontext) {
+		this.#stage.draw(wcontext);
+	} // void
+	
 	tick(delta) {
 		this.#ticker.tick(delta, delta => {
 			this.#stage.tick(delta);

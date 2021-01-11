@@ -54,9 +54,7 @@ export function ScrollMix(base) {
 					this.getCamera().getPosition(),
 					offset
 				);
-				if ( this._scroll.clip ) {
-					this._scroll.clip.enclose(position);
-				}
+				this._scroll.clip?.enclose(position);
 				this.getCamera().setPosition(position);
 			}
 		}

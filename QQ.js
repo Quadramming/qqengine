@@ -81,7 +81,7 @@ export function isNumbers(...args) {
 	return true;
 }
 
-export function setTransform(context, matrix) {
+export function setTransform(matrix, context) {
 	if ( context instanceof WCanvas ) {
 		context = context.getContext();
 	}
@@ -139,3 +139,6 @@ export function createSpriteByUrl(imageUrl) {
 	return new Sprite( APP.getImageManager().get(imageUrl) );
 } // new Sprite
 
+export function isEmpty(array) {
+	return array.length === 0;
+}

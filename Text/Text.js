@@ -69,17 +69,17 @@ export class Text extends Subject.Subject {
 		this.#hidden = true;
 	} // void
 	
-	draw(contextWrapper) { // {O}
+	draw(wcontext) { // {O}
 		if ( this.#hidden ) {
 			return;
 		}
-		contextWrapper.transform(this.getMatrix());
-		if ( this.#border ) super.drawLocalBorder(contextWrapper);
-		super.draw(contextWrapper);
-		const context = contextWrapper.get();
+		wcontext.transform(this.getMatrix());
+		if ( this.#border ) super.drawLocalBorder(wcontext);
+		super.draw(wcontext);
+		const context = wcontext.get();
 		this.#setupContext(context);
 		if ( this.#needCalculation ) this.#calculate(context);
-		contextWrapper.transform(
+		wcontext.transform(
 			Matrix.mul(this.getMatrix(), Matrix.getScale(this.#textScale))
 		);
 		const localRect = this.getLocalRect();

@@ -38,7 +38,7 @@ export function increaseToRatio(size, target) {
 	} else {
 		return new Size(size.w(), size.w()/target);
 	}
-}
+} // new Size
 
 export function getOffset(size, anchor) {
 	return new Offset(

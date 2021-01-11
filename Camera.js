@@ -2,8 +2,8 @@
 
 import * as QQ from './QQ.js';
 import * as Matrix from './matrix.js';
-import * as Maths from './maths.js';
 import * as Subject from './Subject/index.js';
+import * as maths from './maths.js';
 import {Point, Size, Rect, Scale} from './primitives/index.js';
 
 export class Camera {
@@ -18,12 +18,23 @@ export class Camera {
 	#clip = null;
 	#onResizeFn = () => this.#calcMainMatrix();
 	#isDrawAxis = false; // Is draw axis
+	#wcontext;
+	
+	// Can be overridden:
+	// tick()
 	
 	constructor(world, canvas) {
 		this.#world = world;
 		this.#canvas = canvas;
 		this.#context = canvas.getContext('2d');
 		this.#calcMainMatrix();
+		this.#wcontext = { // WrappedContext
+			get: () => this.#context, // Get context
+			// Apply matrix to context thru #mainMatrix:
+			transform: (matrix, context = this.#context) => this.setTransform(matrix, context),
+			// Apply only #mainMatrix to context:
+			cleanTransform: (context = this.#context) => QQ.setTransform(this.#mainMatrix, context)
+		};
 		QQ.APP.addOnResize( this.#onResizeFn );
 	}
 	
@@ -31,65 +42,35 @@ export class Camera {
 		QQ.APP.removeOnResize( this.#onResizeFn );
 	}
 	
-	//================================================================
-	// Percents
-	//================================================================
-	
 	widthToPercent(x) {
 		return x / (this.#canvas.width/100);
-	}
+	} // number
 	
 	heightToPercent(y) {
 		return y / (this.#canvas.height/100);
-	}
+	} // number
 	
 	widthPercentsToPx(x) {
 		return this.#canvas.width*x / 100;
-	}
+	} // number
 	
 	heightPercentsToPx(y) {
 		return this.#canvas.height*y / 100;
-	}
-	
-	//================================================================
-	// Getters/Setters
-	//================================================================
-	
-	getViewSize() {
-		return this.#viewSize;
-	}
-	
-	getViewRect() {
-		return new Rect(
-			this.#position.x() - this.#viewSize.w()/2,
-			this.#position.y() - this.#viewSize.h()/2,
-			this.#viewSize.w(),
-			this.#viewSize.h()
-		);
-	}
-	
-	getPosition() {
-		return this.#position;
-	}
+	} // number
 	
 	addPosition(offset) {
 		this.#position.translate(offset);
 		this.#calcMainMatrix();
-	}
+	} // void
 	
 	addView(addition) {
 		this.#initViewSize.add(addition);
 		this.#calcMainMatrix();
-	}
-	
-	setPosition(point) {
-		this.#position = point;
-		this.#calcMainMatrix();
-	}
+	} // void
 	
 	setClip(rect) {
 		if ( rect instanceof Rect ) {
-			if ( clip ) {
+			if ( this.#clip ) {
 				this.#clip.copy(rect);
 			} else {
 				this.#clip = rect.clone();
@@ -98,16 +79,16 @@ export class Camera {
 			this.#clip = null;
 		}
 		this.#calcMainMatrix();
-	}
+	} // void
 	
-	setView(size) {
-		this.#initViewSize.copy(size);
-		this.#calcMainMatrix();
-	}
-	
-	//================================================================
-	// Common
-	//================================================================
+	getViewRect() {
+		return new Rect(
+			this.#position.x() - this.#viewSize.w()/2,
+			this.#position.y() - this.#viewSize.h()/2,
+			this.#viewSize.w(),
+			this.#viewSize.h()
+		);
+	} // new Rect
 	
 	getWorldFromScreen(point) {
 		const M = Matrix.mul(
@@ -115,32 +96,22 @@ export class Camera {
 			[[point.x()],[point.y()],[1]]
 		);
 		return new Point(M[0][0], M[1][0]);
-	}
+	} // new Point
 	
 	draw() {
-		const contextWrapper = {
-			get: () => this.#context,
-			transform: (matrix, context) => this.setTransform(matrix, context),
-			cleanTransform: () => QQ.setTransform(this.#context, this.#mainMatrix)
-		};
-		const bg = this.#world.background();
-		if ( bg && typeof bg === 'string' ) {
-			this.#cleanCanvas(bg);
-		} else if ( bg && bg instanceof Subject.Subject ) {
-			bg.fitInRect(this.getViewRect());
-			bg.draw(contextWrapper);
+		const background = this.#world.background();
+		if ( typeof background === 'string' ) {
+			this.#cleanCanvas(background);
+		} else if ( background instanceof Subject.Subject ) {
+			background.fitInRect(this.getViewRect());
+			background.draw(this.#wcontext);
 		}
-		if ( this.#isDrawAxis ) {
-			this.#drawAxis();
-		}
-		this.#world.getStage().draw(contextWrapper);
-	}
-	
-	tick() {
-	}
+		if ( this.#isDrawAxis ) this.#drawAxis();
+		this.#world.draw(this.#wcontext);
+	} // void
 	
 	drawRect(rect) {
-		QQ.setTransform(this.#context, this.#mainMatrix);
+		QQ.setTransform(this.#mainMatrix, this.#context);
 		this.#context.beginPath();
 		this.#context.rect(
 			rect.x(),
@@ -151,44 +122,26 @@ export class Camera {
 		this.#context.lineWidth = 1;
 		this.#context.strokeStyle = '#00FFFF';
 		this.#context.stroke();
-	}
+	} // void
 	
 	setTransform(matrix, context = this.#context) {
 		QQ.setTransform(
-			context,
-			Matrix.mul(this.#mainMatrix, matrix)
+			Matrix.mul(this.#mainMatrix, matrix),
+			context
 		);
-	}
-	
-	//================================================================
-	// Private
-	//================================================================
-	
+	} // void
 	
 	#fixClip() {
-		if ( this.#clip !== null ) {
-			if ( this.#position.x() > this.#clip.right() ) {
-				this.#position.x( this.#clip.right() );
-			}
-			if ( this.#position.x() < this.#clip.left() ) {
-				this.#position.x( this.#clip.left() );
-			}
-			if ( this.#position.y() < this.#clip.top() ) {
-				this.#position.y( this.#clip.top() );
-			}
-			if ( this.#position.y() > this.#clip.bottom() ) {
-				this.#position.y( this.#clip.bottom() );
-			}
-		}
-	}
+		this.#clip?.enclose(this.#position);
+	} // void
 	
 	#calcMainMatrix() {
 		// Prepare
 		const canvasRatio = (this.#canvas.width / this.#canvas.height);
-		this.#viewSize = Maths.increaseToRatio(
+		this.#viewSize.copy( maths.increaseToRatio(
 			this.#initViewSize,
 			canvasRatio
-		);
+		));
 		this.#fixClip();
 		
 		// Camera settings
@@ -213,15 +166,15 @@ export class Camera {
 		)), M);
 		
 		this.#mainMatrix = M;
-	}
+	} // void
 	
 	toggleDrawAxis() {
 		this.#isDrawAxis = ! this.#isDrawAxis;
-	}
+	} // void
 	
 	#drawAxis() {
 		const context = this.#context;
-		QQ.setTransform(context, this.#mainMatrix);
+		QQ.setTransform(this.#mainMatrix, context);
 		for ( let i = -10; i <= 10; i++ ) {
 			context.beginPath();
 			context.moveTo(-10, i);
@@ -242,12 +195,28 @@ export class Camera {
 		context.fillRect(-0.1, -0.1, 0.2, 0.2);
 		context.fillStyle = "#0000FF";
 		context.fillRect(10, 10, 0.2, 0.2);
-	}
+	} // void
 	
 	#cleanCanvas(color = 'gray') {
 		QQ.cleanTransform(this.#context);
 		this.#context.fillStyle = color;
 		this.#context.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
-	}
+	} // void
+	
+	viewSize(viewSize) { // {F}
+		if ( viewSize !== undefined ) {
+			this.#initViewSize.copy(viewSize);
+			this.#calcMainMatrix();
+		}
+		return this.#viewSize;
+	} // Size
+	
+	position(position) { // {F}
+		if ( position !== undefined ) {
+			this.#position.copy(position);
+			this.#calcMainMatrix();
+		}
+		return this.#position;
+	} // Point
 	
 }

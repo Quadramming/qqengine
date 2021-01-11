@@ -1,71 +1,76 @@
+// QQDOC
+
 import * as QQ from './QQ.js';
 
 export class ObjectPool {
 	
-	constructor(options) {
-		this._free = [];
-		this._pool = [];
-		this._amount = QQ.useDefault(options.amount, 10);
-		this._increment = QQ.useDefault(options.increment, 10);
-		this._doCreate = options.create;
-		this._doInitialize = options.initialize;
-		this._doRelease = options.release;
-		this.reset();
-	}
+	#pool = [];
+	#free = [];
+	#amount;
+	#increment;
+	#createFn;
+	#initFn;
+	#releaseFn;
 	
-	clean() {
-		if ( this._doRelease ) {
-			for ( const i in this._pool ) {
-				if ( this._free.indexOf(i) === -1 ) {
-					this._doRelease(this._pool[i]);
-				}
-			}
-		}
-		this._free.length = 0;
-		this._pool.length = 0;
+	constructor(options) {
+		this.#amount = options.amount ?? 16;
+		this.#increment = options.increment ?? 8;
+		this.#createFn = options.create;
+		this.#initFn = options.init ?? null;
+		this.#releaseFn = options.release ?? null;
+		this.reset();
 	}
 	
 	reset() {
 		this.clean();
-		this._grow(this._amount);
-	}
+		this.#grow(this.#amount);
+	} // void
 	
-	_grow(amount = this._increment) {
-		const size = this._pool.length;
-		for ( let i = 0; i < amount; ++i ) {
-			this._free.push(size + i);
-			const obj = this._doCreate();
-			this._pool.push(obj);
+	clean() {
+		if ( this.#releaseFn ) {
+			for ( const obj of this.#pool ) {
+				this.#releaseFn(obj);
+			}
 		}
-	}
+		this.#pool.length = 0;
+		this.#free.length = 0;
+	} // void
 	
 	get(options) {
-		if ( this._free.length === 0 ) {
-			this._grow();
-		}
-		const index = this._free.pop();
-		const obj = this._pool[index];
-		if ( this._doInitialize ) {
-			this._doInitialize(obj, options);
-		}
+		if ( QQ.isEmpty(this.#free) ) this.#grow();
+		const index = this.#free.pop();
+		const obj = this.#pool[index];
+		this.#initFn?.(obj, options);
 		return obj;
-	}
+	} // Object
 	
 	release(obj) {
-		if ( this._doRelease ) {
-			this._doRelease(obj);
-		}
-		const index = this._pool.indexOf(obj);
+		this.#releaseFn?.(obj);
+		const index = this.#pool.indexOf(obj);
 		if ( index !== -1 ) {
-			this._free.push(index);
+			this.#free.push(index);
+		} else {
+			throw Error('Wrong index');
 		}
-	}
+	} // void
 	
 	debug() {
-		c(this._free);
-		c(this._free.length);
-		c(this._pool.length);
 		c("================================");
-	}
+		c("ObjectPool debug");
+		c("================================");
+		c("free array:");
+		c(this.#free);
+		c('free.length' + this.#free.length);
+		c('pool.length' + this.#pool.length);
+		c("================================");
+	} // void
+	
+	#grow(amount = this.#increment) {
+		const size = this.#pool.length;
+		for ( let i = 0; i < amount; ++i ) {
+			this.#free.push(size + i);
+			this.#pool.push( this.#createFn() );
+		}
+	} // void
 	
 }

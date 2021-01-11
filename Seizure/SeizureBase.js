@@ -4,7 +4,7 @@ import * as QQ from '../QQ.js';
 import * as World from '../World/index.js';
 import * as CONST from '../CONST/index.js';
 import {FakeHud} from './FakeHud.js';
-import {Point, Size} from '../primitives/index.js';
+import {Rect, Point, Size} from '../primitives/index.js';
 import {Camera} from '../Camera.js';
 
 export class SeizureBase {
@@ -33,6 +33,7 @@ export class SeizureBase {
 			this._world,
 			QQ.APP.getMainCanvas()
 		);
+		this.camera.setClip(new Rect(0, 0, 1, 2));
 		this._cameraFollow = null;
 	}
 	
@@ -72,10 +73,10 @@ export class SeizureBase {
 	
 	tick(delta) {
 		this._hud.tick(delta);
-		this.camera.tick();
+		this.camera.tick?.();
 		this._world.tick(delta);
 		if ( this._cameraFollow ) {
-			this.camera.setPosition(
+			this.camera.position(
 				this._cameraFollow.getWorldPosition()
 			);
 		}
@@ -138,7 +139,7 @@ export class SeizureBase {
 	}
 	
 	setCamera(view, eye) {
-		this.camera.setView(view);
+		this.camera.viewSize(view);
 		if ( eye !== undefined ) {
 			this.camera.setPosition(eye);
 		}
