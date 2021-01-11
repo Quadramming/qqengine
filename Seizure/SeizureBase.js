@@ -33,7 +33,6 @@ export class SeizureBase {
 			this._world,
 			QQ.APP.getMainCanvas()
 		);
-		this.camera.setClip(new Rect(0, 0, 1, 2));
 		this._cameraFollow = null;
 	}
 	

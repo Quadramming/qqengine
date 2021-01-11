@@ -13,7 +13,7 @@ export class FpsCounter {
 	
 	toggleShow() {
 		this.#details = ! this.#details;
-	}
+	} // void
 	
 	tick(delta) {
 		this.#slots[this.#iSlot] = Math.floor(1/delta);
@@ -25,34 +25,33 @@ export class FpsCounter {
 			this.#accumFps = 0;
 			this.#accumDelta = 0;
 		}
-	}
+	} // void
 	
-	show(ctx) {
-		if ( this.#details ) {
-			ctx.setTransform(1, 0, 0, 1, 0, 0, 0);
-			ctx.font = this.#font;
-			ctx.textBaseline = 'middle';
-			ctx.textAlign = 'center';
-			let i = 0;
-			for ( const slot of this.#slots ) {
-				ctx.fillStyle = 'green';
-				if ( slot > 60 ) {
-					ctx.fillStyle = 'white';
-				}
-				if ( slot < 50 ) {
-					ctx.fillStyle = 'yellow';
-				}
-				if ( slot < 40 ) {
-					ctx.fillStyle = 'red';
-				}
-				if ( slot < 15 ) {
-					ctx.fillStyle = 'black';
-				}
-				ctx.fillText( slot + ' FPS', 20, 20 + 15*i);
-				++i;
+	show(context) {
+		if ( ! this.#details ) return;
+		context.setTransform(1, 0, 0, 1, 0, 0, 0);
+		context.font = this.#font;
+		context.textBaseline = 'middle';
+		context.textAlign = 'center';
+		let i = 0;
+		for ( const slot of this.#slots ) {
+			context.fillStyle = 'green';
+			if ( slot > 60 ) {
+				context.fillStyle = 'white';
 			}
-			// document.title = this.#fpsToShow + ' FPS';
+			if ( slot < 50 ) {
+				context.fillStyle = 'yellow';
+			}
+			if ( slot < 40 ) {
+				context.fillStyle = 'red';
+			}
+			if ( slot < 15 ) {
+				context.fillStyle = 'black';
+			}
+			context.fillText( slot + ' FPS', 20, 20 + 15*i);
+			++i;
 		}
-	}
+		document.title = `${this.#fpsToShow} FPS`;
+	} // void
 	
 }

@@ -59,7 +59,7 @@ export class World {
 	
 	getSubjects(predicate) {
 		return this.#stage.getAllSubjects(predicate);
-	} // array of Subjects
+	} // new array of Subjects
 	
 	getSubject(predicate) {
 		return this.#stage.getSubject(predicate);
@@ -68,7 +68,7 @@ export class World {
 	getSubjectsAtPoint(point) { // Not only hittable
 		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)
 		return this.getSubjects( subj => subj.isHere?.(point) );
-	} // array of Subjects
+	} // new array of Subjects
 	
 	getSubjectAtPoint(point) { // Only hitabble subjects
 		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)

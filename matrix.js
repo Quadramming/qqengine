@@ -1,6 +1,8 @@
-const sin = ( a => Math.sin(a) );
-const cos = ( a => Math.cos(a) );
-const abs = ( a => Math.abs(a) );
+// QQDOC
+
+const sin = a => Math.sin(a);
+const cos = a => Math.cos(a);
+const abs = a => Math.abs(a);
 
 export function copy(A, B) {
 	for ( let i = 0; i < B.length; ++i ) {
@@ -8,13 +10,13 @@ export function copy(A, B) {
 			B[i][j] = A[i][j];
 		}
 	}
-}
+} // void
 
 export function getIdentity() {
 	return [[1, 0, 0],
 					[0, 1, 0],
 					[0, 0, 1]];
-}
+} // new array
 
 export function setIdentity(matrix) {
 	matrix[0][0] = 1;
@@ -26,17 +28,17 @@ export function setIdentity(matrix) {
 	matrix[2][0] = 0;
 	matrix[2][1] = 0;
 	matrix[2][2] = 1;
-}
+} // void
 
 export function getVector(point) {
 	return [[point.x()], [point.y()], [1]];
-}
+} // new array
 
 export function getReflect() {
 	return [[1,  0, 0],
 					[0, -1, 0],
 					[0,  0, 1]];
-}
+} // new array
 
 export function getScale(scale) {
 	const x = scale.x();
@@ -44,7 +46,7 @@ export function getScale(scale) {
 	return [[x, 0, 0],
 					[0, y, 0],
 					[0, 0, 1]];
-}
+} // new array
 
 export function getMove(offset) {
 	const x = offset.x();
@@ -52,7 +54,7 @@ export function getMove(offset) {
 	return [[1, 0, x],
 					[0, 1, y],
 					[0, 0, 1]];
-}
+} // new array
 
 export function getInverseMove(offset) {
 	const x = offset.x();
@@ -60,13 +62,13 @@ export function getInverseMove(offset) {
 	return [[1, 0, -x],
 					[0, 1, -y],
 					[0, 0,  1]];
-}
+} // new array
 
 export function getRotate(A) {
 	return [[ cos(A), sin(A), 0],
 					[-sin(A), cos(A), 0],
 					[     0,       0, 1]];
-}
+} // new array
 
 export function determinant(A) {
 	if ( A[0].length === 2 ) {
@@ -76,7 +78,7 @@ export function determinant(A) {
 			A[0][1] * (A[1][0]*A[2][2] - A[1][2]*A[2][0]) +
 			A[0][2] * (A[1][0]*A[2][1] - A[1][1]*A[2][0]);
 	}
-}
+} // number
 
 export function inverse(A) {
 	let det = determinant(A);
@@ -110,7 +112,7 @@ export function inverse(A) {
 		}
 	}
 	return inverse;
-}
+} // new array
 
 export function mul(A, B) {
 	const rowsA = A.length;
@@ -132,7 +134,7 @@ export function mul(A, B) {
 		}
 	}
 	return result;
-}
+} // new array
 
 export function iterate(array, fn) { // Iterate 2D array
 	for ( const [y, line] of array.entries() ) {
@@ -151,4 +153,4 @@ export function rotate(array) {
 		});
 	});
 	return rotated;
-}
+} // new array

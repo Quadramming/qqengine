@@ -7,12 +7,12 @@ export let APP = null;
 
 export function sz() {
 	return APP?.getActiveSz();
-}
+} // Seizure
 
 export function setApp(app) {
 	check( ! APP, 'Only one application can be created');
 	APP = app;
-}
+} // void
 
 export function start(cfg) {
 	const start = () => initApp(cfg);
@@ -21,18 +21,18 @@ export function start(cfg) {
 	} else {
 		window.addEventListener('load', start);
 	}
-}
+} // void
 
 export function initApp(cfg) {
 	while ( document.body.firstChild ) { // Clean all on page (Font loaders)
 		document.body.removeChild( document.body.firstChild );
 	}
 	new Application(cfg);
-}
+} // void
 
 export function isObject(obj) {
 	return obj === Object(obj);
-}
+} // boolean
 
 export function mixins(...mixins) {
 	let base = getLast(mixins);
@@ -41,7 +41,7 @@ export function mixins(...mixins) {
 		base = mixins[i](base);
 	}
 	return base;
-}
+} // Class
 
 export function changeBasePrototype(obj, target) {
 	if ( obj instanceof Object ) {
@@ -52,25 +52,22 @@ export function changeBasePrototype(obj, target) {
 			changeBasePrototype(proto, target);
 		}
 	}
-}
+} // void
 
 export function clone(obj) {
 	return Object.assign(
 		Object.create( Object.getPrototypeOf(obj) ),
 		obj
 	);
-}
+} // Object
 
 export function useDefault(value, byDefault) {
-	if ( value === undefined ) {
-		return byDefault;
-	}
-	return value;
-}
+	return value !== undefined ? value : byDefault;
+} // mixed
 
 export function merge(...objs) {
 	return Object.assign({}, ...objs);
-}
+} // Object
 
 export function isNumbers(...args) {
 	for ( const arg of args ) {
@@ -79,7 +76,7 @@ export function isNumbers(...args) {
 		}
 	}
 	return true;
-}
+} // boolean
 
 export function setTransform(matrix, context) {
 	if ( context instanceof WCanvas ) {
@@ -90,11 +87,11 @@ export function setTransform(matrix, context) {
 		matrix[0][1], matrix[1][1],
 		matrix[0][2], matrix[1][2]
 	);
-}
+} // void
 
 export function cleanTransform(ctx) {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
-}
+} // void
 
 export function getPixel(data, size, point) {
 	if ( point.x() >= size.x() || point.y() >= size.y() ) {
@@ -112,16 +109,16 @@ export function getPixel(data, size, point) {
 export function getPixelQuick(data, size, x, y) {
 	const index = (y*size.x() + x)*4;
 	return (data[index+3]<<24) + (data[index]<<16) + (data[index+1]<<8) + data[index+2];
-}
+} // number
 
 export function getLastIndex(array) {
 	return array.length-1;
-}
+} // number
 
 export function getLast(array) {
 	check(array.length > 0, 'Array is empty');
 	return array[getLastIndex(array)];
-}
+} // mixed
 
 export function newArrayOfNull(elements) {
 	const result = [];
@@ -129,7 +126,7 @@ export function newArrayOfNull(elements) {
 		result.push(null);
 	}
 	return result;
-}
+} // new array
 
 export function createSpriteById(imageId) {
 	return new Sprite( APP.getImageManager().getImageById(imageId) );
@@ -141,4 +138,4 @@ export function createSpriteByUrl(imageUrl) {
 
 export function isEmpty(array) {
 	return array.length === 0;
-}
+} // boolean

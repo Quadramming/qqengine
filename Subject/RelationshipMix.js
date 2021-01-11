@@ -121,7 +121,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 				if ( predicate(subj) ) subjs.push(subj);
 			});
 			return subjs;
-		}
+		} // new array
 		
 		getSubject(predicate = () => true) {
 			for ( const subj of this.#subjects ) {

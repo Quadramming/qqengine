@@ -1,3 +1,5 @@
+// QQDOC
+
 export class OnResizeHandler {
 	
 	#actions = [];
@@ -13,19 +15,19 @@ export class OnResizeHandler {
 	
 	add(fn) {
 		this.#actions.push(fn);
-	}
+	} // void
 	
 	remove(fn) {
 		const index = this.#actions.indexOf(fn);
 		if ( index >= 0 ) {
 			this.#actions.splice(index, 1);
 		}
-	}
+	} // void
 	
 	#onResize() {
 		for ( const action of this.#actions ) {
 			action();
 		}
-	}
+	} // void
 	
 }

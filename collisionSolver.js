@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as CONST from '../../qqengine/CONST/index.js';
 
 export function collisionSolver(a, b, value) {
@@ -28,4 +30,4 @@ export function collisionSolver(a, b, value) {
 		bOffset.y( bOffset.y()*(1-ratio) );
 		a.addPosition(bOffset);
 	}
-}
+} // void

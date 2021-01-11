@@ -12,25 +12,22 @@ export function rand(min = 0, max = 1, round = true) {
 	} else {
 		return Math.random() * (max - min) + min;
 	}
-}
+} // number
 
 export function any(...args) {
 	return args[rand(0, args.length-1)];
-}
+} // mixed
 
 export function shuffleArray(a) {
 	for ( let i = a.length - 1; i > 0; i-- ) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[a[i], a[j]] = [a[j], a[i]];
 	}
-	return a;
-}
+} // void
 
-/* TOFIX what is it?
 export function randDispersion(x) {
 	return x * Math.random() * any(1, -1);
-}
-*/
+} // number
 
 export function increaseToRatio(size, target) {
 	if ( size.getRatio() < target ) {
@@ -45,7 +42,7 @@ export function getOffset(size, anchor) {
 		-size.x()*anchor.x(),
 		-size.y()*anchor.y()
 	);
-}
+} // new Offset
 
 export function reduceToSize(size, value) {
 	const scale = new Scale(1, 1);
@@ -56,7 +53,7 @@ export function reduceToSize(size, value) {
 		scale.h(value / size.h());
 	}
 	return Math.min(scale.w(), scale.h());
-}
+} // number
 
 export function scaleToSize(size, value) {
 	const scale = new Scale(
@@ -64,18 +61,18 @@ export function scaleToSize(size, value) {
 		value / size.h()
 	);
 	return Math.min(scale.w(), scale.h());
-}
+} // number
 
 export function devidePeriod(value, period) {
 	if ( value > period ) {
 		value %= period;
 	}
 	return value;
-}
+} // number
 
 export function getAngle(point) {
 	return Math.atan2(point.x(), point.y());
-}
+} // number
 
 export function devideAngle(angle) {
 	while ( angle < -Math.PI || Math.PI < angle ) {
@@ -86,7 +83,7 @@ export function devideAngle(angle) {
 		}
 	}
 	return angle;
-}
+} // number
 
 export function sinBetweenVectors(A, B) {
 	const mul = A.x()*B.x() + A.y()*B.y();
@@ -96,29 +93,29 @@ export function sinBetweenVectors(A, B) {
 		arg = 0;
 	}
 	return Math.sqrt(arg);
-}
+} // number
 
 export function calcProgress(start, duration) {
 	const passed = Date.now() - start;
 	const progress = passed / duration;
 	return progress < 1 ? progress : 1;
-}
+} // number
 
 export function getSign(x) {
 	 return x >= 0 ? 1 : -1;
-}
+} // number
 
 export function absMin(a, b) {
 	 return Math.abs(a) < Math.abs(b) ? a : b;
-}
+} // number
 
 export function secToMs(x) {
 	 return x * 1000;
-}
+} // number
 
 export function isEqual(a, b, epsilon) {
 	return (b - epsilon) < a && a < (b + epsilon);
-}
+} // boolean
 
 export function calcPivotX(pivot, x, w) {
 	if ( pivot === PIVOT.CENTER_TOP ) {
@@ -130,8 +127,8 @@ export function calcPivotX(pivot, x, w) {
 	} else if ( pivot === PIVOT.LEFT_TOP ) {
 		return x + w/2;
 	}
-	throw new Error(`PIVOT is wrong`);
-}
+	throw Error(`PIVOT is wrong`);
+} // number
 
 export function calcPivotY(pivot, y, h, yAxis = 1) {
 	if ( pivot === PIVOT.CENTER_TOP ) {
@@ -143,14 +140,13 @@ export function calcPivotY(pivot, y, h, yAxis = 1) {
 	} else if ( pivot === PIVOT.LEFT_TOP ) {
 		return y - yAxis*(h/2);
 	}
-	throw new Error(`PIVOT is wrong`);
-}
+	throw Error(`PIVOT is wrong`);
+} // number
 
 export function clamp(min, max, value) {
   return Math.min(Math.max(value, min), max);
-}
+} // number
 
 export function msToSeconds(ms) {
 	return ms / CONST.MS_IN_SECOND;
-}
-
+} // number

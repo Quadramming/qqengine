@@ -2,11 +2,7 @@
 
 export class Storage {
 	
-	#storage; // window.localStorage
-	
-	constructor() {
-		this.#storage = window.localStorage;
-	}
+	#storage = window.localStorage;
 	
 	store(key, value) { // {F}
 		check(typeof value === 'string', 'Value should be string');
