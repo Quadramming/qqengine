@@ -1,14 +1,16 @@
+// QQDOC
+
 globalThis.a = a;
 globalThis.c = c;
 globalThis.d = d;
 globalThis.check = check;
 globalThis.dump = dump;
 
-function a(message) {
+function a(message) { // Alert
 	alert(message);
-}
+} // void
 
-function c(variable, ...rest) {
+function c(variable, ...rest) { // Console output
 	let output = variable;
 	if ( rest.length > 0 ) {
 		output = String(output);
@@ -20,20 +22,20 @@ function c(variable, ...rest) {
 		debugger;
 	}
 	console.log(output);
-}
+} // void
 
-function d() {
+function d() { // Debugger
 	debugger;
-}
+} //  void
 
 function check(condition, message = 'Check error') {
 	if ( ! condition ) {
 		throw Error(message);
 	}
-}
+} // void
 
-function dump(...rest) {
+function dump(...rest) { // Show variables
 	for ( const variable of rest ) {
 		console.log(variable);
 	}
-}
+} // void

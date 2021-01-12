@@ -23,4 +23,4 @@ export function T(strs, ...substs) {
 		text = text.replace('$v', v); // Replace first
 	}
 	return text;
-}
+} // string

@@ -1,3 +1,5 @@
+// QQDOC
+
 import {WCanvas} from './WCanvas.js';
 
 export class ImageManager {
@@ -20,7 +22,7 @@ export class ImageManager {
 			}
 		}
 		return true;
-	}
+	} // boolean
 	
 	getImageByUrl(imageUrl) {
 		return this.#get(imageUrl);
@@ -59,13 +61,13 @@ export class ImageManager {
 		image.src = url;
 		this.#url2Image.set(url, image);
 		return image;
-	}
+	} // HTMLImageElement
 	
 	#get(url) {
 		if ( this.#url2Image.has(url) ) {
 			return this.#url2Image.get(url);
 		}
 		return this.create(url);
-	}
+	} // HTMLImageElement
 	
 }

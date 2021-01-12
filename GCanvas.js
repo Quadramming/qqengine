@@ -11,9 +11,12 @@ export class GCanvas {
 	#maximize = false; // Only for windowed mode
 	#size = new Size(); // Only for windowed mode
 	#scale = 1;
-	#unit = null;
 	#canvas = document.createElement('canvas');
 	#context = this.#canvas.getContext('2d');
+	#unit;
+	
+	// Can be overridden:
+	// tick()
 	
 	constructor(id, size, maximize = false) {
 		if ( size ) {
@@ -33,55 +36,52 @@ export class GCanvas {
 		document.body.removeChild(this.#canvas);
 	}
 	
-	tick(delta) {
-	}
-	
 	getSizeRect() {
 		return new Rect(
 			0, 0,
 			this.#canvas.width,
 			this.#canvas.height
 		);
-	}
+	} // new Rect
 	
 	getWidth() {
 		return this.#size.width();
-	}
+	} // number
 	
 	getHeight() {
 		return this.#size.height();
-	}
+	} // number
 	
 	getUnit() {
 		return this.#unit;
-	}
+	} // number
 	
 	getCanvas() {
 		return this.#canvas;
-	}
+	} // HTMLCanvasElement
 	
 	getCanvasOffset() {
 		return new Point(
 			this.#canvas.offsetLeft,
 			this.#canvas.offsetTop,
 		);
-	}
+	} // new Point
 	
 	getContext() {
 		return this.#context;
-	}
+	} // CanvasRenderingContext2D
 	
 	getScale() {
 		return this.#scale;
-	}
+	} // Scale
 	
 	getRatio() {
 		return this.#size.getRatio();
-	}
+	} // number
 	
 	resize() {
 		this.#calcSize();
-	}
+	} // void
 	
 	drawBorder() {
 		const context = this.#context;
@@ -91,7 +91,7 @@ export class GCanvas {
 		context.lineWidth = this.#unit;
 		context.strokeStyle = '#000000';
 		context.stroke();
-	}
+	} // void
 	
 	#calcSize() {
 		if ( this.#fullscreen ) {
@@ -104,7 +104,7 @@ export class GCanvas {
 			}
 		}
 		this.#calcCanvasSize();
-	}
+	} // void
 	
 	#calcNormalSize() {
 		this.#size.copy(this.#initSize);
@@ -122,14 +122,14 @@ export class GCanvas {
 		}
 		this.#scale = this.#size.width() / this.#initSize.width();
 		this.#unit = this.#size.width() / 100;
-	}
+	} // void
 	
 	#calcFullscreenSize() {
 		this.#size.width(window.innerWidth);
 		this.#size.height(window.innerHeight);
 		this.#scale = 1;
 		this.#unit = this.#size.width() / 100;
-	}
+	} // void
 	
 	#calcMaximizedSize() {
 		const ratio = this.#initSize.getRatio();
@@ -141,7 +141,7 @@ export class GCanvas {
 		}
 		this.#scale = this.#size.width() / this.#initSize.width();
 		this.#unit = this.#size.width() / 100;
-	}
+	} // void
 	
 	#calcCanvasSize() {
 		const canvas = this.#canvas;
@@ -151,6 +151,6 @@ export class GCanvas {
 		canvas.style.top = (window.innerHeight/2 - this.#size.h()/2) + 'px';
 		this.#context.font = `bold ${Math.floor(20*this.getScale())} px defaultFont`;
 		this.#context.imageSmoothingEnabled = false;
-	}
+	} // void
 	
 }

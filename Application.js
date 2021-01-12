@@ -2,8 +2,7 @@
 
 import * as QQ from './QQ.js';
 import * as Seizure from './Seizure/index.js';
-import * as CONST from './CONST/index.js';
-import {Point, Size} from './primitives/index.js';
+import {Size} from './primitives/index.js';
 import {FpsCounter} from './FpsCounter.js';
 import {Time} from './Time.js';
 import {Storage} from './Storage.js';
@@ -11,13 +10,13 @@ import {ImageManager} from './ImageManager.js';
 import {Sound} from './Sound.js';
 import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
-import {S} from './style/index.js';
-import {T} from './i18n.js';
+
 import {InputAvg} from './Input/InputAvg.js';
 
 export class Application {
 	
 	#fpsCounter = new FpsCounter(); // Fps counter
+	#inputQueue = [];
 	#time = new Time(); // Time handler
 	#startSeizure = 'Main'; // First seizure to start
 	#storage = new Storage();
@@ -30,18 +29,11 @@ export class Application {
 	
 	constructor(config = {}) {
 		QQ.setApp(this);
-		this.#canvas = new GCanvas('QQ.Application.Canvas',
-			config.size,
-			config.maximize
-		);
-		
-		this._inputQueue = [];
-		this._input = new InputAvg(this.#canvas.getCanvas(), this._inputQueue);
-		
+		this.#canvas = new GCanvas('QQ.APP.Canvas', config.size, config.maximize);
+		new InputAvg(this.#canvas.getCanvas(), this.#inputQueue);
 		this.#imageManager = new ImageManager(config.images);
 		this.#sound.set(config.sounds);
 		this.#loadResources(() => this.#init());
-		
 		if ( config.game ) this.#game = config.game;
 		if ( config.showFps ) this.#fpsCounter.toggleShow();
 		if ( config.startSeizure ) this.#startSeizure = config.startSeizure;
@@ -56,13 +48,8 @@ export class Application {
 		this.#game?.init?.(this);
 		this.#seizures.init();
 		this.#seizures.set(this.#startSeizure);
-		this.initMouseEvents();
 		this.#gameLoop(0);
-	}
-	
-	//================================================================
-	// Load resources
-	//================================================================
+	} // void
 	
 	#loadResources(cb) {
 		if ( this.#imageManager.isReady() ) {
@@ -70,87 +57,31 @@ export class Application {
 		} else {
 			setTimeout(() => this.#loadResources(cb), 100);
 		}
-	}
-	
-	//================================================================
-	// Input
-	//================================================================
-	
-	initMouseEvents() {
-		/*
-		this._mouse.setMoveCb( () => {
-			const point = this._getPointerOnCanvas();
-			this._inputQueue.push({
-				type: 'mouse move',
-				point: point
-			});
-		});
-		this._mouse.setM1DownCb( () => {
-			const point = this._getPointerOnCanvas();
-			this._inputQueue.push({
-				type: 'mouse down',
-				point: point
-			});
-		});
-		this._mouse.setM1UpCb( () => {
-			const point = this._getPointerOnCanvas();
-			this._inputQueue.push({
-				type: 'mouse up',
-				point: point
-			});
-		});
-		*/
-	}
-	
-	_getPointerOnCanvas() {
-		const rect = this.#canvas.getSizeRect();
-		const canvasOffset = this.#canvas.getCanvasOffset();
-		const mouse = this._mouse.getPoint();
-		const point = new Point(
-			mouse.x() - canvasOffset.x(),
-			mouse.y() - canvasOffset.y(),
-		);
-		if ( rect.isContains(point) ) {
-			return point;
-		}
-		return false;
-	}
-	
-	//================================================================
-	// Storage
-	//================================================================
+	} // void
 	
 	storage(key, value) { // {F} Proxy to storage
 		return this.#storage.store(key, value);
 	} // string | null
 	
-	//================================================================
-	// Seizure
-	//================================================================
-	
 	setSz(...args) {
 		this.#seizures.set(...args);
-	}
+	} // void
 	
 	pause() {
 		this.#seizures.popUp('Pause');
-	}
+	} // void
 	
 	popUp(sz, input) {
 		this.#seizures.set(sz, input, true);
-	}
+	} // void
 	
 	closePopUp() {
 		this.#seizures.closePopUp();
-	}
+	} // void
 	
 	getActiveSz() {
 		return this.#seizures.getActive();
-	}
-	
-	//================================================================
-	// Graphics
-	//================================================================
+	} // Seizure
 	
 	getResolution() {
 		return new Size(this.#canvas.getWidth(), this.#canvas.getHeight());
@@ -174,75 +105,62 @@ export class Application {
 	
 	getImageManager() {
 		return this.#imageManager;
-	}
-	
-	//================================================================
-	// Common
-	//================================================================
+	} // ImageManager
 	
 	getMainCanvas() {
 		return this.#canvas.getCanvas();
-	}
+	} // HTMLCanvasElement
 	
 	getMainContext() {
 		return this.#canvas.getContext();
-	}
+	} // CanvasRenderingContext2D
 	
 	showFpsDetails() {
 		this.#fpsCounter.showDetails();
-	}
+	} // void
 	
 	onBackButton() {
 		if ( this.#seizures.countActives() > 0 ) {
-			const sz = this.#seizures.getActive();
-			sz.onBackButton();
+			this.#seizures.getActive().onBackButton();
 		}
-	}
+	} // void
 	
 	addOnResize(fn) {
 		this.#onResizeHandler.add(fn);
-	}
+	} // void
 	
 	removeOnResize(fn) {
 		this.#onResizeHandler.remove(fn);
-	}
-	
-	//================================================================
-	// Sound
-	//================================================================
+	} // void
 	
 	playSound(str, options) {
 		this.#sound.play(str);
-	}
+	} // void
 	
 	controlSound(str, options) {
 		this.#sound.control(str, options);
-	}
-	
-	//================================================================
-	// Game loop
-	//================================================================
+	} // void
 	
 	#gameLoop(time) {
 		this.#tick();
 		this.#draw();
-		requestAnimationFrame( time => this.#gameLoop(time));
+		requestAnimationFrame(time => this.#gameLoop(time));
 		//setTimeout(() => this.#gameLoop(1), 1); // Debug
-	}
+	} // void
 	
 	#tick() {
 		const delta = this.#time.update();
-		this.#canvas.tick(delta);
+		this.#canvas.tick?.(delta);
 		this.#fpsCounter.tick(delta);
 		this.#game?.tick?.(delta);
-		this.#seizures.forActive( sz => sz.handleInput(this._inputQueue) );
+		this.#seizures.getActive().handleInput(this.#inputQueue);
 		this.#seizures.tick(delta);
-	}
+	} // void
 	
 	#draw() {
 		this.#seizures.draw();
 		//this.#canvas.drawBorder();
 		this.#fpsCounter.show(this.#canvas.getContext());
-	}
+	} // void
 	
 }
