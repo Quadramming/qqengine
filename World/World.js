@@ -51,7 +51,7 @@ export class World {
 	makeSubject(options) { // Make and add object to this world by options
 		options.addTo = this;
 		return Subject.make(options);
-	} // Subject
+	} // new Subject
 	
 	getStage() {
 		return this.#stage;
@@ -69,6 +69,10 @@ export class World {
 		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)
 		return this.getSubjects( subj => subj.isHere?.(point) );
 	} // new array of Subjects
+	
+	subjAtPoint(point) { // Shortcut for getSubjectAtPoint()
+		return this.getSubjectAtPoint(point);
+	} // Subject | null
 	
 	getSubjectAtPoint(point) { // Only hitabble subjects
 		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)

@@ -1,116 +1,102 @@
-import * as QQ from '../QQ.js';
+// QQDOC
+
 import * as CONST from '../CONST/index.js';
 import {Pointer} from '../Pointer.js';
-
-function reset() {
-	for ( const [key, pointer] of this._pointers ) {
-		pointer.destructor();
-	}
-	this._pointers.clear();
-	this._hudPointers.clear();
-	this._blockPointers = false;
-}
 
 export function InputMix(base) {
 	return class InputMix extends base {
 		
-		constructor(options) {
+		#pointers = new Map();
+		#hudPointers = new Set();
+		#blockInput;
+		
+		constructor(options = {}) {
 			super(options);
-			this._pointers = new Map;
-			this._hudPointers = new Set;
-			this._blockPointers = undefined;
-			reset.call(this);
+			this.#reset(options);
 		}
 		
 		destructor() {
 			super.destructor();
-			reset.call(this);
-			this._pointers = undefined;
-			this._hudPointers = undefined;
-			this._blockPointers = undefined;
+			this.#reset();
 		}
 		
-		reset(options) {
-			super.reset(options);
-			reset.call(this);
-		}
+		#reset(options) {
+			for ( const pointer of this.#pointers.values() ) {
+				pointer.destructor();
+			}
+			this.#pointers.clear();
+			this.#hudPointers.clear();
+			this.#blockInput = false;
+		} // void
 		
 		resetInput() {
-			this.getHud().resetInput();
-			reset.call(this);
-		}
+			this._hud?.resetInput();
+			this.#reset();
+		} // void
 		
 		blockInput(value = true) {
-			this.getHud().blockInput(value);
-			reset.call(this);
-			this._blockPointers = value;
-		}
+			this.#blockInput = value;
+			this._hud?.blockInput(value);
+			this.#reset();
+		} // void
 		
-		handleInput(queue) {
-			if ( ! this._blockPointers ) {
-				for ( const input of queue ) {
-					switch ( input.type ) {
-						case CONST.TOUCH.START:
-							this._dispatchPointerDown(input.id, input.point);
-						break;
-						case CONST.TOUCH.MOVE:
-							this._dispatchPointerMove(input.id, input.point);
-						break;
-						case CONST.TOUCH.END:
-							this._dispatchPointerUp(input.id, input.point);
-						break;
-						default:
-							alert('bad input type');
-					}
+		handleInput(input) {
+			const queue = input.releaseQueue();
+			if ( this.#blockInput ) return;
+			for ( const input of queue ) {
+				if ( input.type === CONST.TOUCH.START ) {
+					this.pointerDown(input.id, input.point);
+				} else if ( input.type === CONST.TOUCH.MOVE ) {
+					this.pointerMove(input.id, input.point);
+				} else if ( input.type === CONST.TOUCH.END ) {
+					this.pointerUp(input.id, input.point);
+				} else {
+					throw Error('Bad input type');
 				}
 			}
-			queue.length = 0;
-		}
+		} // void
 		
 		pointerDown(id, point) {
-			const pointer = new Pointer(this);
-			this._pointers.set(id, pointer);
-			pointer.down(point);
-		}
+			if ( this._hud?.isHitSomething(point) ) { // for HUD
+				this.#hudPointers.add(id);
+				this._hud?.pointerDown(id, point);
+			} else { // for this
+				const pointer = new Pointer(this);
+				this.#pointers.set(id, pointer);
+				pointer.down(point);
+				const worldPoint = pointer.getWorldPoint();
+				this._world.subjAtPoint(worldPoint)?.onClickDown(worldPoint, pointer);
+			}
+		} // void
 		
 		pointerMove(id, point) {
-			const pointer = this._pointers.get(id);
-			if ( pointer ) {
-				pointer.move(point);
+			if ( this.#hudPointers.has(id) ) { // for HUD
+				this._hud?.pointerMove(id, point);
+			} else { // for this
+				const pointer = this.#pointers.get(id);
+				if ( pointer ) pointer.move(point);
 			}
-		}
+		} // void
 		
 		pointerUp(id, point) {
-			const pointer = this._pointers.get(id);
-			if ( pointer ) {
-				pointer.up(point);
-				pointer.destructor();
-				this._pointers.delete(id);
+			if ( this.#hudPointers.has(id) ) { // for HUD
+				this._hud?.pointerUp(id, point);
+				this.#hudPointers.delete(id);
+			} else { // for this
+				const pointer = this.#pointers.get(id);
+				if ( pointer ) {
+					pointer.up(point);
+					const worldPoint = pointer.getWorldPoint();
+					const subjAtPoint = this._world.subjAtPoint(worldPoint);
+					subjAtPoint?.onClickUp(pointer.getWorldPoint(), pointer);
+					if ( pointer.isNearStart() ) {
+						subjAtPoint?.onClick(pointer.getWorldPoint(), pointer);
+					}
+					pointer.destructor();
+					this.#pointers.delete(id);
+				}
 			}
-		}
-		
-		_dispatchPointerDown(id, point) {
-			let target = this;
-			if ( this.getHud().isHitSomething(point) ) {
-				this._hudPointers.add(id);
-				target = this.getHud();
-			}
-			target.pointerDown(id, point);
-		}
-		
-		_dispatchPointerMove(id, point) {
-			let target = this._hudPointers.has(id) ? this.getHud() : this;
-			target.pointerMove(id, point);
-		}
-		
-		_dispatchPointerUp(id, point) {
-			let target = this;
-			if ( this._hudPointers.has(id) ) {
-				this._hudPointers.delete(id);
-				target = this.getHud();
-			}
-			target.pointerUp(id, point);
-		}
+		} // void
 		
 	}
 }

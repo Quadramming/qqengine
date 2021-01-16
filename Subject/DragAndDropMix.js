@@ -3,14 +3,6 @@
 import * as QQ from '../QQ.js';
 import {Point, Rect} from '../primitives/index.js';
 
-function isActive(pointer) {
-	return pointer?.isActive() ?? false;
-}
-
-function isInactive(pointer) {
-	return ! isActive(pointer);
-}
-
 function fixOptions(options) {
 	options.isClickable = true;
 }
@@ -78,7 +70,7 @@ export function DragAndDropMix(base) {
 		tick(delta) { // {O}
 			super.tick(delta);
 			const pointer = this.#pointer;
-			if ( isActive(pointer) ) {
+			if ( QQ.isActive(pointer) ) {
 				const offset = Point.subtraction(
 					this.worldToLocal(pointer.getWorldPoint()),
 					this.#start

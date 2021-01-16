@@ -2,9 +2,9 @@
 
 import * as CONST from '../CONST/index.js';
 import {Point} from '../primitives/index.js';
-import {InputBase} from './InputBase.js';
+import {InputTouchBase} from './InputTouchBase.js';
 
-export class InputAvg extends InputBase {
+export class InputTouchAvg extends InputTouchBase {
 	
 	_handleStart(event) {
 		this._prevent(event);

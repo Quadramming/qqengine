@@ -4,6 +4,7 @@ import {Size, Scale, Offset} from './primitives/index.js';
 import {PIVOT} from './CONST/index.js';
 import * as CONST from './CONST/index.js';
 
+// TODO: Put in documentation
 export const PIx2 = Math.PI * 2;
 
 export function rand(min = 0, max = 1, round = true) {

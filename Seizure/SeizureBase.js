@@ -2,179 +2,101 @@
 
 import * as QQ from '../QQ.js';
 import * as World from '../World/index.js';
-import * as CONST from '../CONST/index.js';
-import {FakeHud} from './FakeHud.js';
-import {Rect, Point, Size} from '../primitives/index.js';
 import {Camera} from '../Camera.js';
 
 export class SeizureBase {
 	
-	camera; // Camera
+	_hud = null;
+	_world;
+	_camera;
+	#parent;
+	#szManager;
 	
-	constructor(options) {
-		this._szManager = options.szManager;
-		this._hud = new FakeHud();
-		this._parent = options.parent ?? null;
-		this._hudRedirect = false;
-		options.isPauseable = QQ.useDefault(options.isPauseable, false);
-		const worldInput = {
-			maxTicks: options.maxTicks,
-			timeStep: options.timeStep,
-			isSortByZOnTick: options.isSortByZOnTick,
-			isSortByZOnAdd: options.isSortByZOnAdd,
-			stageConstructor: options.stageConstructor
-		};
-		if ( options.physicsWorld ?? false ) {
-			this._world = new World.Physics(worldInput);
-		} else {
-			this._world = new World.World(worldInput);
-		}
-		this.camera = new Camera(
-			this._world,
-			QQ.APP.getMainCanvas()
-		);
-		this._cameraFollow = null;
+	// Can be overridden:
+	// init() - Executes after seizure became active
+	// onBackButton()
+	
+	constructor(options = {}) {
+		this._world = options.world?.physics ?
+			new World.Physics(options.world):
+			new World.World(options.world);
+		this.#parent = options.parent ?? null;
+		this.#szManager = options.szManager;
+		this._camera = new Camera(this._world, QQ.APP.getMainCanvas());
 	}
 	
 	destructor() {
 		this._world.destructor();
-		this._world = null;
-		this.camera.destructor();
-		this.camera = null;
-		this._parent = null;
-		this._hud.destructor();
-		this._hud = null;
-	}
-	
-	init() {
-		// Executes after seizure became active
-	}
-	
-	getWorldFromScreen(point) {
-		return this.camera.getWorldFromScreen(point);
-	}
-	
-	//================================================================
-	// Gets / Sets
-	//================================================================
-	
-	getCamera() {
-		return this.camera;
-	}
-	
-	getWorld() {
-		return this._world;
-	}
-	
-	//================================================================
-	// Ticks & draw
-	//================================================================
-	
-	tick(delta) {
-		this._hud.tick(delta);
-		this.camera.tick?.();
-		this._world.tick(delta);
-		if ( this._cameraFollow ) {
-			this.camera.position(
-				this._cameraFollow.getWorldPosition()
-			);
-		}
-	}
-	
-	draw() {
-		this.camera.draw();
-		this._hud.draw();
+		this._camera.destructor();
+		this._hud?.destructor();
 	}
 	
 	restart() {
-		this._szManager.reset();
-	}
+		this.#szManager.reset();
+	} // void
 	
-	//================================================================
-	// Actions
-	//================================================================
+	tick(delta) {
+		this._hud?.tick(delta);
+		this._world.tick(delta);
+		this._camera.tick(delta);
+	} // void
 	
-	onClickDown(point, pointer) {
-		const isHit = this.#doWithSubjIfHits(point, subj => {
-			subj.onClickDown(point, pointer);
-		});
-		return isHit;
-	}
-	
-	onClickUp(point, pointer) {
-		return this.#doWithSubjIfHits(point, subj => {
-			subj.onClickUp(point, pointer);
-		});
-	}
-	
-	onClick(point, pointer) {
-		return this.#doWithSubjIfHits(point, subj => {
-			subj.onClick(point, pointer);
-		});
-	}
-	
-	//================================================================
-	// Common
-	//================================================================
-	
-	onBackButton() {
-	}
-	
-	isHitSomething(point) {
-		if ( point === false ) {
-			return false;
-		}
-		const worldPoint = this.camera.getWorldFromScreen(point);
-		return this._world.getSubjectAtPoint(worldPoint);
-	}
-	
-	#doWithSubjIfHits(point, fn) {
-		const hited = this._world.getSubjectAtPoint(point);
-		if ( hited ) {
-			fn(hited);
-			return true;
-		}
-		return false;
-	}
-	
-	setCamera(view, eye) {
-		this.camera.viewSize(view);
-		if ( eye !== undefined ) {
-			this.camera.setPosition(eye);
-		}
-	}
-	
-	setBackground(...args) {
-		this._world.background(...args);
-	}
-	
-	makeSubject(...args) {
-		return this._world.makeSubject(...args);
-	}
+	draw() {
+		this._camera.draw();
+		this._hud?.draw();
+	} // void
 	
 	addSubject(...args) {
 		this._world.addSubject(...args);
-	}
+	} // void
 	
-	cameraFollow(subj) {
-		this._cameraFollow = subj;
-	}
+	isHitSomething(point) {
+		const worldPoint = this._camera.getWorldFromScreen(point);
+		return Boolean( this._world.getSubjectAtPoint(worldPoint) );
+	} // boolean
 	
-	//================================================================
-	// Hud
-	//================================================================
+	getWorldFromScreen(point) {
+		return this._camera.getWorldFromScreen(point);
+	} // new Point
+	
+	getCamera() {
+		return this._camera;
+	} // Camera
+	
+	getWorld() {
+		return this._world;
+	} // World
+	
+	getParent() {
+		return this.#parent;
+	} // Seizure | null
 	
 	getHud() {
 		return this._hud;
-	}
+	} // Seizure | null
 	
-	setHud(sz, options = {}) {
+	setHud(szName, options = {}) {
 		options.parent = this;
-		this._hud = this._szManager.create(sz, options, false);
-	}
+		this._hud = this.#szManager.create(szName, options);
+	} // void
 	
-	getParent() {
-		return this._parent;
-	}
+	setCamera(view, eye) {
+		this._camera.viewSize(view);
+		if ( eye ) {
+			this._camera.position(eye);
+		}
+	} // void
+	
+	setBackground(...args) {
+		this._world.background(...args);
+	} // void
+	
+	makeSubject(...args) {
+		return this._world.makeSubject(...args);
+	} // new Subject
+	
+	cameraFollow(subj) {
+		this._camera.setFollow(subj);
+	} // void
 	
 }

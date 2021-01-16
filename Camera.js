@@ -8,18 +8,20 @@ import {Point, Size, Rect, Scale} from './primitives/index.js';
 
 export class Camera {
 	
-	#world;
-	#canvas;
-	#context;
-	#mainMatrix;
 	#initViewSize = new Size(20, 20);
 	#viewSize = this.#initViewSize.clone();
 	#position = new Point(0, 0);
 	#clip = null;
 	#onResizeFn = () => this.#calcMainMatrix();
 	#isDrawAxis = false; // Is draw axis
+	#follow = null;
+	#world;
+	#canvas;
+	#context;
+	#mainMatrix;
 	#wcontext;
 	
+	// TODO Put in documentation
 	// Can be overridden:
 	// tick()
 	
@@ -97,6 +99,14 @@ export class Camera {
 		);
 		return new Point(M[0][0], M[1][0]);
 	} // new Point
+	
+	setFollow(subj) {
+		this.#follow = subj;
+	} // void
+	
+	tick(delta) {
+		if ( this.#follow ) this.position( this.#follow.getWorldPosition() );
+	} // void
 	
 	draw() {
 		const background = this.#world.background();

@@ -124,6 +124,7 @@ export function RelationshipMix(base) { // Mix Relationship to base
 		} // new array
 		
 		getSubject(predicate = () => true) {
+			// TODO FIX z order
 			for ( const subj of this.#subjects ) {
 				if ( predicate(subj) ) return subj;
 				const found = subj.getSubject(predicate);

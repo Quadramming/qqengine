@@ -10,41 +10,42 @@ import {ImageManager} from './ImageManager.js';
 import {Sound} from './Sound.js';
 import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
-
-import {InputAvg} from './Input/InputAvg.js';
+import {InputTouchAvg as Input} from './Input/InputTouchAvg.js';
 
 export class Application {
 	
 	#fpsCounter = new FpsCounter(); // Fps counter
-	#inputQueue = [];
 	#time = new Time(); // Time handler
 	#startSeizure = 'Main'; // First seizure to start
 	#storage = new Storage();
 	#onResizeHandler = new OnResizeHandler();
+	#onBackButtonFn = () => this.onBackButton();
 	#seizures = new Seizure.Manager();
-	#sound = new Sound();
 	#game = null;
 	#imageManager;
+	#sound;
 	#canvas; // Global canvas
+	#input;
 	
 	constructor(config = {}) {
 		QQ.setApp(this);
 		this.#canvas = new GCanvas('QQ.APP.Canvas', config.size, config.maximize);
-		new InputAvg(this.#canvas.getCanvas(), this.#inputQueue);
+		this.#input = new Input(this.#canvas.getCanvas());
 		this.#imageManager = new ImageManager(config.images);
-		this.#sound.set(config.sounds);
+		this.#sound = new Sound(config.sounds);
 		this.#loadResources(() => this.#init());
 		if ( config.game ) this.#game = config.game;
 		if ( config.showFps ) this.#fpsCounter.toggleShow();
 		if ( config.startSeizure ) this.#startSeizure = config.startSeizure;
+		document.addEventListener('backbutton', this.#onBackButtonFn, false);
+	}
+	
+	destructor() {
+		this.#onResizeHandler.destructor();
+		document.removeEventListener('backbutton', this.#onBackButtonFn, false);
 	}
 	
 	#init() {
-		window.document.addEventListener(
-			'backbutton',
-			() => this.onBackButton(),
-			false // useCapture
-		);
 		this.#game?.init?.(this);
 		this.#seizures.init();
 		this.#seizures.set(this.#startSeizure);
@@ -71,12 +72,16 @@ export class Application {
 		this.#seizures.popUp('Pause');
 	} // void
 	
-	popUp(sz, input) {
-		this.#seizures.set(sz, input, true);
+	popUp(szName, options) {
+		this.#seizures.popUp(szName, options);
 	} // void
 	
 	closePopUp() {
 		this.#seizures.closePopUp();
+	} // void
+	
+	resetSz() {
+		this.#seizures.reset();
 	} // void
 	
 	getActiveSz() {
@@ -120,9 +125,7 @@ export class Application {
 	} // void
 	
 	onBackButton() {
-		if ( this.#seizures.countActives() > 0 ) {
-			this.#seizures.getActive().onBackButton();
-		}
+		this.#seizures.getActive().onBackButton?.();
 	} // void
 	
 	addOnResize(fn) {
@@ -153,7 +156,7 @@ export class Application {
 		this.#canvas.tick?.(delta);
 		this.#fpsCounter.tick(delta);
 		this.#game?.tick?.(delta);
-		this.#seizures.getActive().handleInput(this.#inputQueue);
+		this.#seizures.getActive().handleInput(this.#input);
 		this.#seizures.tick(delta);
 	} // void
 	

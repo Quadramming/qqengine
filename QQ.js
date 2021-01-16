@@ -139,3 +139,12 @@ export function createSpriteByUrl(imageUrl) {
 export function isEmpty(array) {
 	return array.length === 0;
 } // boolean
+
+export function isActive(thing) {
+	return thing?.isActive() ?? false;
+} // boolean
+
+export function isInactive(pointer) {
+	return ! isActive(pointer);
+} // boolean
+

@@ -1,9 +1,9 @@
 // QQDOC
 
 import * as CONST from '../CONST/index.js';
-import {InputBase} from './InputBase.js';
+import {InputTouchBase} from './InputTouchBase.js';
 
-export class Input extends InputBase {
+export class InputTouch extends InputTouchBase {
 	
 	_handleStart(event) {
 		this._prevent(event);

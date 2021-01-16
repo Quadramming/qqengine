@@ -6,102 +6,78 @@ const register = new Map();
 
 export class Manager {
 
+	// TODO hide static from doc
 	static registerSeizure(name, sz) {
 		register.set(name, sz);
-	}
+	} // void
 	
-	reset = () => {}
-	
-	constructor() {
-		this._actives = [];
-		this._toSet = null;
-		this._toCloseActive = false;
-		this._loading = null;
-	}
+	#actives = [];
+	reset;
 	
 	init() {
-		this.create('Loading', {}, true);
-	}
+		this.#activateNew('Loading');
+	} // void
 	
 	tick(delta) {
-		if ( this._toCloseActive ) {
-			this._closeActive();
-			this._toCloseActive = false;
-		}
-		if ( this._toSet ) {
-			this._toSet();
-			this._toSet = null;
-		}
 		this.getActive().tick(delta);
-	}
+	} // void
 	
 	draw() {
-		for ( const sz of this._actives ) {
+		for ( const sz of this.#actives ) {
 			sz.draw();
 		}
-	}
+	} // void
 	
-	create(sz, input = {}, activate = false) {
-		input.szManager = this;
-		const newSz = new (register.get(sz))(input);
-		if ( activate ) {
-			this._actives.push(newSz);
-		}
-		newSz.init(input);
+	create(szName, options = {}) {
+		options.szManager = this;
+		const newSz = new (register.get(szName))(options);
+		newSz.init?.(options);
 		return newSz;
-	}
+	} // new Seizure
 	
 	set(...args) {
-		this._toSet = () => this._set(...args);
-	}
+		this.#closeActive();
+		this.popUp(...args);
+	} // void
 	
-	_set(sz, input, popup = false) {
-		this.reset = () => this.set(sz, input);
+	popUp(sz, options) {
+		this.reset = () => this.set(sz, options);
 		this.forAll( sz => sz.resetInput() );
-		if ( popup === false ) {
-			this._closeActive();
-		}
-		//this._actives.push( this._loading );
-		//setTimeout( () => {
-		//this._closeActive();
-		this.create(sz, input, true);
-		//}, 1000);
-	}
+		this.#activateNew(sz, options);
+	} // void
+	
+	closePopUp() {
+		this.#closeActive();
+	} // void
 	
 	countActives() {
-		return this._actives.length;
-	}
+		return this.#actives.length;
+	} // number
 	
 	getActive() {
-		if ( this._actives.length > 0 ) {
-			return QQ.getLast(this._actives);
+		if ( this.#actives.length > 0 ) {
+			return QQ.getLast(this.#actives);
 		}
-		throw new Error(`No active seizures`);
-	}
+		throw Error(`No active seizures`);
+	} // Seizure
 	
 	forActive(fn) {
 		return fn( this.getActive() );
-	}
+	} // fn return
 	
 	forAll(fn) {
-		for ( const sz of this._actives ) {
+		for ( const sz of this.#actives ) {
 			fn(sz);
 		}
-	}
+	} // void
 	
-	popUp(sz, input) {
-		this.set(sz, input, true);
-	}
+	#activateNew(...args) {
+		this.#actives.push(this.create(...args));
+	} // void
 	
-	closePopUp() {
-		this._toCloseActive = true;
-	}
-	
-	_closeActive() {
-		if ( this._actives.length > 0 ) {
-			const toDestruct = this._actives.pop();
-			toDestruct.destructor();
-		}
-	}
+	#closeActive() {
+		const toDestruct = this.#actives.pop();
+		toDestruct.destructor();
+	} // void
 	
 }
