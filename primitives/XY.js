@@ -16,7 +16,7 @@ export class XY {
 		this.set(x, y)
 	}
 	
-	static NIL() { // Get static zero-valued XY (don't edit it)
+	static NIL() { // Get static zero-valued XY (Don't edit it!)
 		if ( this.NIL_VALUE === undefined ) {
 			this.NIL_VALUE = this.ZERO();
 		}

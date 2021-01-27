@@ -14,35 +14,36 @@ export function SortByZMix(base) {
 		reset(options = {}) {
 			super.reset(options);
 			this.#reset(options);
-		} // Void
+		} // void
 		
 		#reset(options) {
 			this.#isSortByZOnAddSubject = options.isSortByZOnAdd ?? true;
 			this.#isSortByZOnTick = options.isSortByZOnTick ?? false;
-		} // Void
+		} // void
 		
 		tick(delta) { // {O}
-			super.tick(delta);
+			super.tick?.(delta);
 			if ( this.#isSortByZOnTick ) this.sortByZ();
-		}
+		} // void
 		
 		addSubject(...subj) { // {O}
 			super.addSubject(...subj);
 			if ( this.#isSortByZOnAddSubject ) this.#sortByZ();
-		} // Void
+		} // void
 		
 		sortByZ() { // {V}
-			this.forChildren( subj => subj.sortByZ() );
 			this.#sortByZ();
-		} // Void
+			this.forChildren( subj => subj.sortByZ() );
+		} // void
 		
 		#sortByZ() {
+			// TODO may be quick way? Not sure if it have sense to do
 			const copy = [...this.getSubjects()];
 			this.getSubjects().sort( (a, b) => {
 				const cmp = a.z() - b.z();
 				return cmp !== 0 ? cmp : copy.indexOf(a) - copy.indexOf(b);
 			});
-		} // Void
+		} // void
 		
 	}
 }

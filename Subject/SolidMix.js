@@ -16,24 +16,29 @@ export function SolidMix(base) {
 		reset(options = {}) { // {O}
 			super.reset(options);
 			this.#reset(options);
-		} // Void
+		} // void
 		
 		#reset(options) {
 			this.#solid.reset(options.solid);
 			this.#isDraw = options.solid?.draw ?? false;
-		} // Void
+		} // void
 		
-		solid(solid) { // {F}
-			if ( solid !== undefined ) {
-				this.#solid.reset(solid);
+		draw(wcontext) {
+			super.draw(wcontext);
+			if ( this.#isDraw ) {
+				this.#drawSolidBorder(wcontext);
+				this.#drawSolidCenter(wcontext);
 			}
-			return this.#solid;
-		} // Solid
+		} // void
+		
+		isSolid() {
+			return true;
+		} // boolean
 		
 		getDistance(solid) {
 			const position = solid.getSolidPosition();
 			return position.getDistance(this.getSolidPosition());
-		} // Number
+		} // number
 		
 		getCollision(solid) {
 			const myRect = this.getSolidRect();
@@ -47,7 +52,7 @@ export function SolidMix(base) {
 		
 		getSolidWeight() {
 			return this.#solid.weight();
-		} // Number
+		} // number
 		
 		getSolidType() {
 			return this.#solid.type();
@@ -56,18 +61,6 @@ export function SolidMix(base) {
 		getSolidPosition() {
 			return this.#solid.position();
 		} // Point
-		
-		isSolid() {
-			return true;
-		} // Boolean
-		
-		draw(wcontext) {
-			super.draw(wcontext);
-			if ( this.#isDraw ) {
-				this.#drawSolidBorder(wcontext);
-				this.#drawSolidCenter(wcontext);
-			}
-		} // Void
 		
 		#drawSolidBorder(wcontext) {
 			wcontext.cleanTransform();
@@ -83,7 +76,7 @@ export function SolidMix(base) {
 			context.lineWidth = 0.01;
 			context.strokeStyle = '#FF0000';
 			context.stroke();
-		} // Void
+		} // void
 		
 		#drawSolidCenter(wcontext) {
 			wcontext.cleanTransform();
@@ -94,6 +87,14 @@ export function SolidMix(base) {
 			context.lineWidth = 0.05;
 			context.strokeStyle = '#0000FF';
 			context.stroke();
-		} // Void
+		} // void
+		
+		solid(solid) { // {F}
+			if ( solid !== undefined ) {
+				this.#solid.reset(solid);
+			}
+			return this.#solid;
+		} // Solid
+		
 	}
 }

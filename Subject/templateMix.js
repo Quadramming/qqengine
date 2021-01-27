@@ -32,3 +32,18 @@ export function nameMix(base) {
 		
 	}
 }
+
+/*
+constructor
+destructor
+reset
+#reset
+tick
+draw
+onSomeThing
+is
+get
+set
+#private
+field {F}
+*/

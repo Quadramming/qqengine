@@ -13,6 +13,7 @@ export class Pack {
 	
 	// Can be overridden:
 	// packUpdate()
+	// tick(delta)
 	
 	constructor(options = {}) {
 		this.#reset(options);
@@ -29,9 +30,6 @@ export class Pack {
 		this.#anchor.copyOrSet(options.anchor, 0.5, 0.5);
 		this.#angle = options.angle ?? 0;
 		this.#z = options.z ?? 0;
-	} // void
-	
-	tick(delta) { // {V}
 	} // void
 	
 	size(size) { // {F}

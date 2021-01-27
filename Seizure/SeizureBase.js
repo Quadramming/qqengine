@@ -91,7 +91,7 @@ export class SeizureBase {
 		this._world.background(...args);
 	} // void
 	
-	makeSubject(...args) {
+	makeSubject(...args) { // Proxy to World.makeSubject()
 		return this._world.makeSubject(...args);
 	} // new Subject
 	

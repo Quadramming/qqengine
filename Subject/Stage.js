@@ -14,14 +14,14 @@ export class Stage extends Group {
 	reset(options = {}) {
 		super.reset(options);
 		this.#reset(options);
-	}
+	} // void
 	
 	#reset(options) {
 		this.#world = options.world;
-	}
+	} // void
 	
 	getWorld() {
 		return this.#world;
-	}
+	} // World
 	
 }

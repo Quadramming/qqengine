@@ -56,6 +56,11 @@ export class DnD extends
 {
 }
 
+export class ElasticDnD extends
+	QQ.mixins(ElasticDnDMix, Sprite)
+{
+}
+
 export function make(options = {}) { // Create new subject
 	if ( options.image || options.imageId ) {
 		let subj = null;
