@@ -1,3 +1,5 @@
+// QQDOC
+
 import * as QQ from '../QQ.js';
 import * as Actions from '../Actions/index.js';
 import {Point} from '../primitives/index.js';

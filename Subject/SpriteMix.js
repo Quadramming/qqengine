@@ -1,19 +1,17 @@
 // QQDOC
-// TD
 
 import * as QQ from '../QQ.js';
 import * as matrix from '../matrix.js';
 import * as maths from '../maths.js';
 import {ORDER} from '../CONST/index.js';
+import {SPRITE as S} from '../CONST/SPRITE.js';
 import {Sprite} from '../Sprite/Sprite.js';
 import {ClipSprite} from '../Sprite/ClipSprite.js';
 import {AnimateSprite} from '../Sprite/AnimateSprite.js';
 import {LayersSprite} from '../Sprite/LayersSprite.js';
 import {TileSprite} from '../Sprite/TileSprite.js';
 import {WCanvas} from '../WCanvas.js';
-import {Point, Size, Scale} from '../primitives/index.js';
-
-// TOFIX: maybe some how split diffrent sprites?
+import {Scale} from '../primitives/index.js';
 
 function fixOptions(options) {
 	if ( options.imageId && options.image ) {
@@ -28,16 +26,16 @@ function fixOptions(options) {
 		wcanvas.fillRect(0, 0, 1, 1);
 		options.image = wcanvas.getCanvas();
 	}
-}
+} // void
 
 export function SpriteMix(base) {
 	return class SpriteMix extends base {
 		
-		#drawOrder;
+		#alpha;
 		#imageId; // Image ID
 		#image; // Image content (HTMLImageElement, Canvas, ...)
+		#drawOrder;
 		#sprite;
-		#alpha;
 		
 		constructor(options = {}) {
 			fixOptions(options);
@@ -49,28 +47,20 @@ export function SpriteMix(base) {
 			fixOptions(options);
 			super.reset(options);
 			this.#reset(options);
-		}
+		} // void
 		
 		#reset(options) {
 			this.#drawOrder = options.spriteDrawOrder ?? ORDER.FIRST;
 			this.#imageId = options.imageId ?? null;
 			this.#image = options.image;
 			this.#alpha = options.alpha ?? 1;
-			this.setStaticSprite(); // Will set this.#sprite
-		}
-		
-		getSprite() {
-			return this.#sprite;
-		}
-		
-		getImage() {
-			return this.#image;
-		}
+			this.setSprite(S.SOLID); // Will set this.#sprite
+		} // void
 		
 		tick(delta) { // {O}
 			super.tick(delta);
 			this.#sprite.tick(delta);
-		}
+		} // void
 		
 		draw(context) { // {O}
 			if ( this.#drawOrder === ORDER.FIRST ) {
@@ -80,9 +70,38 @@ export function SpriteMix(base) {
 			if ( this.#drawOrder === ORDER.LAST ) {
 				this.#draw(context);
 			}
-		}
+		} // void
 		
-		#draw(context) {
+		getSprite() {
+			return this.#sprite;
+		} // Sprite
+		
+		setSprite(type, ...args) {
+			switch ( type ) {
+				case S.SOLID: this.#sprite = new Sprite(this.#image, ...args); break;
+				case S.ANIMATE: this.#sprite = new AnimateSprite(this.#image, ...args); break;
+				case S.CLIP: this.#sprite = new ClipSprite(this.#image, ...args); break;
+				case S.LAYERS: this.#sprite = new LayersSprite(this.#image, ...args); break;
+				case S.TILE: this.#sprite = new TileSprite(this.#image, ...args); break;
+			}
+		} // void
+		
+		setTileOffset(offset) {
+			check(this.#sprite instanceof TileSprite);
+			this.#sprite.setTileOffset(offset);
+		} // void
+		
+		setTileSize(size) {
+			check(this.#sprite instanceof TileSprite);
+			this.#sprite.setTileSize(size);
+		} // void
+		
+		addSpriteLayer(layer) {
+			check(this.#sprite instanceof LayersSprite);
+			this.#sprite.addLayer(layer);
+		} // void
+		
+		#draw(wcontext) {
 			// TOFIX need cache
 			const spriteSize = this.#sprite.getFrameSize();
 			const size = this.size();
@@ -97,68 +116,25 @@ export function SpriteMix(base) {
 				M
 			);
 			M = matrix.mul(this.getMatrix(), M);
-			context.transform(M);
+			wcontext.transform(M);
 			
-			const ctx = context.get();
+			const context = wcontext.get();
 			const changeAlpha = (this.#alpha !== 1);
 			if ( changeAlpha ) {
-				ctx.globalAlpha = this.#alpha;
+				context.globalAlpha = this.#alpha;
 			}
-			this.#sprite.draw(ctx);
+			this.#sprite.draw(context);
 			if ( changeAlpha ) {
-				ctx.globalAlpha = 1;
+				context.globalAlpha = 1;
 			}
-		}
-		
-		// set Sprites
-		
-		setStaticSprite() {
-			this.#sprite = new Sprite(this.#image);
-		}
-		
-		setAnimateSprite(...args) {
-			this.#sprite = new AnimateSprite(this.#image, ...args);
-		}
-		
-		setClipSprite(...args) {
-			this.#sprite = new ClipSprite(this.#image, ...args);
-		}
-		
-		// LayerSprite
-		
-		setLayersSprite(...args) {
-			this.#sprite = new LayersSprite(this.#image, ...args);
-		}
-		
-		addSpriteLayer(layer) {
-			check(this.#sprite instanceof LayersSprite);
-			this.#sprite.addLayer(layer);
-		}
-		
-		// TileSprite
-		
-		setTileSprite(...args) {
-			this.#sprite = new TileSprite(this.#image, ...args);
-		}
-		
-		setTileOffset(offset) {
-			check(this.#sprite instanceof TileSprite);
-			this.#sprite.setTileOffset(offset);
-		}
-		
-		setTileSize(size) {
-			check(this.#sprite instanceof TileSprite);
-			this.#sprite.setTileSize(size);
-		}
-		
-		// Fields
+		} // void
 		
 		alpha(alpha) { // {F}
 			if ( alpha !== undefined ) {
 				this.#alpha = alpha;
 			}
 			return this.#alpha;
-		}
+		} // number
 		
 		imageId(imageId) { // {F} Set image by id to sprite
 			if ( imageId !== undefined ) {
@@ -167,16 +143,16 @@ export function SpriteMix(base) {
 				this.#sprite.image(this.#image);
 			}
 			return this.#imageId;
-		}
+		} // string
 		
-		image(image) {
+		image(image) { // {F}
 			if ( image !== undefined ) {
 				this.#imageId = null;
 				this.#image = image;
-				this.#sprite.image(this.#image);
+				this.#sprite.image(image);
 			}
 			return this.#image;
-		}
+		} // HTMLImageElement
 		
 	}
 }

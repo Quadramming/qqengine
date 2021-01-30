@@ -65,18 +65,20 @@ export class World {
 		return this.#stage.getSubject(predicate);
 	} // Subject | null
 	
-	getSubjectsAtPoint(point) { // Not only hittable
-		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)
-		return this.getSubjects( subj => subj.isHere?.(point) );
+	getSubjectsAtPoint(point) {
+		return this.getSubjects( subj =>
+			subj instanceof Subject.Subject && subj.isContains?.(point)
+		);
 	} // new array of Subjects
 	
-	subjAtPoint(point) { // Shortcut for getSubjectAtPoint()
-		return this.getSubjectAtPoint(point);
+	clickableAtPoint(point) { // Shortcut for getClickableAtPoint()
+		return this.getClickableAtPoint(point);
 	} // Subject | null
 	
-	getSubjectAtPoint(point) { // Only hitabble subjects
-		// May be should be subj instanceof Subject.Subject (to separate Groups and maybe more)
-		return this.getSubject( subj => subj.isHit?.(point) );
+	getClickableAtPoint(point) {
+		return this.getSubject( subj =>
+			subj instanceof Subject.Subject && subj.couldClick?.(point)
+		);
 	} // Subject | null
 	
 	background(background) { // {F} Can take '#ffffff', 'imageid' or null

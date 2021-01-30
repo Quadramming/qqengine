@@ -1,6 +1,7 @@
 // QQDOC
 
 import * as QQ from '../QQ.js';
+import {SPRITE as S} from '../CONST/SPRITE.js';
 import {SpriteMix} from './SpriteMix.js';
 import {SolidMix} from './SolidMix.js';
 import {ActionableMix} from './ActionableMix.js';
@@ -78,17 +79,17 @@ export function make(options = {}) { // Create new subject
 			}
 		}
 		if ( options.tile ) {
-			subj.setTileSprite(...options.tile);
+			subj.setSprite(S.TILE, ...options.tile);
 		} else if ( options.clip ) {
 			if ( options.clip instanceof Array ) {
-				subj.setClipSprite(...options.clip);
+				subj.setSprite(S.CLIP, ...options.clip);
 			} else {
-				subj.setClipSprite(options.clip);
+				subj.setSprite(S.CLIP, options.clip);
 			}
 		} else if ( options.animate ) {
-			subj.setAnimateSprite(...options.animate);
+			subj.setSprite(S.ANIMATE, ...options.animate);
 		} else if ( options.layer ) {
-			subj.setLayersSprite(options.layer);
+			subj.setSprite(S.LAYERS, options.layer);
 		}
 		return subj;
 	}

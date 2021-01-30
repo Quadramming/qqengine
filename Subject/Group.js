@@ -9,7 +9,7 @@ import {MatrixMix} from './MatrixMix.js';
 
 function fixOptions(options) {
 	options.size = Size.NIL();
-}
+} // void
 
 export class Group extends
 	QQ.mixins(MatrixMix, SortByZMix, RelationshipMix, Pack.Pack)

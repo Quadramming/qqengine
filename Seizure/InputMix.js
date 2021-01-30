@@ -65,7 +65,7 @@ export function InputMix(base) {
 				this.#pointers.set(id, pointer);
 				pointer.down(point);
 				const worldPoint = pointer.getWorldPoint();
-				this._world.subjAtPoint(worldPoint)?.onClickDown(worldPoint, pointer);
+				this._world.clickableAtPoint(worldPoint)?.onClickDown(worldPoint, pointer);
 			}
 		} // void
 		
@@ -87,10 +87,10 @@ export function InputMix(base) {
 				if ( pointer ) {
 					pointer.up(point);
 					const worldPoint = pointer.getWorldPoint();
-					const subjAtPoint = this._world.subjAtPoint(worldPoint);
-					subjAtPoint?.onClickUp(pointer.getWorldPoint(), pointer);
+					const clickable = this._world.clickableAtPoint(worldPoint);
+					clickable?.onClickUp(pointer.getWorldPoint(), pointer);
 					if ( pointer.isNearStart() ) {
-						subjAtPoint?.onClick(pointer.getWorldPoint(), pointer);
+						clickable?.onClick(pointer.getWorldPoint(), pointer);
 					}
 					pointer.destructor();
 					this.#pointers.delete(id);

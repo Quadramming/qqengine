@@ -5,7 +5,7 @@ import {Point} from '../primitives/index.js';
 
 function fixOptions(options) {
 	options.isClickable = true;
-}
+} // void
 
 export function DragAndDropMix(base) {
 	return class DragAndDropMix extends base {

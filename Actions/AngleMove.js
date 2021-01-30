@@ -34,4 +34,8 @@ export class AngleMove extends Idle {
 		);
 	} // void
 	
+	onEnd() { // {O}
+		this._subject.position().set(this.#to);
+	} // void
+	
 }

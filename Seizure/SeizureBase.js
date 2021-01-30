@@ -52,7 +52,7 @@ export class SeizureBase {
 	
 	isHitSomething(point) {
 		const worldPoint = this._camera.getWorldFromScreen(point);
-		return Boolean( this._world.getSubjectAtPoint(worldPoint) );
+		return Boolean( this._world.clickableAtPoint(worldPoint) );
 	} // boolean
 	
 	getWorldFromScreen(point) {

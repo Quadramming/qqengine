@@ -53,17 +53,29 @@ export function MatrixMix(base) {
 			return new Point(M);
 		} // new Point
 		
+		localToParent(point) {
+			let M = this.getMatrix(false);
+			M = matrix.mul(M, matrix.getVector(point));
+			return new Point(M);
+		} // new Point
+		
 		parentToLocal(point) {
 			let M = matrix.inverse(this.getMatrix(false));
 			M = matrix.mul(M, matrix.getVector(point));
 			return new Point(M);
 		} // new Point
 		
-		localToParent(point) {
-			let M = this.getMatrix(false);
-			M = matrix.mul(M, matrix.getVector(point));
-			return new Point(M);
-		} // new Point
+		debugPointConvertings(worldPoint) {
+			c("World:" + worldPoint);
+			let local = this.worldToLocal(worldPoint);
+			c("worldToLocal:" + local);
+			const world = this.localToWorld(local);
+			c("localToWorld:" + world);
+			const parent = this.localToParent(local);
+			c("localToParent:" + parent);
+			local = this.parentToLocal(parent);
+			c("parentToLocal:" + local);
+		}
 		
 	}
 }

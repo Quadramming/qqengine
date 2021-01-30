@@ -1,7 +1,7 @@
 import * as QQ from '../QQ.js';
 
 function fixOptions(options) {
-}
+} // void
 
 export function nameMix(base) {
 	return class nameMix extends base {
@@ -44,6 +44,10 @@ onSomeThing
 is
 get
 set
+add
+clean
+delete
+...
 #private
 field {F}
 */

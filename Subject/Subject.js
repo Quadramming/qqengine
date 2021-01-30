@@ -1,119 +1,50 @@
 // QQDOC
-// TD
 
-import * as Pack from '../Pack/index.js';
 import * as QQ from '../QQ.js';
+import * as Pack from '../Pack/index.js';
 import {Rect, Point, XY} from '../primitives/index.js';
 import {RelationshipMix} from './RelationshipMix.js';
 import {SortByZMix} from './SortByZMix.js';
 import {MatrixMix} from './MatrixMix.js';
+import {DrawMix} from './DrawMix.js';
+import {ClickableMix} from './ClickableMix.js';
 
 export class Subject extends
-	QQ.mixins(MatrixMix, SortByZMix, RelationshipMix, Pack.Pack)
+	QQ.mixins(DrawMix, ClickableMix, MatrixMix, SortByZMix, RelationshipMix, Pack.Pack)
 {
 	
-	#bgColor; // Background color
-	#tickFn; // Tick function
-	#onClickFn; // On click function
-	#isClickable; // Is clickable
-	#doDebugDraw; // Draw debug shapes
+	#tickFn;
 	
 	constructor(options = {}) {
 		super(options);
 		this.#reset(options);
 	}
 	
-	destructor() { // {O}
-		super.destructor();
-		this.#tickFn = null; // Tick function
-		this.#onClickFn = null; // On click function
-	}
-	
-	reset(options = {}) {
+	reset(options = {}) { // {O}
 		super.reset(options);
 		this.#reset(options);
-	}
+	} // void
 	
 	#reset(options) {
-		this.#bgColor = options.bgColor ?? null;
-		this.#doDebugDraw = options.doDebugDraw ?? false;
 		this.#tickFn = options.tickFn ?? null;
-		if ( options.onClick ) {
-			this.#onClickFn = options.onClick;
-			this.#isClickable = true;
-		} else {
-			this.#onClickFn = null;
-			this.#isClickable = options.isClickable ?? false;
-		}
 		options.init?.call(this);
-	}
+	} // void
 	
 	tick(delta) {
 		super.tick(delta);
 		this.#tickFn?.(delta);
 		this.forSubjects( subj => subj.tick(delta) );
-	}
-
-	bgColor(color) { // {F} Set background color
-		if ( color !== undefined ) {
-			this.#bgColor = color;
-		}
-		return this.#bgColor;
-	} // string
+	} // void
 	
-	draw(context) {
-		if ( this.#bgColor ) {
-			this.#drawBgColor(context);
-		}
-		this.forSubjects( subj => subj.draw(context) );
-		if ( this.#doDebugDraw ) {
-			this.drawWorldBorder(context);
-			this.drawLocalBorder(context);
-			this.drawCenter(context);
-		}
-	}
-	
-	onClickDown(worldPoint, pointer) { // {V}
-		/* DEBUG
-		c("World:" + worldPoint);
-		let local = this.worldToLocal(worldPoint);
-		c("worldToLocal:" + local);
-		const world = this.localToWorld(local);
-		c("localToWorld:" + world);
-		const parent = this.localToParent(local);
-		c("localToParent:" + parent);
-		local = this.parentToLocal(parent);
-		c("parentToLocal:" + local);
-		//*/
-	}
-	
-	onClickUp(worldPoint, pointer) { // {V}
-	}
-	
-	onClick(worldPoint, pointer) { // {V}
-		this.#onClickFn?.(worldPoint);
-	}
-	
-	isClickable() {
-		return this.#isClickable;
-	}
-	
-	isHit(worldPoint) {
-		if ( ! this.#isClickable ) {
-			return false;
-		}
-		return this.isHere(worldPoint);
-	}
-	
-	isHere(worldPoint) {
+	isContains(worldPoint) {
 		const local = this.worldToLocal(worldPoint);
 		const rect = this.getLocalRect();
 		return rect.isContains(local);
-	}
+	} // boolean
 	
 	getWorldPosition() {
 		return this.localToWorld(Point.NIL());
-	}
+	} // new Point
 	
 	getBounds() {
 		const rect = this.getLocalRect();
@@ -123,7 +54,16 @@ export class Subject extends
 			this.localToWorld(new Point(rect.left(), rect.bottom())),
 			this.localToWorld(new Point(rect.right(), rect.bottom()))
 		);
-	}
+	} // new Rect
+	
+	getLocalRect() {
+		return new Rect(
+			-this.size().x()*this.anchor().x(),
+			-this.size().y()*this.anchor().y(),
+			this.size().w(),
+			this.size().h()
+		);
+	} // new Rect
 	
 	addPosition(x, y) { // or (XY)
 		if ( x instanceof XY ) {
@@ -131,11 +71,11 @@ export class Subject extends
 		} else {
 			this.position().add(new XY(x, y));
 		}
-	}
+	} // void
 	
 	movePosition(offset) {
 		this.addPosition(offset);
-	}
+	} // void
 	
 	fitInRect(rect) {
 		this.anchor().set(0, 0);
@@ -146,66 +86,6 @@ export class Subject extends
 		this.position().set(rect.left(), rect.top());
 		this.angle(0);
 		this.scale().set(1, 1);
-	}
-	
-	getLocalRect() {
-		return new Rect(
-			-this.size().x()*this.anchor().x(),
-			-this.size().y()*this.anchor().y(),
-			this.size().w(),
-			this.size().h()
-		);
-	}
-	
-	drawWorldBorder(wcontext) {
-		wcontext.cleanTransform();
-		const rect = this.getBounds();
-		const ctx = wcontext.get();
-		ctx.beginPath();
-		ctx.rect(
-			rect.x(),
-			rect.y(),
-			rect.w(),
-			rect.h()
-		);
-		ctx.lineWidth = 0.1;
-		ctx.strokeStyle = '#FF00FF';
-		ctx.stroke();
-	}
-	
-	drawLocalBorder(context) {
-		context.transform( this.getMatrix() );
-		const rect = this.getLocalRect();
-		const ctx = context.get();
-		ctx.beginPath();
-		ctx.rect(
-			rect.x(),
-			rect.y(),
-			rect.w(),
-			rect.h()
-		);
-		ctx.lineWidth = 0.1;
-		ctx.strokeStyle = '#0000FF';
-		ctx.stroke();
-	}
-	
-	drawCenter(wcontext) {
-		wcontext.cleanTransform();
-		let point = this.localToWorld(Point.ZERO());
-		const ctx = wcontext.get();
-		ctx.beginPath();
-		ctx.arc(point.x(), point.y(), 0.1, 0, 2 * Math.PI);
-		ctx.lineWidth = 0.05;
-		ctx.strokeStyle = '#0000FF';
-		ctx.stroke();
-	}
-	
-	#drawBgColor(context) {
-		context.transform( this.getMatrix() );
-		const ctx = context.get();
-		const rect = this.getLocalRect();
-		ctx.fillStyle = this.#bgColor;
-		ctx.fillRect(rect.x(), rect.y(), rect.w(), rect.h());
-	}
+	} // void
 	
 }
