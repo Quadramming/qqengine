@@ -5,7 +5,7 @@ import * as Subject from '../Subject/index.js';
 function fixOptions(options) {
 	options.imageId = 'checkBoxEmpty';
 	options.isClickable = true;
-}
+} // void
 
 export class CheckBox extends Subject.Sprite {
 	

@@ -5,7 +5,7 @@ import * as Text from '../Text/index.js';
 
 function fixOptions(options) {
 	options.isClickable = true;
-}
+} // void
 
 export class Button extends Subject.Sprite {
 	

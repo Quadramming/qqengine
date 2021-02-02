@@ -2,7 +2,7 @@
 
 import {Idle} from '../Actions/Idle.js';
 
-export function ActionableMix(base) { // Mix Actionable to base
+export function ActionableMix(base) { // Mix ActionableMix to base
 	return class ActionableMix extends base {
 		
 		#action; // Current action

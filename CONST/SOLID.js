@@ -1,3 +1,5 @@
+// QQDOC
+
 export const SOLID = {
 	STATIC: 0,
 	DYNAMIC: 1,

@@ -7,7 +7,7 @@ function fixOptions(options) {
 	options.isClickable = true;
 } // void
 
-export function DragAndDropMix(base) {
+export function DragAndDropMix(base) { // Mix DragAndDropMix to base
 	return class DragAndDropMix extends base {
 		
 		#start = new Point();
@@ -88,4 +88,4 @@ export function DragAndDropMix(base) {
 		} // void
 		
 	}
-}
+} // class DragAndDropMix extends base

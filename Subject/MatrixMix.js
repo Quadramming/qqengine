@@ -4,7 +4,7 @@ import * as matrix from '../matrix.js';
 import * as Pack from '../Pack/index.js';
 import {Point} from '../primitives/index.js';
 
-export function MatrixMix(base) {
+export function MatrixMix(base) { // Mix MatrixMix to base
 	return class MatrixMix extends base {
 		
 		#matrix;
@@ -78,4 +78,4 @@ export function MatrixMix(base) {
 		}
 		
 	}
-}
+} // class MatrixMix extends base

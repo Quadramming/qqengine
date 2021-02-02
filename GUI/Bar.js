@@ -8,7 +8,7 @@ import {Point} from '../primitives/index.js';
 function fixOptions(options) {
 	options.imageId ??= 'bar';
 	options.anchor ??= new Point(0.5, 0.5);
-}
+} // void
 
 export class Bar extends Subject.Sprite {
 	

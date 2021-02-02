@@ -3,9 +3,9 @@
 import * as Seizure from '../Seizure/index.js';
 import {FN} from '../CONST/FN.js';
 
-// TOFIX think destructor reset clean etc
+// TODO think destructor reset clean etc
 
-export function RelationshipMix(base) { // Mix Relationship to base
+export function RelationshipMix(base) { // Mix RelationshipMix to base
 	return class RelationshipMix extends base {
 		
 		#subjects = [];

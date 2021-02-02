@@ -1,3 +1,5 @@
+// QQDOC
+
 export const PIVOT = {
 	NONE: 0,
 	CENTER: 1,

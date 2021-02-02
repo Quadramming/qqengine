@@ -1,6 +1,6 @@
 // QQDOC
 
-export function ClickableMix(base) {
+export function ClickableMix(base) { // Mix ClickableMix to base
 	return class ClickableMix extends base {
 		
 		#onClickDownFn; // On click down function
@@ -52,4 +52,4 @@ export function ClickableMix(base) {
 		} // boolean
 	
 	}
-}
+} // class ClickableMix extends base

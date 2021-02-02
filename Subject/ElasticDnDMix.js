@@ -6,7 +6,7 @@ import {Point} from '../primitives/index.js';
 import {DragAndDropMix} from './DragAndDropMix.js';
 import {ActionableMix} from './ActionableMix.js';
 
-export function ElasticDnDMix(base) {
+export function ElasticDnDMix(base) { // Mix ElasticDnDMix to base
 	return class ElasticDnDMix extends QQ.mixins(DragAndDropMix, ActionableMix, base) {
 		
 		_onDnDMove(worldPoint, offset) { // {O}
@@ -22,4 +22,4 @@ export function ElasticDnDMix(base) {
 		} // void
 		
 	}
-}
+} // class ElasticDnDMix extends QQ.mixins(DragAndDropMix, ActionableMix, base)

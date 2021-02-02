@@ -1,2 +1,2 @@
-node compile.js
-start chrome index.htm
+node src/index.mjs
+:: start chrome index.htm

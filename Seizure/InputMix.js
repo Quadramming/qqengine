@@ -3,7 +3,7 @@
 import * as CONST from '../CONST/index.js';
 import {Pointer} from '../Pointer.js';
 
-export function InputMix(base) {
+export function InputMix(base) { // Mix InputMix to base
 	return class InputMix extends base {
 		
 		#pointers = new Map();
@@ -99,4 +99,4 @@ export function InputMix(base) {
 		} // void
 		
 	}
-}
+} // class InputMix extends base

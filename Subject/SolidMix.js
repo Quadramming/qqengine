@@ -2,7 +2,7 @@
 
 import * as Pack from '../Pack/index.js';
 
-export function SolidMix(base) {
+export function SolidMix(base) { // Mix SolidMix to base
 	return class SolidMix extends base {
 		
 		#solid = new Pack.Solid();
@@ -97,4 +97,4 @@ export function SolidMix(base) {
 		} // Solid
 		
 	}
-}
+} // class SolidMix extends base

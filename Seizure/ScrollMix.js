@@ -3,7 +3,7 @@
 import * as QQ from '../QQ.js';
 import {Point} from '../primitives/index.js';
 
-export function ScrollMix(base) {
+export function ScrollMix(base) { // Mix ScrollMix to base
 	return class ScrollMix extends base {
 		
 		#isScrollable;
@@ -52,4 +52,4 @@ export function ScrollMix(base) {
 		} // void
 		
 	}
-}
+} // class ScrollMix extends base

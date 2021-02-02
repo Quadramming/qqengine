@@ -1,3 +1,5 @@
+// QQDOC
+
 export const SPRITE = {
 	STATIC: 1,
 	ANIMATE: 2,

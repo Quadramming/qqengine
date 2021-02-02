@@ -36,16 +36,16 @@ export class ImageManager {
 		throw Error(`Application.getImageById(): no such img ${imageId}`);
 	} // HTMLImageElement
 	
-	getImageCanvasByUrl(imageUrl) {
+	getImageWCanvasByUrl(imageUrl) {
 		for ( const [id, url] of this.#id2url ) {
 			if ( url === imageUrl ) {
-				return this.getImageCanvasById(id);
+				return this.getImageWCanvasById(id);
 			}
 		}
 		throw Error(`Application.getImageCanvasByUrl(): no such url ${imageUrl}`);
 	} // WCanvas
 	
-	getImageCanvasById(imageId) {
+	getImageWCanvasById(imageId) {
 		if ( ! this.#id2WCanvas.has(imageId) ) {
 			const image = this.getImageById(imageId);
 			const canvas = new WCanvas(image.width, image.height);
@@ -67,7 +67,7 @@ export class ImageManager {
 		if ( this.#url2Image.has(url) ) {
 			return this.#url2Image.get(url);
 		}
-		return this.create(url);
+		return this.#create(url);
 	} // HTMLImageElement
 	
 }

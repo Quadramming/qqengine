@@ -28,7 +28,7 @@ function fixOptions(options) {
 	}
 } // void
 
-export function SpriteMix(base) {
+export function SpriteMix(base) { // Mix SpriteMix to base
 	return class SpriteMix extends base {
 		
 		#alpha;
@@ -102,7 +102,7 @@ export function SpriteMix(base) {
 		} // void
 		
 		#draw(wcontext) {
-			// TOFIX need cache
+			// TODO need cache
 			const spriteSize = this.#sprite.getFrameSize();
 			const size = this.size();
 			const scale = new Scale(
@@ -152,7 +152,7 @@ export function SpriteMix(base) {
 				this.#sprite.image(image);
 			}
 			return this.#image;
-		} // HTMLImageElement
+		} // Canvas | HTMLImageElement
 		
 	}
-}
+} // class SpriteMix extends base

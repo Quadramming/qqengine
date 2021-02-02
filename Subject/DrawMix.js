@@ -1,6 +1,6 @@
 // QQDOC
 
-export function DrawMix(base) {
+export function DrawMix(base) { // Mix DrawMix to base
 	return class DrawMix extends base {
 		
 		#bgColor; // Background color
@@ -92,4 +92,4 @@ export function DrawMix(base) {
 		} // string
 		
 	}
-}
+} // class DrawMix extends base

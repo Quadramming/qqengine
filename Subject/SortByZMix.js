@@ -1,6 +1,6 @@
 // QQDOC
 
-export function SortByZMix(base) {
+export function SortByZMix(base) { // Mix SortByZMix to base
 	return class SortByZMix extends base {
 	
 		#isSortByZOnAddSubject;
@@ -46,4 +46,4 @@ export function SortByZMix(base) {
 		} // void
 		
 	}
-}
+} // class SortByZMix extends base
