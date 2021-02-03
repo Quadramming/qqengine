@@ -4,7 +4,7 @@ globalThis.c = function(x) {
 
 globalThis.push = function(array, element) {
 	array.push(element);
-	return array[array.length-1];
+	return element;
 }
 
 globalThis.check = function(expr, message = 'Check failed') {

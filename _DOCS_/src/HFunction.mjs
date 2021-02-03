@@ -1,45 +1,49 @@
-export class HFunction {
+const reFunction = /^(?<tabs>\s*)(?<export>export )?function (?<function>[_a-zA-Z0-9]+)\((?<args>.*?)\) {( \/\/ (?<options>.*))?/;
+const reFunctionEnd = /^(?<tabs>\s*)}( \/\/ (?<return>.*))?/;
+
+let current = null;
+
+export const data = new Map(); // Module => HFunction
+
+export function process(line, module) {
+	const fn = line.match(reFunction);
+	if ( fn ) {
+		console.assert(current === null);
+		// currentClass = null; ???
+		if ( ! data.has(module) ) data.set(module, []);
+		current = push(data.get(module), new Entity({
+			name: fn.groups.function,
+			export: fn.groups.export ?? '',
+			options: fn.groups.options ?? '',
+			args: fn.groups.args,
+			tabs: fn.groups.tabs.length,
+			module: module,
+		}));
+	}
+	if ( current ) {
+		const end = line.match(reFunctionEnd);
+		if ( end && end.groups.tabs.length === current.tabs ) {
+			current.return = end.groups.return ?? '';
+			current = null;
+		}
+	}
+}
+
+class Entity {
 	
-	static #reFunction = /^(?<tabs>\s*)(?<export>export )?function (?<function>[_a-zA-Z0-9]+)\((?<args>.*?)\) {( \/\/ (?<options>.*))?/;
-	static #reFunctionEnd = /^(?<tabs>\s*)}( \/\/ (?<return>.*))?/;
-	
-	static data = new Map(); // Module => functions
-	static #current = null;
-	
-	static html(fn) {
-		let text = ``
-		text += `<span class='export'>${fn.export}</span>`
-		text += `<span class='return'>${fn.return}</span>`
-		text += ` <b>${fn.name}</b>`
-		text += `(${fn.args})`
-		text += ` <span class='description'>${fn.options}</span>`;
-		text += `<br>`;
-		return text;
+	constructor(base) {
+		Object.assign(this, base);
 	}
 	
-	static process(line, module) {
-		const fn = line.match(this.#reFunction);
-		if ( fn ) {
-			console.assert(this.#current === null);
-			// currentClass = null; ???
-			if ( ! this.data.has(module) ) this.data.set(module, []);
-			this.#current = push(this.data.get(module), {
-				type: 'function',
-				name: fn.groups.function,
-				export: fn.groups.export ?? '',
-				options: fn.groups.options ?? '',
-				args: fn.groups.args,
-				tabs: fn.groups.tabs.length,
-				module: module,
-			});
-		}
-		if ( this.#current ) {
-			const end = line.match(this.#reFunctionEnd);
-			if ( end && end.groups.tabs.length === this.#current.tabs ) {
-				this.#current.return = end.groups.return ?? '';
-				this.#current = null;
-			}
-		}
+	html(fn) {
+		let htm = ``
+		htm += `<span class='export'>${fn.export}</span>`
+		htm += `<span class='return'>${fn.return}</span>`
+		htm += ` <b>${fn.name}</b>`
+		htm += `(${fn.args})`
+		htm += ` <span class='description'>${fn.options}</span>`;
+		htm += `<br>`;
+		return htm;
 	}
 	
 }

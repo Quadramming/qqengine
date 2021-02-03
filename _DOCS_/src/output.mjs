@@ -1,15 +1,21 @@
 import * as fs from 'fs';
-import {HExportVars} from './HExportVars.mjs';
-import {HFunction} from './HFunction.mjs';
+import * as HExportVars from './HExportVars.mjs';
+import * as HFunction from './HFunction.mjs';
+import * as HClass from './HClass.mjs';
 
 export function output() {
 	let htm = fs.readFileSync('src/index.template.htm').toString();
 	let docs = '';
+	docs += `<h1>CLASSES</h1><hr>`;
 	/*
 	for ( const classObj of info.classes ) {
 		docs += outputClass(classObj);
 	}
 	*/
+	
+	for ( const entity of HClass.data ) {
+		docs += entity.html(entity);
+	}
 	
 	const data = new Map();
 	
@@ -26,12 +32,7 @@ export function output() {
 	for ( const [key, entities] of data ) {
 		docs += `<h1>${key}</h1>`;
 		for ( const entity of entities ) {
-			if ( entity.type === 'function' ) {
-				docs += HFunction.html(entity);
-			}
-			if ( entity.type === 'var' ) {
-				docs += HExportVars.html(entity);
-			}
+			docs += entity.html(entity);
 		}
 	}
 	htm = htm.replace('{DOCS}', docs);
