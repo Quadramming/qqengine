@@ -21,10 +21,6 @@ export class Camera {
 	#mainMatrix;
 	#wcontext;
 	
-	// TODO Put in documentation
-	// Can be overridden:
-	// tick()
-	
 	constructor(world, canvas) {
 		this.#world = world;
 		this.#canvas = canvas;
@@ -43,6 +39,8 @@ export class Camera {
 	destructor() {
 		QQ.APP.removeOnResize( this.#onResizeFn );
 	}
+	
+	//D\\ void tick() // {V}
 	
 	widthToPercent(x) {
 		return x / (this.#canvas.width/100);

@@ -1,3 +1,5 @@
+// QQDOC
+
 import './global.js';
 import {Application} from './Application.js';
 import {Sprite} from './Sprite/index.js';

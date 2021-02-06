@@ -7,8 +7,8 @@ globalThis.push = function(array, element) {
 	return element;
 }
 
-globalThis.check = function(expr, message = 'Check failed') {
-	if ( ! expr ) {
+globalThis.check = function(expression, message = 'Check failed') {
+	if ( ! expression ) {
 		throw Error(message);
 	}
 }

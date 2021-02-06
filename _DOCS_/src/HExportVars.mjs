@@ -1,13 +1,12 @@
 const reOnelineVar = /^export (?<kind>const|let) (?<name>[_a-zA-Z0-9]+) (?<rest>.*?)( \/\/ (?<comment>.*))?$/;
 const reMultilineVar = /^export (?<kind>const|let) (?<name>[_a-zA-Z0-9]+) = {$/;
 const reVarEnd = /^};( \/\/ (?<comment>.*))?/;
+
 let current = null;
 
 export const data = new Map(); // Module => HExportVars
 
 export function process(line, module) {
-	// currentClass = null; ???
-	
 	const multi = line.match(reMultilineVar);
 	const single = line.match(reOnelineVar);
 	if ( multi || single ) {
@@ -27,14 +26,14 @@ export function process(line, module) {
 				comment: single.groups.comment ?? ''
 			}));
 		}
-	} else {
-		const ending = line.match(reVarEnd);
-		if ( ending && current ) {
-			current.comment = ending.groups.comment ?? '';
-			current = null;
-		}
-		current?.info.push(line);
+		return;
 	}
+	const ending = line.match(reVarEnd);
+	if ( ending && current ) {
+		current.comment = ending.groups.comment ?? '';
+		current = null;
+	}
+	current?.info.push(line);
 }
 
 class Entity {

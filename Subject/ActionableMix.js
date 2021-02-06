@@ -83,4 +83,3 @@ export function ActionableMix(base) { // Mix ActionableMix to base
 		
 	}
 } // class ActionableMix extends base
-// TODO return type to DOCS

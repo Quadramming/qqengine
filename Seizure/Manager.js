@@ -6,13 +6,12 @@ const register = new Map();
 
 export class Manager {
 
-	// TODO hide static from doc
 	static registerSeizure(name, sz) {
 		register.set(name, sz);
 	} // void
 	
 	#actives = [];
-	reset;
+	reset; // Will be method of reset
 	
 	init() {
 		this.#activateNew('Loading');

@@ -13,8 +13,7 @@ export class Idle {
 	#next; // Action after end current action
 	#isEnded = false; // End flag
 	
-	// Can be overridden:
-	// tickFn()
+	//V\\ void tickFn() // something
 	// draw(context)
 	// onBegin()
 	// onEnd()

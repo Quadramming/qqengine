@@ -9,7 +9,6 @@ export function process(line, module) {
 	const fn = line.match(reFunction);
 	if ( fn ) {
 		console.assert(current === null);
-		// currentClass = null; ???
 		if ( ! data.has(module) ) data.set(module, []);
 		current = push(data.get(module), new Entity({
 			name: fn.groups.function,
@@ -19,6 +18,7 @@ export function process(line, module) {
 			tabs: fn.groups.tabs.length,
 			module: module,
 		}));
+		return;
 	}
 	if ( current ) {
 		const end = line.match(reFunctionEnd);
