@@ -11,10 +11,6 @@ export class Pack {
 	#angle;
 	#z;
 	
-	// Can be overridden:
-	// packUpdate()
-	// tick(delta)
-	
 	constructor(options = {}) {
 		this.#reset(options);
 	}
@@ -32,10 +28,13 @@ export class Pack {
 		this.#z = options.z ?? 0;
 	} // void
 	
+	//D\\ void tick() // {V}
+	//D\\ void onPackUpdate() // {V}
+	
 	size(size) { // {F}
 		if ( size !== undefined ) {
 			this.#size.copy(size);
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#size;
 	} // Size
@@ -43,7 +42,7 @@ export class Pack {
 	scale(scale) { // {F}
 		if ( scale !== undefined ) {
 			this.#scale.copy(scale);
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#scale;
 	} // Scale
@@ -51,7 +50,7 @@ export class Pack {
 	position(position) { // {F}
 		if ( position !== undefined ) {
 			this.#position.copy(position);
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#position;
 	} // Point
@@ -59,7 +58,7 @@ export class Pack {
 	anchor(anchor) { // {F}
 		if ( anchor !== undefined ) {
 			this.#anchor.copy(anchor);
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#anchor;
 	} // Anchor
@@ -67,7 +66,7 @@ export class Pack {
 	angle(angle) { // {F}
 		if ( angle !== undefined ) {
 			this.#angle = angle;
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#angle;
 	} // number
@@ -75,7 +74,7 @@ export class Pack {
 	z(z) { // {F}
 		if ( z !== undefined ) {
 			this.#z = z;
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#z;
 	} // number

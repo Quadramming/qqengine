@@ -40,7 +40,7 @@ export class Solid extends Pack {
 	weight(weight) { // {F}
 		if ( weight !== undefined ) {
 			this.#weight = weight;
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#weight;
 	} // number
@@ -48,7 +48,7 @@ export class Solid extends Pack {
 	type(type) { // {F}
 		if ( type !== undefined ) {
 			this.#type = type;
-			this.packUpdate?.();
+			this.onPackUpdate?.();
 		}
 		return this.#type;
 	} // CONST.SOLID

@@ -15,11 +15,6 @@ export function DragAndDropMix(base) { // Mix DragAndDropMix to base
 		#pointer;
 		#clip;
 		
-		// Can be overridden:
-		// onDnDRaise(worldPoint)
-		// onDnDMove(worldPoint, offset)
-		// onDnDDrop(worldPoint)
-		
 		constructor(options = {}) {
 			fixOptions(options);
 			super(options);
@@ -56,6 +51,10 @@ export function DragAndDropMix(base) { // Mix DragAndDropMix to base
 				this.onDnDDrop?.(this.getWorldPosition());
 			}
 		} // void
+		
+		//D\\ void onDnDRaise(worldPoint) // {V}
+		//D\\ void onDnDMove(worldPoint, offset) // {V}
+		//D\\ void onDnDDrop(worldPoint) // {V}
 		
 		onClickDown(point, pointer) { // {O}
 			super.onClickDown(point, pointer);

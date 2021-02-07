@@ -12,10 +12,6 @@ export class SeizureBase {
 	#parent;
 	#szManager;
 	
-	// Can be overridden:
-	// init() - Executes after seizure became active
-	// onBackButton()
-	
 	constructor(options = {}) {
 		this._world = options.world?.physics ?
 			new World.Physics(options.world):
@@ -30,6 +26,8 @@ export class SeizureBase {
 		this._camera.destructor();
 		this._hud?.destructor();
 	}
+	
+	//D\\ void init(options) // {V} Executes after seizure became active
 	
 	restart() {
 		this.#szManager.reset();
@@ -46,9 +44,7 @@ export class SeizureBase {
 		this._hud?.draw();
 	} // void
 	
-	addSubject(...args) {
-		this._world.addSubject(...args);
-	} // void
+	//D\\ void onBackButton() // {V}
 	
 	isHitSomething(point) {
 		const worldPoint = this._camera.getWorldFromScreen(point);
@@ -89,6 +85,10 @@ export class SeizureBase {
 	
 	setBackground(...args) {
 		this._world.background(...args);
+	} // void
+	
+	addSubject(...args) {
+		this._world.addSubject(...args);
 	} // void
 	
 	makeSubject(...args) { // Proxy to World.makeSubject()

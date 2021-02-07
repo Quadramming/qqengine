@@ -15,9 +15,6 @@ export class GCanvas {
 	#context = this.#canvas.getContext('2d');
 	#unit;
 	
-	// Can be overridden:
-	// tick()
-	
 	constructor(id, size, maximize = false) {
 		if ( size ) {
 			this.#fullscreen = false;
@@ -35,6 +32,8 @@ export class GCanvas {
 		QQ.APP.removeOnResize( this.#onResizeFn );
 		document.body.removeChild(this.#canvas);
 	}
+	
+	//D\\ void tick() // {V}
 	
 	getSizeRect() {
 		return new Rect(

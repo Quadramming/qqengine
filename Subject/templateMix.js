@@ -36,8 +36,10 @@ export function nameMix(base) {
 /*
 constructor
 destructor
+init
 reset
 #reset
+restart
 tick
 draw
 onSomeThing
