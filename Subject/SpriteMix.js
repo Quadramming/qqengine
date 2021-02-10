@@ -3,6 +3,7 @@
 import * as QQ from '../QQ.js';
 import * as matrix from '../matrix.js';
 import * as maths from '../maths.js';
+import {SpriteMatrixCache} from './SpriteMatrixCache.js';
 import {ORDER} from '../CONST/index.js';
 import {SPRITE as S} from '../CONST/SPRITE.js';
 import {Sprite} from '../Sprite/Sprite.js';
@@ -31,6 +32,7 @@ function fixOptions(options) {
 export function SpriteMix(base) { // Mix SpriteMix to base
 	return class SpriteMix extends base {
 		
+		#matrixCache;
 		#alpha;
 		#imageId; // Image ID
 		#image; // Image content (HTMLImageElement, Canvas, ...)
@@ -50,6 +52,7 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 		} // void
 		
 		#reset(options) {
+			this.#matrixCache = new SpriteMatrixCache();
 			this.#drawOrder = options.spriteDrawOrder ?? ORDER.FIRST;
 			this.#imageId = options.imageId ?? null;
 			this.#image = options.image;
@@ -102,19 +105,23 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 		} // void
 		
 		#draw(wcontext) {
-			// TODO need cache
 			const spriteSize = this.#sprite.getFrameSize();
 			const size = this.size();
 			const scale = new Scale(
 				size.x()/spriteSize.x(),
 				size.y()/spriteSize.y()
 			);
-			
-			let M = matrix.getScale(scale);
-			M = matrix.mul(
-				matrix.getMove(maths.getOffset(this.size(), this.anchor())),
-				M
-			);
+			let M;
+			if ( this.#matrixCache.isChanged(size, scale) ) {
+				M = matrix.getScale(scale);
+				M = matrix.mul(
+					matrix.getMove(maths.getOffset(this.size(), this.anchor())),
+					M
+				);
+				this.#matrixCache.set(M, size, scale)
+			} else {
+				M = this.#matrixCache.get();
+			}
 			M = matrix.mul(this.getMatrix(), M);
 			wcontext.transform(M);
 			

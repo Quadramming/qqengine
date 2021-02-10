@@ -1,6 +1,5 @@
 // QQDOC
 
-import * as matrix from '../matrix.js';
 import {Pack} from './Pack.js';
 
 export class MatrixCache extends Pack {
@@ -19,9 +18,8 @@ export class MatrixCache extends Pack {
 	} // void
 	
 	#reset(options) {
-		this.#target = options.parent;
-		// #target can be defined latter on addSubject()
-		this.#matrix = this.#target?.calcMatrix() ?? matrix.getIdentity();
+		this.#target = options.target; // Can be undefined on constructor(), but have to be set on reset() before usage
+		this.#matrix = this.#target?.calcMatrix();
 	} // void
 
 	get() {
@@ -37,21 +35,12 @@ export class MatrixCache extends Pack {
 	} // matrix
 	
 	isChanged() {
-		if ( ! this.position().isEquals(this.#target.position()) ) {
-			return true;
-		}
-		if ( ! this.size().isEquals(this.#target.size()) ) {
-			return true;
-		}
-		if ( ! this.scale().isEquals(this.#target.scale()) ) {
-			return true;
-		}
-		if ( ! this.anchor().isEquals(this.#target.anchor()) ) {
-			return true;
-		}
-		if ( this.angle() !== this.#target.angle() ) {
-			return true;
-		}
+		if ( ! this.#matrix ) return true;
+		if ( ! this.position().isEquals(this.#target.position()) ) return true;
+		if ( ! this.size().isEquals(this.#target.size()) ) return true;
+		if ( ! this.scale().isEquals(this.#target.scale()) ) return true;
+		if ( ! this.anchor().isEquals(this.#target.anchor()) ) return true;
+		if ( this.angle() !== this.#target.angle() ) return true;
 		return false;
 	} // boolean
 	

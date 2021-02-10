@@ -11,7 +11,7 @@ export function MatrixMix(base) { // Mix MatrixMix to base
 		
 		constructor(options = {}) {
 			super(options);
-			this.#matrix = new Pack.MatrixCache;
+			this.#matrix = new Pack.MatrixCache();
 			this.#reset(options);
 		}
 		
@@ -22,7 +22,7 @@ export function MatrixMix(base) { // Mix MatrixMix to base
 		
 		#reset(options) {
 			this.#matrix.reset({
-				parent: this,
+				target: this,
 			});
 		} // void
 		
