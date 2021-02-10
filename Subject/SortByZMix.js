@@ -37,11 +37,13 @@ export function SortByZMix(base) { // Mix SortByZMix to base
 		} // void
 		
 		#sortByZ() {
-			// TODO may be quick way? Not sure if it have sense to do
-			const copy = [...this.getSubjects()];
-			this.getSubjects().sort( (a, b) => {
-				const cmp = a.z() - b.z();
-				return cmp !== 0 ? cmp : copy.indexOf(a) - copy.indexOf(b);
+			const subjs = this.getSubjects();
+			let counter = 0;
+			for ( const subj of subjs ) {
+				subj.__SortByZMix_helper = counter++;
+			}
+			subjs.sort( (a, b) => {
+				return a.z() - b.z() || a.__SortByZMix_helper - b.__SortByZMix_helper;
 			});
 		} // void
 		

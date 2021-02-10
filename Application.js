@@ -7,7 +7,7 @@ import {FpsCounter} from './FpsCounter.js';
 import {Time} from './Time.js';
 import {Storage} from './Storage.js';
 import {ImageManager} from './ImageManager.js';
-import {Sound} from './Sound.js';
+import {Html5Sound as Sound} from './Sound/html5.js';
 import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
 import {InputTouchAvg as Input} from './Input/InputTouchAvg.js';

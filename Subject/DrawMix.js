@@ -22,9 +22,7 @@ export function DrawMix(base) { // Mix DrawMix to base
 		} // void
 		
 		draw(wcontext) {
-			if ( this.#bgColor ) {
-				this.#drawBgColor(wcontext);
-			}
+			if ( this.#bgColor ) this.#drawBgColor(wcontext);
 			this.forSubjects( subj => subj.draw(wcontext) );
 			if ( this.#doDebugDraw ) {
 				this.drawWorldBorder(wcontext);

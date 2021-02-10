@@ -1,2 +1,2 @@
 node src/index.mjs
-:: start chrome index.htm
+start chrome index.htm
