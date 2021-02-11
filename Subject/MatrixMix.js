@@ -1,17 +1,16 @@
 // QQDOC
 
 import * as matrix from '../matrix.js';
-import * as Pack from '../Pack/index.js';
 import {Point} from '../primitives/index.js';
+import {Cache} from '../Cache.js';
 
 export function MatrixMix(base) { // Mix MatrixMix to base
 	return class MatrixMix extends base {
 		
-		#matrix;
+		#matrixCache = new Cache();
 		
 		constructor(options = {}) {
 			super(options);
-			this.#matrix = new Pack.MatrixCache();
 			this.#reset(options);
 		}
 		
@@ -21,9 +20,7 @@ export function MatrixMix(base) { // Mix MatrixMix to base
 		} // void
 		
 		#reset(options) {
-			this.#matrix.reset({
-				target: this,
-			});
+			this.#matrixCache.reset();
 		} // void
 		
 		calcMatrix() {
@@ -34,7 +31,13 @@ export function MatrixMix(base) { // Mix MatrixMix to base
 		} // new array
 		
 		getMatrix(withParent = true) {
-			let M = this.#matrix.get();
+			let M;
+			if ( this.#matrixCache.isChanged(this) ) {
+				M = this.calcMatrix();
+				this.#matrixCache.set(M);
+			} else {
+				M = this.#matrixCache.get();
+			}
 			if ( withParent && this.parent() ) {
 				M = matrix.mul(this.parent().getMatrix(), M);
 			}

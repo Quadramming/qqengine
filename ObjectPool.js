@@ -32,8 +32,8 @@ export class ObjectPool {
 				this.#releaseFn(obj);
 			}
 		}
-		this.#pool.length = 0;
-		this.#free.length = 0;
+		this.#pool = [];
+		this.#free = [];
 	} // void
 	
 	get(options) {

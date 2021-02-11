@@ -29,7 +29,7 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		
 		#reset(options) {
 			this.parent(options.parent ?? null);
-			this.#subjects.length = 0;
+			this.#subjects.length = 0; // []
 			if ( options.selfAdd === true ) {
 				this.#parent.addSubject(this);
 			}
