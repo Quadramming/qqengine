@@ -3,8 +3,6 @@
 import * as Seizure from '../Seizure/index.js';
 import {FN} from '../CONST/FN.js';
 
-// TODO think destructor reset clean etc
-
 export function RelationshipMix(base) { // Mix RelationshipMix to base
 	return class RelationshipMix extends base {
 		
@@ -18,18 +16,18 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		
 		destructor() {
 			super.destructor?.();
-			// TODO destruct All ?
+			this.deleteSubjects();
 			this.cleanRelationships();
 		}
 		
-		reset(options = {}) {
+		reset(options = {}) { // {O}
 			super.reset(options);
 			this.#reset(options);
 		} // void
 		
 		#reset(options) {
 			this.parent(options.parent ?? null);
-			this.#subjects.length = 0; // []
+			this.#subjects = [];
 			if ( options.selfAdd === true ) {
 				this.#parent.addSubject(this);
 			}
@@ -56,7 +54,7 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		} // new array
 		
 		getSubject(predicate = FN.TRUE) {
-			// TODO FIX z order
+			this.sortByZ?.();
 			for ( const subj of this.#subjects ) {
 				if ( predicate(subj) ) return subj;
 				const found = subj.getSubject(predicate);
@@ -77,15 +75,7 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		} // void
 		
 		cleanRelationships() {
-			this.#parent?.spliceSubject(this);
-			this.#reset({})
-		} // void
-		
-		cleanRelationshipsHierarchy() {
-			this.forSubjects(
-				subj => subj.cleanRelationships()
-			);
-			this.#parent?.spliceSubject(this);
+			this.#parent?.stealSubject(this);
 			this.#reset({})
 		} // void
 		
@@ -97,23 +87,15 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		
 		forAllSubjects(fn) { // For all subjects down in hierarchy
 			this.forSubjects(subj => {
-				fn(subj);
 				subj.forAllSubjects(fn);
+				fn(subj);
 			});
 		} // void
 		
 		forSubjects(fn) { // For my subjects
-			// destructor() in fn can change subjects array
-			// that why copy first
+			// fn() can change subjects array, so copy first
 			for ( const subj of [...this.#subjects] ) {
 				fn(subj);
-			}
-		} // void
-		
-		spliceSubject(subj) { // Delete subj from my subjects
-			const i = this.#subjects.indexOf(subj);
-			if ( i >= 0 ) {
-				this.#subjects.splice(i, 1);
 			}
 		} // void
 		

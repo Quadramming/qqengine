@@ -23,20 +23,20 @@ export function SortByZMix(base) { // Mix SortByZMix to base
 		
 		tick(delta) { // {O}
 			super.tick?.(delta);
-			if ( this.#isSortByZOnTick ) this.sortByZ();
+			if ( this.#isSortByZOnTick ) this.sortAllByZ();
 		} // void
 		
 		addSubject(...subj) { // {O}
 			super.addSubject(...subj);
-			if ( this.#isSortByZOnAddSubject ) this.#sortByZ();
+			if ( this.#isSortByZOnAddSubject ) this.sortByZ();
 		} // void
 		
-		sortByZ() { // {V}
-			this.#sortByZ();
-			this.forChildren( subj => subj.sortByZ() );
+		sortAllByZ() { // {V} Sort whole hierarchy
+			this.sortByZ();
+			this.forSubjects( subj => subj.sortAllByZ() );
 		} // void
 		
-		#sortByZ() {
+		sortByZ() { // {V} No sort for children
 			const subjs = this.getSubjects();
 			let counter = 0;
 			for ( const subj of subjs ) {
