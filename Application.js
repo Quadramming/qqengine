@@ -1,6 +1,5 @@
 // QQDOC
 
-import * as QQ from './QQ.js';
 import * as Seizure from './Seizure/index.js';
 import {Size} from './primitives/index.js';
 import {FpsCounter} from './FpsCounter.js';
@@ -11,6 +10,7 @@ import {Html5Sound as Sound} from './Sound/html5.js';
 import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
 import {InputTouchAvg as Input} from './Input/InputTouchAvg.js';
+import {FontLoader} from './FontLoader.js';
 
 export class Application {
 	
@@ -21,14 +21,15 @@ export class Application {
 	#onResizeHandler = new OnResizeHandler();
 	#onBackButtonFn = () => this.onBackButton();
 	#seizures = new Seizure.Manager();
+	#fontLoader = new FontLoader();
 	#game = null;
 	#imageManager;
 	#sound;
 	#canvas; // Global canvas
 	#input;
 	
-	constructor(config = {}) {
-		QQ.setApp(this);
+	init(config = {}) {
+		this.#fontLoader.cleanUp();
 		this.#canvas = new GCanvas('QQ.APP.Canvas', config.size, config.maximize);
 		this.#input = new Input(this.#canvas.getCanvas());
 		this.#imageManager = new ImageManager(config.images);
@@ -42,8 +43,7 @@ export class Application {
 	
 	destructor() {
 		this.#onResizeHandler.destructor();
-		document.removeEventListener('backbutton', this.#onBackButtonFn, false);
-	}
+		document.removeEventListener('backbutton', this.#onBackButtonFn, false); }
 	
 	#init() {
 		this.#game?.init?.(this);
@@ -58,6 +58,10 @@ export class Application {
 		} else {
 			setTimeout(() => this.#loadResources(cb), 100);
 		}
+	} // void
+	
+	initFonts(fonts) {
+		this.#fontLoader.add(fonts);
 	} // void
 	
 	storage(key, value) { // {F} Proxy to storage

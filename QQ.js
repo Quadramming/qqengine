@@ -5,31 +5,20 @@ import {Application} from './Application.js';
 import {Sprite} from './Sprite/index.js';
 import {WCanvas} from './WCanvas.js';
 
-export let APP = null;
+export let APP = new Application();
 
 export function sz() {
-	return APP?.getActiveSz();
+	return APP.getActiveSz();
 } // Seizure
 
-export function setApp(app) {
-	check( ! APP, 'Only one application can be created');
-	APP = app;
-} // void
-
-export function start(cfg) {
-	const start = () => initApp(cfg);
+export function start(config) {
+	APP.initFonts(config.fonts);
+	const start = () => APP.init(config);
 	if ( window.cordova ) {
 		document.addEventListener('deviceready', start, false);
 	} else {
 		window.addEventListener('load', start);
 	}
-} // void
-
-export function initApp(cfg) {
-	while ( document.body.firstChild ) { // Clean all on page (Font loaders)
-		document.body.removeChild( document.body.firstChild );
-	}
-	new Application(cfg);
 } // void
 
 export function isObject(obj) {
@@ -150,3 +139,8 @@ export function isInactive(pointer) {
 	return ! isActive(pointer);
 } // boolean
 
+export function cleanHtml() {
+	while ( document.body.firstChild ) { // Clean all on page (Font loaders)
+		document.body.removeChild( document.body.firstChild );
+	}
+}
