@@ -30,7 +30,7 @@ export class AnimateSprite extends Sprite {
 	} // Size
 	
 	tick(delta) { // {O}
-		super.tick(delta);
+		super.tick?.(delta);
 		this.#passedTime += delta;
 	} // void
 	

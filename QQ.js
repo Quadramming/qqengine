@@ -143,4 +143,15 @@ export function cleanHtml() {
 	while ( document.body.firstChild ) { // Clean all on page (Font loaders)
 		document.body.removeChild( document.body.firstChild );
 	}
+} // void
+
+export function isImage(image) {
+	if ( image instanceof WCanvas ) {
+		return true;
+	} else if ( image instanceof HTMLCanvasElement ) {
+		return true;
+	} else if ( image instanceof HTMLImageElement ) {
+		return true;
+	}
+	return false;
 }

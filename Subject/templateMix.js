@@ -39,6 +39,7 @@ destructor
 init
 reset
 #reset
+[static]
 restart
 tick
 draw

@@ -22,10 +22,11 @@ export class Application {
 	#onBackButtonFn = () => this.onBackButton();
 	#seizures = new Seizure.Manager();
 	#fontLoader = new FontLoader();
+	#debugDraw = false;
 	#game = null;
+	#canvas; // Global canvas
 	#imageManager;
 	#sound;
-	#canvas; // Global canvas
 	#input;
 	
 	init(config = {}) {
@@ -157,6 +158,7 @@ export class Application {
 	
 	#tick() {
 		const delta = this.#time.update();
+		this.#imageManager.tick(delta);
 		this.#canvas.tick?.(delta);
 		this.#fpsCounter.tick(delta);
 		this.#game?.tick?.(delta);
@@ -166,7 +168,7 @@ export class Application {
 	
 	#draw() {
 		this.#seizures.draw();
-		//this.#canvas.drawBorder();
+		if ( this.#debugDraw ) this.#canvas.drawBorder();
 		this.#fpsCounter.show(this.#canvas.getContext());
 	} // void
 	

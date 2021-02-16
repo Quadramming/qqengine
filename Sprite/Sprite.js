@@ -10,12 +10,11 @@ export class Sprite {
 	#image; // Image content
 	#size = new Size(); // Size of image
 	
-	constructor(image) {
+	constructor(image = {}) {
 		this.image(image);
 	}
 	
-	tick(delta) { // {V}
-	} // void
+	//D\\ void tick() // {V}
 	
 	draw(context) {
 		if ( ! this.#isDisabled ) {
@@ -60,8 +59,13 @@ export class Sprite {
 		if ( image !== undefined ) {
 			if ( image instanceof WCanvas ) {
 				image = image.getCanvas();
+			} else if ( image instanceof HTMLCanvasElement ) {
+				// Nothing
+			} else if ( image instanceof HTMLImageElement ) {
+				// Nothing
+			} else {
+				check(image.complete, 'Sprite: image must be completed');
 			}
-			check(image.complete !== false, 'Sprite: image must be completed');
 			this.#image = image;
 			this.#size.set(image.width, image.height);
 		}

@@ -99,4 +99,8 @@ export class SeizureBase {
 		this._camera.setFollow(subj);
 	} // void
 	
+	close() {
+		this.#szManager.closePopUp();
+	}
+	
 }

@@ -63,7 +63,7 @@ export class ElasticDnD extends
 }
 
 export function make(options = {}) { // Create new subject
-	if ( options.image || options.imageId ) {
+	if ( options.image || options.imageId || options.imageUrl ) {
 		let subj = null;
 		if ( options.isActor === true ) {
 			if ( options.solid ) {

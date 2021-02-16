@@ -13,11 +13,11 @@ export class Idle {
 	#next; // Action after end current action
 	#isEnded = false; // End flag
 	
-	//V\\ void tickFn() // something
-	// draw(context)
-	// onBegin()
-	// onEnd()
-	// onAbort()
+	//D\\ void tickFn() // {V}
+	//D\\ draw(context) // {V}
+	//D\\ onBegin() // {V}
+	//D\\ onEnd() // {V}
+	//D\\ onAbort() // {V}
 	
 	constructor(options = {}) {
 		if ( options.applyTo ) {

@@ -14,39 +14,23 @@ import {TileSprite} from '../Sprite/TileSprite.js';
 import {WCanvas} from '../WCanvas.js';
 import {Scale} from '../primitives/index.js';
 
-function fixOptions(options) {
-	if ( options.imageId && options.image ) {
-		throw Error('Soulde be only one image source');
-	} if ( options.imageId ) {
-		options.image = QQ.APP.getImageById(options.imageId);
-	} else if ( options.image ) {
-		check(typeof options.image !== 'string', 'image should has content');
-	} else { // No any source
-		const wcanvas = new WCanvas(1, 1);
-		wcanvas.fillStyle('#FF0000');
-		wcanvas.fillRect(0, 0, 1, 1);
-		options.image = wcanvas.getCanvas();
-	}
-} // void
-
 export function SpriteMix(base) { // Mix SpriteMix to base
 	return class SpriteMix extends base {
 		
 		#matrixCache = new Cache();
 		#alpha;
 		#imageId; // Image ID
+		#imageUrl; // Image URL
 		#image; // Image content (HTMLImageElement, Canvas, ...)
 		#drawOrder;
 		#sprite;
 		
 		constructor(options = {}) {
-			fixOptions(options);
 			super(options);
 			this.#reset(options);
 		}
 		
 		reset(options = {}) { // {O}
-			fixOptions(options);
 			super.reset(options);
 			this.#reset(options);
 		} // void
@@ -54,15 +38,21 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 		#reset(options) {
 			this.#matrixCache.reset();
 			this.#drawOrder = options.spriteDrawOrder ?? ORDER.FIRST;
-			this.#imageId = options.imageId ?? null;
-			this.#image = options.image;
 			this.#alpha = options.alpha ?? 1;
+			this.#image = WCanvas.newTransparentPixel().getCanvas(); // Stub
 			this.setSprite(S.SOLID); // Will set this.#sprite
+			if ( options.image ) {
+				this.image(options.image); // Will set this.#image this.#imageId this.#imageUrl
+			} else if ( options.imageId ) {
+				this.imageId(options.imageId);
+			} else if ( options.imageUrl ) {
+				this.imageUrl(options.imageUrl);
+			}
 		} // void
 		
 		tick(delta) { // {O}
 			super.tick(delta);
-			this.#sprite.tick(delta);
+			this.#sprite.tick?.(delta);
 		} // void
 		
 		draw(context) { // {O}
@@ -145,16 +135,36 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 		
 		imageId(imageId) { // {F} Set image by id to sprite
 			if ( imageId !== undefined ) {
+				const manager = QQ.APP.getImageManager();
 				this.#imageId = imageId;
-				this.#image = QQ.APP.getImageById(imageId);
+				this.#imageUrl = null;
+				check(manager.isIdLoaded(imageId), 'No such imageId loaded');
+				this.#image = manager.getImageById(imageId);
 				this.#sprite.image(this.#image);
 			}
 			return this.#imageId;
 		} // string
 		
+		imageUrl(url) { // {F} Set image by url to sprite
+			if ( url !== undefined ) {
+				const manager = QQ.APP.getImageManager();
+				if ( manager.isUrlAbsent(url) ) {
+					manager.loadUrl( url, () => this.imageUrl(url) );
+				} else {
+					this.#imageId = null;
+					this.#imageUrl = url;
+					this.#image = QQ.APP.getImageByUrl(url);
+					this.#sprite.image(this.#image);
+				}
+			}
+			return this.#imageUrl;
+		} // string
+		
 		image(image) { // {F}
 			if ( image !== undefined ) {
+				check(QQ.isImage(image), 'Not an Image');
 				this.#imageId = null;
+				this.#imageUrl = null;
 				this.#image = image;
 				this.#sprite.image(image);
 			}

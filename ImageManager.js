@@ -6,6 +6,7 @@ export class ImageManager {
 	
 	#url2Image = new Map(); // url => Image
 	#id2WCanvas = new Map(); // id => WCanvas
+	#loading = new Map() // url => cb
 	#id2url; // Map: id => url
 	
 	constructor(nameToUrlArray) {
@@ -13,6 +14,36 @@ export class ImageManager {
 		for ( const url of this.#id2url.values() ) {
 			this.#create(url);
 		}
+	}
+	
+	tick(delta) {
+		if ( this.#loading.size > 0 ) {
+			for ( const [image, [url, cb]] of this.#loading.entries() ) {
+				if ( image.complete ) {
+					this.#loading.delete(image);
+					this.#url2Image.set(url, image);
+					cb();
+				}
+			}
+		}
+	} // void
+	
+	loadUrl(url, cb) {
+		const image = new Image();
+		image.src = url;
+		this.#loading.set(image, [url, cb]);
+	} // void
+	
+	isIdLoaded(id) {
+		return this.#id2url.has(id);
+	} // boolean
+	
+	isUrlLoaded(url) {
+		return this.#url2Image.has(url);
+	} // boolean
+	
+	isUrlAbsent(url) {
+		return ! this.isUrlLoaded(url);
 	}
 	
 	isReady() {
@@ -24,8 +55,8 @@ export class ImageManager {
 		return true;
 	} // boolean
 	
-	getImageByUrl(imageUrl) {
-		return this.#get(imageUrl);
+	getImageByUrl(url) {
+		return this.#get(url);
 	} // HTMLImageElement
 	
 	getImageById(imageId) {
