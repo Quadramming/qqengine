@@ -133,14 +133,17 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 			return this.#alpha;
 		} // number
 		
-		imageId(imageId) { // {F} Set image by id to sprite
-			if ( imageId !== undefined ) {
+		imageId(id) { // {F} Set image by id to sprite
+			if ( id !== undefined ) {
 				const manager = QQ.APP.getImageManager();
-				this.#imageId = imageId;
-				this.#imageUrl = null;
-				check(manager.isIdLoaded(imageId), 'No such imageId loaded');
-				this.#image = manager.getImageById(imageId);
-				this.#sprite.image(this.#image);
+				if ( ! manager.isIdLoaded(id) ) {
+					manager.loadId(id, () => this.imageId(id));
+				} else {
+					this.#imageId = id;
+					this.#imageUrl = null;
+					this.#image = manager.getImageById(id);
+					this.#sprite.image(this.#image);
+				}
 			}
 			return this.#imageId;
 		} // string
@@ -148,12 +151,12 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 		imageUrl(url) { // {F} Set image by url to sprite
 			if ( url !== undefined ) {
 				const manager = QQ.APP.getImageManager();
-				if ( manager.isUrlAbsent(url) ) {
+				if ( ! manager.isUrlLoaded(url) ) {
 					manager.loadUrl( url, () => this.imageUrl(url) );
 				} else {
 					this.#imageId = null;
 					this.#imageUrl = url;
-					this.#image = QQ.APP.getImageByUrl(url);
+					this.#image = manager.getImageByUrl(url);
 					this.#sprite.image(this.#image);
 				}
 			}

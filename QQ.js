@@ -145,13 +145,19 @@ export function cleanHtml() {
 	}
 } // void
 
+export function newImage(url) {
+	const image = new Image();
+	image.src = url;
+	return image;
+}
+
 export function isImage(image) {
 	if ( image instanceof WCanvas ) {
 		return true;
 	} else if ( image instanceof HTMLCanvasElement ) {
 		return true;
 	} else if ( image instanceof HTMLImageElement ) {
-		return true;
+		return image.complete;
 	}
 	return false;
-}
+} // boolean

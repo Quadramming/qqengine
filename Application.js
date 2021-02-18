@@ -22,10 +22,10 @@ export class Application {
 	#onBackButtonFn = () => this.onBackButton();
 	#seizures = new Seizure.Manager();
 	#fontLoader = new FontLoader();
+	#imageManager = new ImageManager();
 	#debugDraw = false;
 	#game = null;
 	#canvas; // Global canvas
-	#imageManager;
 	#sound;
 	#input;
 	
@@ -33,13 +33,13 @@ export class Application {
 		this.#fontLoader.cleanUp();
 		this.#canvas = new GCanvas('QQ.APP.Canvas', config.size, config.maximize);
 		this.#input = new Input(this.#canvas.getCanvas());
-		this.#imageManager = new ImageManager(config.images);
 		this.#sound = new Sound(config.sounds);
-		this.#loadResources(() => this.#init());
 		if ( config.game ) this.#game = config.game;
 		if ( config.showFps ) this.#fpsCounter.toggleShow();
 		if ( config.startSeizure ) this.#startSeizure = config.startSeizure;
 		document.addEventListener('backbutton', this.#onBackButtonFn, false);
+		this.#imageManager.addImageId(config.images);
+		this.#imageManager.preload(config.imagesPreload, () => this.#init());
 	}
 	
 	destructor() {
@@ -51,14 +51,6 @@ export class Application {
 		this.#seizures.init();
 		this.#seizures.set(this.#startSeizure);
 		this.#gameLoop(0);
-	} // void
-	
-	#loadResources(cb) {
-		if ( this.#imageManager.isReady() ) {
-			cb();
-		} else {
-			setTimeout(() => this.#loadResources(cb), 100);
-		}
 	} // void
 	
 	initFonts(fonts) {
