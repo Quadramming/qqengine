@@ -13,7 +13,7 @@ export class XY {
 			y = x[1][0];
 			x = x[0][0];
 		}
-		this.set(x, y)
+		this.set(x, y);
 	}
 	
 	static NIL() { // Get static zero-valued XY (Don't edit it!)

@@ -3,6 +3,7 @@
 import './global.js';
 import {Application} from './Application.js';
 import {Sprite} from './Sprite/index.js';
+import {Rect} from './primitives/index.js';
 import {WCanvas} from './WCanvas.js';
 
 export let APP = new Application();
@@ -161,3 +162,11 @@ export function isImage(image) {
 	}
 	return false;
 } // boolean
+
+export function calcClip(x, y, width = 16, height = 16, gap = 1) {
+	return new Rect(
+		x*width + gap*x,
+		y*height + gap*y,
+		width, height
+	);
+}

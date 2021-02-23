@@ -3,6 +3,7 @@
 globalThis.a = a;
 globalThis.c = c;
 globalThis.d = d;
+globalThis.l = l;
 globalThis.check = check;
 globalThis.dump = dump;
 
@@ -27,6 +28,10 @@ function c(variable, ...rest) { // Console output
 function d() { // Debugger
 	debugger;
 } //  void
+
+function l(...strings) { // To one line with \n separator
+	return [].join.call(strings, '\n');
+} // string
 
 function check(condition, message = 'Check error') {
 	if ( ! condition ) {
