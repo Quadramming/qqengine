@@ -165,7 +165,7 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 		
 		image(image) { // {F}
 			if ( image !== undefined ) {
-				check(QQ.isImage(image), 'Not an Image');
+				check(QQ.isReadyImage(image), 'Not an Image');
 				this.#imageId = null;
 				this.#imageUrl = null;
 				this.#image = image;

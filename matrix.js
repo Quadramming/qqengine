@@ -154,3 +154,11 @@ export function rotate(array) {
 	});
 	return rotated;
 } // new array
+
+export function item(array, x, y) {
+	if ( x < 0 ) return false;
+	if ( y < 0 ) return false;
+	if ( x >= array[0].length ) return false;
+	if ( y >= array.length ) return false;
+	return array[y][x];
+}

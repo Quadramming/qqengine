@@ -152,7 +152,7 @@ export function newImage(url) {
 	return image;
 }
 
-export function isImage(image) {
+export function isReadyImage(image) {
 	if ( image instanceof WCanvas ) {
 		return true;
 	} else if ( image instanceof HTMLCanvasElement ) {

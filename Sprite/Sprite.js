@@ -7,11 +7,11 @@ export class Sprite {
 	
 	#alpha = 1; // Alpha channel
 	#isDisabled = false; // Can hide show
-	#image; // Image content
 	#size = new Size(); // Size of image
+	#image; // Image content
 	
 	constructor(image = {}) {
-		this.image(image);
+		this.#fieldImage(image);
 	}
 	
 	//D\\ void tick() // {V}
@@ -55,7 +55,18 @@ export class Sprite {
 		return this.#isDisabled;
 	} // boolean
 	
-	image(image) { // {F}
+	size(size) { // {F}
+		if ( size !== undefined ) {
+			this.#size.set(size.w(), size.h());
+		}
+		return this.#size;
+	} // Size
+	
+	image(...args) { // {F}
+		return this.#fieldImage(...args);
+	} // Image
+	
+	#fieldImage(image) { // {F}
 		if ( image !== undefined ) {
 			if ( image instanceof WCanvas ) {
 				image = image.getCanvas();
@@ -71,12 +82,5 @@ export class Sprite {
 		}
 		return this.#image;
 	} // Image
-	
-	size(size) { // {F}
-		if ( size !== undefined ) {
-			this.#size.set(size.w(), size.h());
-		}
-		return this.#size;
-	} // Size
 	
 }

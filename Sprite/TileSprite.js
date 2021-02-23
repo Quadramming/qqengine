@@ -55,4 +55,12 @@ export class TileSprite extends Sprite {
 		context.restore(); // reset clip
 	} // void
 	
+	image(image) { // {F}
+		const result = super.image(image);
+		if ( image !== undefined ) {
+			check(false, 'Need to recalc sizes');
+		}
+		return result;
+	} // void
+	
 }

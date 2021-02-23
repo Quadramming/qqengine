@@ -9,6 +9,7 @@ export class LayersSprite extends Sprite {
 	#layers = [];
 	
 	constructor(image, layer) {
+		check(QQ.isReadyImage(image), 'Not an ready Image. You can fix it like in animate sprite');
 		super(image);
 		this.addLayer(layer);
 	}
@@ -46,6 +47,14 @@ export class LayersSprite extends Sprite {
 				size.w(), size.h()
 			);
 		}
+	} // void
+	
+	image(image) { // {F}
+		const result = super.image(image);
+		if ( image !== undefined ) {
+			check(false, 'Need to recalc sizes');
+		}
+		return result;
 	} // void
 	
 }

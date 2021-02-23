@@ -5,24 +5,22 @@ import {Size} from '../primitives/index.js';
 
 export class AnimateSprite extends Sprite {
 	
+	#frameSize = new Size();
 	#fps;
 	#tpf; // Time per frame
 	#frames;
-	#frameSize = new Size();
 	#frameWidth;
 	#currentFrame;
 	#passedTime;
 	
 	constructor(image, frames, fps) {
 		super(image);
-		const size = this.size();
 		this.#fps = fps;
 		this.#tpf = 1 / fps;
 		this.#frames = frames;
 		this.#passedTime = 0;
 		this.#currentFrame = 0;
-		this.#frameWidth = size.x() / frames;
-		this.#frameSize.set(this.#frameWidth, size.y());
+		this.#calcFrameSize(); // Will set #frameSize, #frameWidth
 	}
 	
 	getFrameSize() { // {O}
@@ -46,6 +44,19 @@ export class AnimateSprite extends Sprite {
 			0, 0,
 			this.#frameWidth, size.h()
 		);
+	} // void
+	
+	#calcFrameSize() {
+		this.#frameWidth = this.size().x() / this.#frames;
+		this.#frameSize.set(this.#frameWidth, this.size().y());
+	} // void
+	
+	image(image) { // {F}
+		const result = super.image(image);
+		if ( image !== undefined ) {
+			this.#calcFrameSize();
+		}
+		return result;
 	} // void
 	
 }

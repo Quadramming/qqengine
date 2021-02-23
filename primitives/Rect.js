@@ -31,10 +31,10 @@ export class Rect {
 	} // new Rect
 	
 	copy(rectangle) {
-		this.#x = rectangle._x;
-		this.#y = rectangle._y;
-		this.#width = rectangle._width;
-		this.#height = rectangle._height;
+		this.#x = rectangle.#x;
+		this.#y = rectangle.#y;
+		this.#width = rectangle.#width;
+		this.#height = rectangle.#height;
 		return this;
 	} // this
 	
