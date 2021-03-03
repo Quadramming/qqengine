@@ -6,18 +6,18 @@ export function collisionSolver(a, b, value) {
 	const aType = a.getSolidType();
 	const bType = b.getSolidType();
 	if ( aType === CONST.SOLID.SLIM ) {
-		a.onTouch?.(b);
+		a.onPaw?.(b);
 	} else if ( bType === CONST.SOLID.SLIM ) {
-		b.onTouch?.(a);
+		b.onPaw?.(a);
 	} else if ( aType === CONST.SOLID.STATIC ) {
 		b.addPosition(value);
-		a.onTouch?.(b);
+		a.onPaw?.(b);
 	} else if ( bType === CONST.SOLID.STATIC ) {
 		a.addPosition(value.cloneInverted());
-		b.onTouch?.(a);
+		b.onPaw?.(a);
 	} else if ( aType === CONST.SOLID.DYNAMIC ) {
-		a.onTouch?.(b);
-		b.onTouch?.(a);
+		a.onPaw?.(b);
+		b.onPaw?.(a);
 		const ratio = a.getSolidWeight()/(a.getSolidWeight() + b.getSolidWeight());
 		
 		const aOffset = value.clone();

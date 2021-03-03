@@ -109,6 +109,10 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 			throw Error('stealSubject() problem');
 		} // void
 		
+		deattach() { // Detach me from parent
+			this.#parent.stealSubject(this);
+		} // void
+		
 		parent(parent) { // {F}
 			if ( parent !== undefined ) {
 				if ( parent instanceof Seizure.Seizure ) {

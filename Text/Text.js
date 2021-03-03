@@ -56,7 +56,7 @@ export class Text extends Subject.Subject {
 			return;
 		}
 		this.#originalString = text;
-		this.#strings = String(text).split('\n');
+		this.#strings = text.split('\n');
 		this.#lines = this.#strings.length;
 		this.#needCalculation = true;
 	} // void

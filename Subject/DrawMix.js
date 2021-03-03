@@ -1,5 +1,7 @@
 // QQDOC
 
+import {Point} from '../primitives/index.js';
+
 export function DrawMix(base) { // Mix DrawMix to base
 	return class DrawMix extends base {
 		
