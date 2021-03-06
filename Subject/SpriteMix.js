@@ -96,16 +96,17 @@ export function SpriteMix(base) { // Mix SpriteMix to base
 		
 		#draw(wcontext) {
 			const spriteSize = this.#sprite.getFrameSize();
+			const anchor = this.anchor();
 			const size = this.size();
 			const scale = new Scale(
 				size.x()/spriteSize.x(),
 				size.y()/spriteSize.y()
 			);
 			let M;
-			if ( this.#matrixCache.isChanged(size, scale) ) {
+			if ( this.#matrixCache.isChanged(size, scale, anchor) ) {
 				M = matrix.getScale(scale);
 				M = matrix.mul(
-					matrix.getMove(maths.getOffset(this.size(), this.anchor())),
+					matrix.getMove(maths.getOffset(size, anchor)),
 					M
 				);
 				this.#matrixCache.set(M);

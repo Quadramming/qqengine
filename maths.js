@@ -6,6 +6,10 @@ import * as CONST from './CONST/index.js';
 
 export const PIx2 = Math.PI * 2;
 
+export function randIndex(array) {
+	return rand(0, array.length-1);
+} // number
+
 export function rand(min = 0, max = 1, round = true) {
 	if ( round ) {
 		return Math.round(Math.random() * (max - min)) + min;

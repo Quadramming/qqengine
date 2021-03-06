@@ -26,8 +26,15 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		} // void
 		
 		#reset(options) {
+			// TOFIX is ok?
+			this.#parent?.stealSubject(this);
 			this.parent(options.parent ?? null);
+			
+			this.forSubjects( subj => {
+				subj.parent(null);
+			});
 			this.#subjects = [];
+			
 			if ( options.selfAdd === true ) {
 				this.#parent.addSubject(this);
 			}
@@ -75,7 +82,6 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		} // void
 		
 		cleanRelationships() {
-			this.#parent?.stealSubject(this);
 			this.#reset({})
 		} // void
 		

@@ -125,7 +125,7 @@ export function createSpriteById(imageId) {
 } // new Sprite
 
 export function createSpriteByUrl(imageUrl) {
-	return new Sprite( APP.getImageManager().get(imageUrl) );
+	return new Sprite( APP.getImageManager().getImageByUrl(imageUrl) );
 } // new Sprite
 
 export function isEmpty(array) {
