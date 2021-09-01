@@ -1,0 +1,93 @@
+Shorthands:
+ctx - Always context of canvas
+w, h - Width and Height in pair
+rect - Rectangle
+obj (objs) - Object(s)
+subj (subjs) - Subject(s) (Objects on scene)
+S`` - Style
+T`` - Text
+args - arguments
+init - initialization
+DnD - Drag and drop
+fn - function
+M - Matrix
+sz - seizure (In arguments)
+
+Rules:
+constructor() = Creating object
+destructor() = Release all from object. Can't use it furthur
+reset() = Make object in initial state
+.var(value) = Setter and getter. Always return var value and set it if value is not undefined
+
+SNIPPETS:
+
+
+================================================================
+function reset(options) {
+}
+
+function fixOptions(options) {
+}
+
+export function NameMix(base) {
+	return class NameMix extends base {
+		
+		constructor(options = {}) {
+			fixOptions(options);
+			super(options);
+			reset.call(this, options);
+		}
+		
+		destructor() {
+			super.destructor();
+		}
+		
+		reset(options = {}) {
+			fixOptions(options);
+			super.reset(options);
+			reset.call(this, options);
+		}
+		
+	}
+}
+================================================================
+function reset(options) {
+	// Set and reset private vars
+}
+
+function fixOptions(options) {
+	// Fix or add options
+}
+
+export class NAME extends
+	QQ.mixins(mix, mix, base)
+{
+	
+	constructor(options = {}) {
+		fixOptions(options);
+		super(options);
+		reset.call(this, options);
+		// Allocation and undefined private
+	}
+	
+	destructor() {
+		super.destructor(options);
+		// Destroy all relations
+		// And set private to undefined
+	}
+	
+	reset(options = {}) {
+		fixOptions(options);
+		super.reset(options);
+		reset.call(this, options);
+	}
+	
+}
+================================================================
+X(X) {
+	if ( X !== undefined ) {
+		this._X = X;
+	}
+	return this._X;
+}
+================================================================

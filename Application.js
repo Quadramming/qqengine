@@ -1,6 +1,8 @@
 // QQDOC
 
 import * as Seizure from './Seizure/index.js';
+import * as style from './style/style.js';
+import * as i18n from './i18n.js';
 import {Size} from './primitives/index.js';
 import {FpsCounter} from './FpsCounter.js';
 import {Time} from './Time.js';
@@ -34,6 +36,12 @@ export class Application {
 		this.#canvas = new GCanvas('QQ.APP.Canvas', config.size, config.maximize);
 		this.#input = new Input(this.#canvas.getCanvas());
 		this.#sound = new Sound(config.sounds);
+		if ( config.dictionary ) i18n.set(config.dictionary);
+		if ( config.styles ) {
+			for ( const [name, styleObj] of Object.entries(config.styles) ) {
+				style.set(name, styleObj);
+			}
+		}
 		if ( config.game ) this.#game = config.game;
 		if ( config.showFps ) this.#fpsCounter.toggleShow();
 		if ( config.startSeizure ) this.#startSeizure = config.startSeizure;

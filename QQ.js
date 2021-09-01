@@ -6,14 +6,14 @@ import {Sprite} from './Sprite/index.js';
 import {Rect} from './primitives/index.js';
 import {WCanvas} from './WCanvas.js';
 
-export let APP = new Application();
+export const APP = new Application();
 
 export function sz() {
 	return APP.getActiveSz();
 } // Seizure
 
 export function start(config) {
-	APP.initFonts(config.fonts);
+	APP.initFonts(config?.fonts);
 	const start = () => APP.init(config);
 	if ( window.cordova ) {
 		document.addEventListener('deviceready', start, false);

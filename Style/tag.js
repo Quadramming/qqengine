@@ -1,11 +1,7 @@
 // QQDOC
 
+import * as QQ from '../QQ.js';
 import * as style from './style.js';
-import {styles} from '../../styles/styles.js';
-
-for ( const [name, styleObj] of Object.entries(styles) ) {
-	style.set(name, styleObj);
-}
 
 function add(out, text) {
 	text = text.trim();
