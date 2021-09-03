@@ -51,7 +51,11 @@ export class Text extends Subject.Subject {
 		this.setText(options.text);
 	} // void
 	
-	setText(text) {
+	addText(text) {
+		this.setText(this.#originalString + text);
+	} // void
+	
+	setText(text = '') {
 		if ( this.#originalString === text ) {
 			return;
 		}
@@ -60,7 +64,17 @@ export class Text extends Subject.Subject {
 		this.#lines = this.#strings.length;
 		this.#needCalculation = true;
 	} // void
+
+	getText() {
+		return this.#originalString;
+	} // string
 	
+	backspace() {
+		if ( this.#originalString.length > 0 ) {
+			this.setText(this.#originalString.slice(0, -1));
+		}
+	} // void
+
 	show() {
 		this.#hidden = false;
 	} // void

@@ -1,5 +1,6 @@
 // QQDOC
 
+import * as QQ from '../QQ.js';
 import * as Subject from '../Subject/index.js';
 import {TickerVary} from './TickerVary.js';
 import {TickerConst} from './TickerConst.js';
@@ -76,9 +77,10 @@ export class World {
 	} // Subject | null
 	
 	getClickableAtPoint(point) {
-		return this.getSubject( subj =>
+		const subjs = this.getSubjects( subj =>
 			subj instanceof Subject.Subject && subj.couldClick?.(point)
 		);
+		return subjs.length ? QQ.getLast(subjs) : null;
 	} // Subject | null
 	
 	background(background) { // {F} Can take '#ffffff', 'imageid' or null

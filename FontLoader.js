@@ -31,7 +31,8 @@ export class FontLoader {
 		document.head.appendChild(style);
 		const loadHelper = document.createElement('font');
 		loadHelper.style.fontFamily = name;
-		loadHelper.innerText = 'helper';
+		loadHelper.style.color = getComputedStyle(document.body).backgroundColor;
+		loadHelper.innerHTML = 'helper';
 		document.body.appendChild(loadHelper);
 		helpers.push(loadHelper);
 	} // void
