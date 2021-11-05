@@ -11,7 +11,8 @@ import {ImageManager} from './ImageManager.js';
 import {Html5Sound as Sound} from './Sound/html5.js';
 import {GCanvas} from './GCanvas.js';
 import {OnResizeHandler} from './OnResizeHandler.js';
-import {InputTouch as Input} from './Input/InputTouch.js';
+//import {InputTouch as Input} from './Input/InputTouch.js';
+import {InputMouse as Input} from './Input/InputMouse.js';
 import {FontLoader} from './FontLoader.js';
 
 export class Application {

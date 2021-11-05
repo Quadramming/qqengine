@@ -93,8 +93,8 @@ export function RelationshipMix(base) { // Mix RelationshipMix to base
 		
 		forAllSubjects(fn) { // For all subjects down in hierarchy
 			this.forSubjects(subj => {
+				fn(subj); // TOFIX: is OK it before forAllSubjects?
 				subj.forAllSubjects(fn);
-				fn(subj);
 			});
 		} // void
 		
