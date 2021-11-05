@@ -2,9 +2,11 @@
 
 import * as Subject from '../Subject/index.js';
 import * as Text from '../Text/index.js';
+import * as style from '../style/index.js';
 
 function fixOptions(options) {
 	options.isClickable = true;
+	options.textStyle ??= 'default';
 } // void
 
 export class Button extends Subject.Sprite {
@@ -26,23 +28,23 @@ export class Button extends Subject.Sprite {
 	
 	#reset(options) {
 		if ( options.text ) {
-			new Text.Text({
+			new Text.Text(style.use({
 				addTo: this,
 				text: options.text,
 				size: this.size()
-			});
+			}, options.textStyle));
 		}
 		this.#onButtonClickDown = options.onButtonClickDown ?? null;
 		this.#onButtonClick = options.onButtonClick ?? null;
 	} // void
 	
-	onClickDown(worldPoint) { // {O}
-		super.onClickDown(worldPoint);
+	onClickDown(worldPoint, pointer) { // {O}
+		super.onClickDown(worldPoint, pointer);
 		this.#onButtonClickDown?.(worldPoint);
 	} // void
 	
-	onClick(worldPoint) { // {O}
-		super.onClick(worldPoint);
+	onClick(worldPoint, pointer) { // {O}
+		super.onClick(worldPoint, pointer);
 		this.#onButtonClick?.(worldPoint);
 	} // void
 	
